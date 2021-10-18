@@ -1,3 +1,5 @@
+@file:Suppress("GradlePackageUpdate")
+
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
