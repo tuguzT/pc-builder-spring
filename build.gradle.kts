@@ -32,8 +32,8 @@ dependencies {
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    runtimeOnly("com.h2database:h2")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    runtimeOnly("com.postgresql:postgresql")
 
     // Third-Party
     implementation("io.nacular.measured:measured:0.3.0")
