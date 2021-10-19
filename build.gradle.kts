@@ -11,19 +11,34 @@ plugins {
 
 group = "io.github.tuguzt.pcbuilder.backend"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    // Domain layer
+    implementation(projects.domain)
+
+    // Kotlin
+    implementation(kotlin("reflect"))
+    implementation(kotlin("stdlib-jdk8"))
+
+    // Spring
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     runtimeOnly("com.h2database:h2")
+
+    // Third-Party
+    implementation("io.nacular.measured:measured:0.3.0")
+
+    // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
