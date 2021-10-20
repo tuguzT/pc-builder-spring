@@ -31,6 +31,8 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
     // Kotlin extensions
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
     implementation("org.jetbrains.exposed:spring-transaction:0.35.3")
     implementation("org.jetbrains.exposed:exposed-spring-boot-starter:0.35.3")

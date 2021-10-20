@@ -4,32 +4,35 @@ import io.github.tuguzt.pcbuilder.backend.spring.model.ComponentData
 import io.github.tuguzt.pcbuilder.backend.spring.repository.schema.ComponentTable
 import io.nacular.measured.units.Length.Companion.meters
 import io.nacular.measured.units.Mass.Companion.grams
+import kotlinx.coroutines.flow.asFlow
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
 @Repository
-@Transactional
 class ComponentRepositoryImpl : ComponentRepository {
     @Bean
+    @Transactional
     fun init() {
         SchemaUtils.create(ComponentTable)
     }
 
-    override fun insert(item: ComponentData) {
-        ComponentTable.insert(item.toRow())
+    override suspend fun insert(item: ComponentData) {
+        newSuspendedTransaction { ComponentTable.insert(item.toRow()) }
     }
 
-    override fun getAll(): List<ComponentData> = ComponentTable.selectAll().map(ResultRow::fromRow)
+    override suspend fun getAll() =
+        newSuspendedTransaction { ComponentTable.selectAll().map(ResultRow::fromRow) }.asFlow()
 
-    override fun update(item: ComponentData) {
-        ComponentTable.update(where = eqById(item), body = item.toRow())
+    override suspend fun update(item: ComponentData) {
+        newSuspendedTransaction { ComponentTable.update(where = eqById(item), body = item.toRow()) }
     }
 
-    override fun delete(item: ComponentData) {
-        ComponentTable.deleteWhere(op = eqById(item))
+    override suspend fun delete(item: ComponentData) {
+        newSuspendedTransaction { ComponentTable.deleteWhere(op = eqById(item)) }
     }
 }
 

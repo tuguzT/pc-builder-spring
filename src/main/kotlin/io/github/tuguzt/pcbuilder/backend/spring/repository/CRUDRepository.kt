@@ -1,11 +1,13 @@
 package io.github.tuguzt.pcbuilder.backend.spring.repository
 
+import kotlinx.coroutines.flow.Flow
+
 interface CRUDRepository<T : Any> {
-    fun insert(item: T)
+    suspend fun insert(item: T)
 
-    fun getAll(): List<T>
+    suspend fun getAll(): Flow<T>
 
-    fun update(item: T)
+    suspend fun update(item: T)
 
-    fun delete(item: T)
+    suspend fun delete(item: T)
 }

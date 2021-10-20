@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("components")
 class ComponentController(private val service: ComponentService) {
     @GetMapping
-    fun index() = service.getAll()
+    suspend fun index() = service.getAll()
 
     @PostMapping("insert")
-    fun insert(@RequestBody component: ComponentData) {
+    suspend fun insert(@RequestBody component: ComponentData) {
         service.insert(component)
     }
 }
