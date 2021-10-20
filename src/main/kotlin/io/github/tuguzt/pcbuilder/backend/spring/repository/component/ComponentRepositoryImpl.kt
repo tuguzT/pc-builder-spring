@@ -6,12 +6,18 @@ import io.nacular.measured.units.Length.Companion.meters
 import io.nacular.measured.units.Mass.Companion.grams
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.statements.UpdateBuilder
+import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
-@Transactional
 @Repository
+@Transactional
 class ComponentRepositoryImpl : ComponentRepository {
+    @Bean
+    fun init() {
+        SchemaUtils.create(ComponentTable)
+    }
+
     override fun insert(item: ComponentData) {
         ComponentTable.insert(item.toRow())
     }

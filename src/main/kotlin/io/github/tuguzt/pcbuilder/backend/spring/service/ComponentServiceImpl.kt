@@ -5,8 +5,8 @@ import io.github.tuguzt.pcbuilder.backend.spring.repository.component.ComponentR
 import org.springframework.stereotype.Service
 
 @Service
-class ComponentServiceImpl(val db: ComponentRepository) : ComponentService {
-    override fun insert(item: ComponentData) = db.insert(item)
+class ComponentServiceImpl(private val repository: ComponentRepository) : ComponentService {
+    override fun insert(item: ComponentData) = repository.insert(item)
 
-    override fun getAll() = db.getAll()
+    override fun getAll() = repository.getAll()
 }
