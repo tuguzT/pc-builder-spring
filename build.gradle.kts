@@ -32,15 +32,13 @@ dependencies {
 
     // Kotlin extensions
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
-    implementation("org.jetbrains.exposed:exposed-core:0.35.1")
-    implementation("org.jetbrains.exposed:exposed-dao:0.35.1")
-    implementation("org.jetbrains.exposed:exposed-jdbc:0.35.1")
+    implementation("org.jetbrains.exposed:spring-transaction:0.35.3")
+    implementation("org.jetbrains.exposed:exposed-spring-boot-starter:0.35.3")
 
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-web")
-//    runtimeOnly("com.postgresql:postgresql")
-    runtimeOnly("com.h2database:h2")
+    runtimeOnly("com.impossibl.pgjdbc-ng:pgjdbc-ng:0.8.9")
 
     // Third-Party
     implementation("io.nacular.measured:measured:0.3.0")
