@@ -12,8 +12,14 @@ import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
+/**
+ * Implementation of the [ComponentRepository] interface.
+ */
 @Repository
 class ComponentRepositoryImpl : ComponentRepository {
+    /**
+     * Creates the repository table if it is not exist.
+     */
     @Bean
     @Transactional
     fun init() {
@@ -36,10 +42,16 @@ class ComponentRepositoryImpl : ComponentRepository {
     }
 }
 
+/**
+ * An [operation][Op] which indicates if [item] is equal by [ComponentData.id] to some entity.
+ */
 private fun eqById(item: ComponentData): SqlExpressionBuilder.() -> Op<Boolean> = {
     ComponentTable.id eq item.id
 }
 
+/**
+ * Returns a builder of update operation for entity of type [ComponentData].
+ */
 private fun ComponentData.toRow(): ComponentTable.(UpdateBuilder<*>) -> Unit {
     val data = this
     return { updateBuilder ->
@@ -53,6 +65,9 @@ private fun ComponentData.toRow(): ComponentTable.(UpdateBuilder<*>) -> Unit {
     }
 }
 
+/**
+ * Converts [ResultRow] into the entity of type [ComponentData].
+ */
 private fun ResultRow.fromRow() = ComponentData(
     id = this[ComponentTable.id],
     name = this[ComponentTable.name],

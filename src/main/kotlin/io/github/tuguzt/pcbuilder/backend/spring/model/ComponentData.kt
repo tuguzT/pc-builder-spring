@@ -22,8 +22,10 @@ data class ComponentData(
     @SerialName("width") private val widthInMeters: Double,
     @SerialName("height") private val heightInMeters: Double,
 ) : Component {
-    @Transient override val weight = weightInGrams * grams
-    @Transient override val size = Size(
+    @Transient
+    override val weight = weightInGrams * grams
+    @Transient
+    override val size = Size(
         length = lengthInMeters * meters,
         width = widthInMeters * meters,
         height = heightInMeters * meters,

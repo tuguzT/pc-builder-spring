@@ -1,7 +1,7 @@
 package io.github.tuguzt.pcbuilder.backend.spring.repository.schema
 
-import org.jetbrains.exposed.sql.Table
 import io.github.tuguzt.pcbuilder.backend.spring.model.ComponentData
+import org.jetbrains.exposed.sql.Table
 
 /**
  * Table schema for [ComponentData].
