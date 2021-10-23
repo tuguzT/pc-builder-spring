@@ -21,6 +21,21 @@ class ComponentController(private val service: ComponentService) {
     suspend fun index() = service.getAll()
 
     /**
+     * GET request which returns component found by [id], if any.
+     */
+    @GetMapping("{id}")
+    suspend fun findById(@PathVariable id: String): ComponentData? {
+        logger.info { "Requested component with ID $id" }
+        return service.findById(id).apply {
+            this?.let {
+                logger.info { "Found component with ID $id" }
+                return@apply
+            }
+            logger.info { "Component with ID $id not found" }
+        }
+    }
+
+    /**
      * POST request which inserts [component] into the server repository.
      */
     @PostMapping("insert")

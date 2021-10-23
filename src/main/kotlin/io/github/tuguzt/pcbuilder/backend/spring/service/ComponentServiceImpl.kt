@@ -12,4 +12,6 @@ class ComponentServiceImpl(private val repository: ComponentRepository) : Compon
     override suspend fun insert(item: ComponentData) = repository.insert(item)
 
     override suspend fun getAll() = repository.getAll()
+
+    override suspend fun findById(id: String): ComponentData? = repository.findById(id)
 }

@@ -16,4 +16,9 @@ interface ComponentService {
      * Returns all data of type [ComponentData] from the server.
      */
     suspend fun getAll(): Flow<ComponentData>
+
+    /**
+     * Returns component found by [id], if any.
+     */
+    suspend fun findById(id: String): ComponentData?
 }

@@ -34,20 +34,22 @@ class ComponentRepositoryImpl : ComponentRepository {
         newSuspendedTransaction { ComponentTable.selectAll().map(ResultRow::fromRow) }.asFlow()
 
     override suspend fun update(item: ComponentData) {
-        newSuspendedTransaction { ComponentTable.update(where = eqById(item), body = item.toRow()) }
+        newSuspendedTransaction { ComponentTable.update(where = eqById(item.id), body = item.toRow()) }
     }
 
     override suspend fun delete(item: ComponentData) {
-        newSuspendedTransaction { ComponentTable.deleteWhere(op = eqById(item)) }
+        newSuspendedTransaction { ComponentTable.deleteWhere(op = eqById(item.id)) }
+    }
+
+    override suspend fun findById(id: String) = newSuspendedTransaction {
+        ComponentTable.select(eqById(id)).firstOrNull()?.fromRow()
     }
 }
 
 /**
- * An [operation][Op] which indicates if [item] is equal by [ComponentData.id] to some entity.
+ * An [operation][Op] which indicates if [id] is equal by [ComponentData.id] to some entity.
  */
-private fun eqById(item: ComponentData): SqlExpressionBuilder.() -> Op<Boolean> = {
-    ComponentTable.id eq item.id
-}
+private fun eqById(id: String): SqlExpressionBuilder.() -> Op<Boolean> = { ComponentTable.id eq id }
 
 /**
  * Returns a builder of update operation for entity of type [ComponentData].
