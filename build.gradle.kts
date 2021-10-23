@@ -45,6 +45,7 @@ dependencies {
     // Third-Party
     implementation("io.nacular.measured:measured:0.3.0")
     implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.10")
 
     // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")
