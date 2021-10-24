@@ -1,5 +1,5 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "PC_Builder_Spring_Backend"
+rootProject.name = "PCBuilderSpringBackend"
 include(":domain")
 project(":domain").projectDir = file("../PC Builder/domain")
