@@ -1,8 +1,6 @@
 spring:
   datasource:
-    url: jdbc:pgsql://localhost:5432/pc_builder
-    username: tuguzT
-    driver-class-name: com.impossibl.postgres.jdbc.PGDriver
+    driver-class-name: org.postgresql.Driver
 
 logging:
   level:

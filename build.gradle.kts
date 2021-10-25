@@ -41,7 +41,7 @@ dependencies {
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    runtimeOnly("com.impossibl.pgjdbc-ng:pgjdbc-ng:0.8.9")
+    runtimeOnly("org.postgresql:postgresql")
 
     // Third-Party
     implementation("io.nacular.measured:measured:0.3.0")
