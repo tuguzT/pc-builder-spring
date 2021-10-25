@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "io.github.tuguzt.pcbuilder.backend"
-version = "0.0.1-SNAPSHOT"
+version = "0.1.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -20,11 +20,12 @@ java {
 
 repositories {
     mavenCentral()
+    maven(url = "https://jitpack.io")
 }
 
 dependencies {
     // Domain layer
-    implementation(projects.domain)
+    implementation("com.github.tuguzT:pc_builder_domain:main-SNAPSHOT")
 
     // Kotlin
     implementation(kotlin("reflect"))
