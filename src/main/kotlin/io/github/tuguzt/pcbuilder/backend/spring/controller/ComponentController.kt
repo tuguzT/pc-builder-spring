@@ -1,6 +1,6 @@
 package io.github.tuguzt.pcbuilder.backend.spring.controller
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.ComponentData
+import io.github.tuguzt.pcbuilder.backend.spring.model.ComponentEntity
 import io.github.tuguzt.pcbuilder.backend.spring.service.ComponentService
 import io.github.tuguzt.pcbuilder.domain.model.component.Component
 import mu.KotlinLogging
@@ -24,7 +24,7 @@ class ComponentController(private val service: ComponentService) {
      * GET request which returns component found by [id], if any.
      */
     @GetMapping("{id}")
-    suspend fun findById(@PathVariable id: String): ComponentData? {
+    suspend fun findById(@PathVariable id: String): ComponentEntity? {
         logger.info { "Requested component with ID $id" }
         return service.findById(id).apply {
             this?.let {
@@ -39,7 +39,7 @@ class ComponentController(private val service: ComponentService) {
      * POST request which inserts [component] into the server repository.
      */
     @PostMapping("insert")
-    suspend fun insert(@RequestBody component: ComponentData) {
+    suspend fun insert(@RequestBody component: ComponentEntity) {
         service.insert(component)
         logger.info { "Inserted component with ID ${component.id}" }
     }

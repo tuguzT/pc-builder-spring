@@ -1,7 +1,8 @@
 package io.github.tuguzt.pcbuilder.backend.spring.service
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.ComponentData
+import io.github.tuguzt.pcbuilder.backend.spring.model.ComponentEntity
 import io.github.tuguzt.pcbuilder.backend.spring.repository.component.ComponentRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 /**
@@ -9,9 +10,9 @@ import org.springframework.stereotype.Service
  */
 @Service
 class ComponentServiceImpl(private val repository: ComponentRepository) : ComponentService {
-    override suspend fun insert(item: ComponentData) = repository.insert(item)
+    override suspend fun insert(item: ComponentEntity) = repository.save(item)
 
-    override suspend fun getAll() = repository.getAll()
+    override suspend fun getAll(): List<ComponentEntity> = repository.findAll()
 
-    override suspend fun findById(id: String): ComponentData? = repository.findById(id)
+    override suspend fun findById(id: String): ComponentEntity? = repository.findByIdOrNull(id)
 }

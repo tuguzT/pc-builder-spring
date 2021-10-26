@@ -1,14 +1,11 @@
 package io.github.tuguzt.pcbuilder.backend.spring.repository.component
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.ComponentData
-import io.github.tuguzt.pcbuilder.backend.spring.repository.CRUDRepository
+import io.github.tuguzt.pcbuilder.backend.spring.model.ComponentEntity
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
 
 /**
- * [CRUDRepository] which contains data of type [ComponentData].
+ * [JpaRepository] which contains data of type [ComponentEntity].
  */
-interface ComponentRepository : CRUDRepository<ComponentData> {
-    /**
-     * Returns component found by [id], if any.
-     */
-    suspend fun findById(id: String): ComponentData?
-}
+@Repository
+interface ComponentRepository : JpaRepository<ComponentEntity, String>

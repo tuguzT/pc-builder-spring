@@ -1,8 +1,6 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-
-logging:
-  level:
-    org.springframework.jdbc.datasource.DataSourceTransactionManager: DEBUG
-    org.jetbrains.exposed.spring.SpringTransactionManager: DEBUG
+  jpa:
+    hibernate:
+      ddl-auto: update
