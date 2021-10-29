@@ -1,4 +1,4 @@
-package io.github.tuguzt.pcbuilder.backend.spring.repository.component
+package io.github.tuguzt.pcbuilder.backend.spring.repository
 
 import io.github.tuguzt.pcbuilder.backend.spring.model.ComponentEntity
 import org.springframework.data.jpa.repository.JpaRepository

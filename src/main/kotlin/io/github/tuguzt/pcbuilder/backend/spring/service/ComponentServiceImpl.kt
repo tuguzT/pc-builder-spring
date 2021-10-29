@@ -1,7 +1,7 @@
 package io.github.tuguzt.pcbuilder.backend.spring.service
 
 import io.github.tuguzt.pcbuilder.backend.spring.model.ComponentEntity
-import io.github.tuguzt.pcbuilder.backend.spring.repository.component.ComponentRepository
+import io.github.tuguzt.pcbuilder.backend.spring.repository.ComponentRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
