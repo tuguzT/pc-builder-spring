@@ -10,9 +10,14 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("octopart")
 class OctopartController {
+    companion object {
+        @JvmStatic
+        private val token: String = "\"${System.getenv("OCTOPART_API_TOKEN")}\""
+    }
+
     /**
      * GET request which returns Octopart API token.
      */
     @GetMapping("token")
-    suspend fun token(): String = System.getenv("OCTOPART_API_TOKEN")
+    fun token() = token
 }
