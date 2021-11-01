@@ -24,6 +24,10 @@ repositories {
     maven(url = "https://jitpack.io")
 }
 
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor(0, "seconds")
+}
+
 dependencies {
     // Domain layer
     implementation("com.github.tuguzT:pc_builder_domain:main-SNAPSHOT")
@@ -43,7 +47,6 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
 
     // Third-Party
-    implementation("io.nacular.measured:measured:0.3.0")
     implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
 
