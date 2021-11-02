@@ -47,7 +47,6 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
 
     // Third-Party
-    implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
     implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
 
     // Testing

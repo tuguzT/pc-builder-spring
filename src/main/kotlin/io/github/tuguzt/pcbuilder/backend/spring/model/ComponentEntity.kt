@@ -1,8 +1,8 @@
 package io.github.tuguzt.pcbuilder.backend.spring.model
 
-import com.aventrix.jnanoid.jnanoid.NanoIdUtils
 import io.github.tuguzt.pcbuilder.domain.model.component.Component
 import io.github.tuguzt.pcbuilder.domain.model.component.Size
+import io.github.tuguzt.pcbuilder.domain.model.randomNanoId
 import io.nacular.measured.units.Length.Companion.meters
 import io.nacular.measured.units.Mass.Companion.grams
 import io.nacular.measured.units.times
@@ -20,7 +20,7 @@ import javax.persistence.*
 @Serializable
 class ComponentEntity(
     @Id
-    override val id: String = NanoIdUtils.randomNanoId(),
+    override val id: String = randomNanoId(),
 
     override val name: String,
 
