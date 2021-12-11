@@ -39,7 +39,7 @@ dependencies {
     // Kotlin extensions
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.5.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1")
 
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -47,24 +47,24 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
 
     // Third-Party
-    implementation("io.github.microutils:kotlin-logging-jvm:2.0.11")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.1.0")
 
     // Testing
     testImplementation(kotlin("test"))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "1.8"
+tasks {
+    withType<KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs = listOf("-Xjsr305=strict")
+            jvmTarget = "1.8"
+        }
     }
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
-tasks.getByName<Jar>("jar") {
-    enabled = false
+    withType<Test> {
+        useJUnitPlatform()
+    }
+    getByName<Jar>("jar") {
+        enabled = false
+    }
 }
