@@ -15,10 +15,10 @@ class UserController(private val service: UserService) {
 
     @GetMapping("id/{id}")
     suspend fun findById(@PathVariable id: String): UserEntity? {
-        logger.info { "Requested component with ID $id" }
+        logger.info { "Requested user with ID $id" }
         return service.findById(id).apply {
             this?.let {
-                logger.info { "Found component with ID $id" }
+                logger.info { "Found user with ID $id" }
                 return@apply
             }
             logger.info { "Component with ID $id not found" }
@@ -27,13 +27,13 @@ class UserController(private val service: UserService) {
 
     @GetMapping("username/{username}")
     suspend fun findByUsername(@PathVariable username: String): UserEntity? {
-        logger.info { "Requested component with username $username" }
+        logger.info { "Requested user with username $username" }
         return service.findByUsername(username).apply {
             this?.let {
-                logger.info { "Found component with username $username" }
+                logger.info { "Found user with username $username" }
                 return@apply
             }
-            logger.info { "Component with username $username not found" }
+            logger.info { "User with username $username not found" }
         }
     }
 
