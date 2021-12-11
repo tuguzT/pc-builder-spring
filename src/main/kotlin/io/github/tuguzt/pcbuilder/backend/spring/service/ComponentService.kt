@@ -7,9 +7,9 @@ import io.github.tuguzt.pcbuilder.backend.spring.model.ComponentEntity
  */
 interface ComponentService {
     /**
-     * Inserts [item] into the server repository.
+     * Inserts [entity] into the server repository.
      */
-    suspend fun insert(item: ComponentEntity): ComponentEntity
+    suspend fun save(entity: ComponentEntity): ComponentEntity
 
     /**
      * Returns all data of type [ComponentEntity] from the server.

@@ -23,7 +23,7 @@ class ComponentController(private val service: ComponentService) {
     /**
      * GET request which returns component found by [id], if any.
      */
-    @GetMapping("{id}")
+    @GetMapping("id/{id}")
     suspend fun findById(@PathVariable id: String): ComponentEntity? {
         logger.info { "Requested component with ID $id" }
         return service.findById(id).apply {
@@ -36,11 +36,11 @@ class ComponentController(private val service: ComponentService) {
     }
 
     /**
-     * POST request which inserts [component] into the server repository.
+     * POST request which inserts [entity] into the server repository.
      */
-    @PostMapping("insert")
-    suspend fun insert(@RequestBody component: ComponentEntity) {
-        service.insert(component)
-        logger.info { "Inserted component with ID ${component.id}" }
+    @PostMapping("save")
+    suspend fun save(@RequestBody entity: ComponentEntity) {
+        service.save(entity)
+        logger.info { "Inserted component with ID ${entity.id}" }
     }
 }

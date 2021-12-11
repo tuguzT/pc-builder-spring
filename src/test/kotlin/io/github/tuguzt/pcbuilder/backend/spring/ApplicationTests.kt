@@ -1,7 +1,7 @@
 package io.github.tuguzt.pcbuilder.backend.spring
 
-import kotlin.test.Test
 import org.springframework.boot.test.context.SpringBootTest
+import kotlin.test.Test
 
 @SpringBootTest
 class ApplicationTests {

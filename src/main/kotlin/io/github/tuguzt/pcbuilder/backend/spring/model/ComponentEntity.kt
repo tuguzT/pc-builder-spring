@@ -4,11 +4,12 @@ import io.github.tuguzt.pcbuilder.domain.model.component.Component
 import io.github.tuguzt.pcbuilder.domain.model.component.Size
 import io.github.tuguzt.pcbuilder.domain.randomNanoId
 import io.nacular.measured.units.Length.Companion.meters
+import io.nacular.measured.units.Mass
 import io.nacular.measured.units.Mass.Companion.grams
+import io.nacular.measured.units.Measure
 import io.nacular.measured.units.times
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import org.springframework.data.util.ProxyUtils
 import javax.persistence.*
 
@@ -43,17 +44,17 @@ class ComponentEntity(
     private val heightInMeters: Double,
 ) : Component {
 
-    @Transient
-    @javax.persistence.Transient
-    override val weight = weightInGrams * grams
+    @delegate:Transient
+    override val weight: Measure<Mass> by lazy { weightInGrams * grams }
 
-    @Transient
-    @javax.persistence.Transient
-    override val size = Size(
-        length = lengthInMeters * meters,
-        width = widthInMeters * meters,
-        height = heightInMeters * meters,
-    )
+    @delegate:Transient
+    override val size: Size by lazy {
+        Size(
+            length = lengthInMeters * meters,
+            width = widthInMeters * meters,
+            height = heightInMeters * meters,
+        )
+    }
 
     override fun equals(other: Any?): Boolean {
         other ?: return false

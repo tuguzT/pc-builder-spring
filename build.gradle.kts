@@ -30,7 +30,9 @@ configurations.all {
 
 dependencies {
     // Domain layer
-    implementation("com.github.tuguzT:pc_builder_domain:main-SNAPSHOT")
+    implementation("com.github.tuguzT:pc_builder_domain:main-SNAPSHOT") {
+        isChanging = true
+    }
 
     // Kotlin
     implementation(kotlin("reflect"))
