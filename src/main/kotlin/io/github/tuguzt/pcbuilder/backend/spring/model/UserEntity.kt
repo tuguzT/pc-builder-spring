@@ -2,6 +2,7 @@ package io.github.tuguzt.pcbuilder.backend.spring.model
 
 import io.github.tuguzt.pcbuilder.domain.model.user.User
 import io.github.tuguzt.pcbuilder.domain.model.user.UserPassword
+import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
 import io.github.tuguzt.pcbuilder.domain.randomNanoId
 import kotlinx.serialization.Serializable
 import org.springframework.data.util.ProxyUtils
@@ -21,14 +22,16 @@ class UserEntity(
     override val id: String = randomNanoId(),
 
     @Column(unique = true)
+    override val username: String,
+
+    override val role: UserRole,
+
+    override val password: String,
+
+    @Column(unique = true)
     override val email: String?,
 
     override val imageUri: String?,
-
-    @Column(unique = true)
-    override val username: String,
-
-    override val password: String,
 ) : UserPassword {
     override fun equals(other: Any?): Boolean {
         other ?: return false
