@@ -10,7 +10,6 @@ data class UserView(
     override val email: String?,
     override val imageUri: String?,
     override val role: UserRole,
-    override val username: String,
 ) : User
 
-fun UserEntity.toView() = UserView(id, email, imageUri, role, username)
+fun User.toView() = UserView(id, email, imageUri, role)

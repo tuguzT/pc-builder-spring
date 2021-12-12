@@ -30,14 +30,14 @@ class JwtUtils {
     }
 
     fun generateToken(userDetails: UserDetails): String {
-        val claims = mutableMapOf<String, Any>(User::role.name to userDetails.authorities.first().authority)
+        val claims = mutableMapOf(User::role.name to userDetails.authorities.first().authority)
         return createToken(claims, userDetails.username)
     }
 
     fun validateToken(token: String, userDetails: UserDetails) =
         extractUsername(token) == userDetails.username && !isTokenExpired(token)
 
-    private fun createToken(claims: Map<String, Any>, subject: String): String = Jwts.builder()
+    private fun createToken(claims: MutableMap<String, out Any>, subject: String): String = Jwts.builder()
         .setClaims(claims)
         .setSubject(subject)
         .setIssuedAt(Date())

@@ -1,7 +1,8 @@
 package io.github.tuguzt.pcbuilder.backend.spring.controller
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.UserEntity
-import io.github.tuguzt.pcbuilder.backend.spring.repository.UserRepository
+import io.github.tuguzt.pcbuilder.backend.spring.model.UserNamePasswordEntity
+import io.github.tuguzt.pcbuilder.backend.spring.repository.UserNamePasswordRepository
+import io.github.tuguzt.pcbuilder.backend.spring.repository.UserOAuth2Repository
 import io.github.tuguzt.pcbuilder.backend.spring.security.JwtUtils
 import io.github.tuguzt.pcbuilder.backend.spring.security.UserDetailsService
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
@@ -27,10 +28,11 @@ class AuthController(
     private val passwordEncoder: PasswordEncoder,
     private val userDetailsService: UserDetailsService,
     private val jwtUtils: JwtUtils,
-    private val userRepository: UserRepository,
+    private val userNamePasswordRepository: UserNamePasswordRepository,
+    private val userOAuth2Repository: UserOAuth2Repository,
 ) {
     @PostMapping("auth")
-    suspend fun auth(@RequestBody user: UserEntity) = try {
+    suspend fun auth(@RequestBody user: UserNamePasswordEntity) = try {
         val authentication = UsernamePasswordAuthenticationToken(user.username, user.password)
         authenticationManager.authenticate(authentication)
 
@@ -49,20 +51,20 @@ class AuthController(
     }
 
     @PostMapping("register")
-    suspend fun register(@RequestBody user: UserEntity): ResponseEntity<String> = try {
+    suspend fun register(@RequestBody user: UserNamePasswordEntity): ResponseEntity<String> = try {
         withContext(Dispatchers.IO) {
-            require(userRepository.findByUsername(user.username) == null) {
+            require(userNamePasswordRepository.findByUsername(user.username) == null) {
                 "User with username ${user.username} already exists"
             }
             @Suppress("NAME_SHADOWING")
-            val user = UserEntity(
+            val user = UserNamePasswordEntity(
                 username = user.username,
                 password = passwordEncoder.encode(user.password),
                 role = UserRole.User,
                 email = null,
                 imageUri = null,
             )
-            userRepository.save(user)
+            userNamePasswordRepository.save(user)
         }
 
         auth(user)
@@ -74,5 +76,8 @@ class AuthController(
         ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
     }
 
-    // todo oauth2
+    @PostMapping("oauth2")
+    suspend fun oauth2() {
+        TODO()
+    }
 }
