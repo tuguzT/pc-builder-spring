@@ -4,6 +4,7 @@ import io.github.tuguzt.pcbuilder.backend.spring.model.UserView
 import io.github.tuguzt.pcbuilder.backend.spring.model.toView
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserNamePasswordService
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserOAuth2Service
+import io.github.tuguzt.pcbuilder.domain.model.user.User
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -21,8 +22,9 @@ class UserController(
     private val userOAuth2Service: UserOAuth2Service,
 ) {
     @GetMapping
-    suspend fun index(): List<UserView> =
-        (userNamePasswordService.getAll() + userOAuth2Service.getAll()).map { it.toView() }.sortedBy { it.id }
+    suspend fun index(): List<UserView> = (userNamePasswordService.getAll() + userOAuth2Service.getAll())
+        .map(User::toView)
+        .sortedBy(UserView::id)
 
     @GetMapping("id/{id}")
     suspend fun findById(@PathVariable id: String): ResponseEntity<UserView> {

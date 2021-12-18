@@ -3,6 +3,7 @@ package io.github.tuguzt.pcbuilder.backend.spring.model
 import io.github.tuguzt.pcbuilder.domain.model.user.UserNamePassword
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
 import io.github.tuguzt.pcbuilder.domain.randomNanoId
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.springframework.data.util.ProxyUtils
 import javax.persistence.Column
@@ -30,6 +31,7 @@ class UserNamePasswordEntity(
     @Column(unique = true)
     override val email: String?,
 
+    @SerialName("image_uri")
     override val imageUri: String?,
 ) : UserNamePassword {
     override fun equals(other: Any?): Boolean {

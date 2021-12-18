@@ -9,7 +9,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
-class UserServiceImpl(private val repository: UserNamePasswordRepository) : UserNamePasswordService {
+class UserNamePasswordServiceImpl(private val repository: UserNamePasswordRepository) : UserNamePasswordService {
     override suspend fun save(entity: UserNamePasswordEntity) = withContext(Dispatchers.IO) { repository.save(entity) }
 
     override suspend fun getAll(): List<UserNamePasswordEntity> = withContext(Dispatchers.IO) { repository.findAll() }

@@ -3,6 +3,7 @@ package io.github.tuguzt.pcbuilder.backend.spring.model
 import io.github.tuguzt.pcbuilder.domain.model.user.UserOAuth2
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
 import io.github.tuguzt.pcbuilder.domain.randomNanoId
+import kotlinx.serialization.SerialName
 import org.springframework.data.util.ProxyUtils
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -23,6 +24,7 @@ class UserOAuth2Entity(
     @Column(unique = true)
     override val email: String?,
 
+    @SerialName("image_uri")
     override val imageUri: String?,
 ) : UserOAuth2 {
     override fun equals(other: Any?): Boolean {
