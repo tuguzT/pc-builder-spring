@@ -1,6 +1,7 @@
 package io.github.tuguzt.pcbuilder.backend.spring.controller
 
 import io.github.tuguzt.pcbuilder.backend.spring.controller.exceptions.UserAlreadyExistsException
+import io.github.tuguzt.pcbuilder.backend.spring.model.UserEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.UserNamePasswordEntity
 import io.github.tuguzt.pcbuilder.backend.spring.security.JwtUtils
 import io.github.tuguzt.pcbuilder.backend.spring.security.UserDetailsService
@@ -39,23 +40,24 @@ class AuthController(
     }
 
     protected suspend fun checkUserNotExists(user: UserNamePasswordEntity) {
-        if (userNamePasswordService.findByUsername(user.username) == null)
-            throw UserAlreadyExistsException("User with username ${user.username} already exists")
+        if (userNamePasswordService.findByUsername(user.username) == null) return
+        throw UserAlreadyExistsException("User with username ${user.username} already exists")
     }
 
     @PostMapping("register")
     suspend fun register(@RequestBody user: UserNamePasswordEntity): ResponseEntity<String> {
         checkUserNotExists(user)
 
-        @Suppress("NAME_SHADOWING")
-        val user = UserNamePasswordEntity(
+        val userEntity = UserNamePasswordEntity(
+            user = UserEntity(
+                role = UserRole.User,
+                email = null,
+                imageUri = null,
+            ),
             username = user.username,
             password = passwordEncoder.encode(user.password),
-            role = UserRole.User,
-            email = null,
-            imageUri = null,
         )
-        userNamePasswordService.save(user)
+        userNamePasswordService.save(userEntity)
 
         val response = auth(user)
         logger.info { "User with username ${user.username} successfully registered" }

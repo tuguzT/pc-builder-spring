@@ -1,5 +1,6 @@
 package io.github.tuguzt.pcbuilder.backend.spring.repository
 
+import io.github.tuguzt.pcbuilder.backend.spring.model.UserEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.UserNamePasswordEntity
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
 import org.springframework.boot.ApplicationArguments
@@ -16,19 +17,22 @@ class DataInitializer(
     override fun run(args: ApplicationArguments?) {
         val users = listOf(
             UserNamePasswordEntity(
-                email = null,
-                imageUri = null,
+                user = UserEntity(
+                    role = UserRole.Administrator,
+                    email = null,
+                    imageUri = null,
+                ),
                 username = "tuguzT",
                 password = passwordEncoder.encode("tugushev_timur"),
-                role = UserRole.Administrator,
-                // todo
             ),
             UserNamePasswordEntity(
-                email = null,
-                imageUri = null,
+                user = UserEntity(
+                    role = UserRole.Moderator,
+                    email = null,
+                    imageUri = null,
+                ),
                 username = "dr3am_b3ast",
                 password = passwordEncoder.encode("tugushev_damir"),
-                role = UserRole.Moderator,
             ),
         )
         userNamePasswordRepository.saveAll(users)

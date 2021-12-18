@@ -1,10 +1,9 @@
 package io.github.tuguzt.pcbuilder.backend.spring.controller
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.UserView
-import io.github.tuguzt.pcbuilder.backend.spring.model.toView
+import io.github.tuguzt.pcbuilder.backend.spring.model.UserEntity
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserNamePasswordService
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserOAuth2Service
-import io.github.tuguzt.pcbuilder.domain.model.user.User
+import io.github.tuguzt.pcbuilder.backend.spring.service.UserService
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -18,33 +17,27 @@ private val logger = KotlinLogging.logger {}
 @RestController
 @RequestMapping("users")
 class UserController(
+    private val userService: UserService,
     private val userNamePasswordService: UserNamePasswordService,
     private val userOAuth2Service: UserOAuth2Service,
 ) {
     @GetMapping
-    suspend fun index(): List<UserView> = (userNamePasswordService.getAll() + userOAuth2Service.getAll())
-        .map(User::toView)
-        .sortedBy(UserView::id)
+    suspend fun index() = userService.getAll()
 
     @GetMapping("id/{id}")
-    suspend fun findById(@PathVariable id: String): ResponseEntity<UserView> {
+    suspend fun findById(@PathVariable id: String): ResponseEntity<UserEntity> {
         logger.info { "Requested user with ID $id" }
         val namePasswordUser = userNamePasswordService.findById(id)
         if (namePasswordUser == null) {
-            val oauth2user = userOAuth2Service.findById(id)
-            if (oauth2user == null) {
-                logger.info { "User with ID $id not found" }
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
-            }
-            logger.info { "Found user with ID $id" }
-            return ResponseEntity.ok(oauth2user.toView())
+            logger.info { "User with ID $id not found" }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
         logger.info { "Found user with ID $id" }
-        return ResponseEntity.ok(namePasswordUser.toView())
+        return ResponseEntity.ok(namePasswordUser.user)
     }
 
     @GetMapping("username/{username}")
-    suspend fun findByUsername(@PathVariable username: String): ResponseEntity<UserView> {
+    suspend fun findByUsername(@PathVariable username: String): ResponseEntity<UserEntity> {
         logger.info { "Requested user with username $username" }
         val user = userNamePasswordService.findByUsername(username)
         if (user == null) {
@@ -52,6 +45,6 @@ class UserController(
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
         logger.info { "Found user with username $username" }
-        return ResponseEntity.ok(user.toView())
+        return ResponseEntity.ok(user.user)
     }
 }

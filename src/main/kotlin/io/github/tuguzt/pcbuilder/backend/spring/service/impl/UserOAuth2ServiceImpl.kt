@@ -12,9 +12,16 @@ import org.springframework.stereotype.Service
 class UserOAuth2ServiceImpl(private val repository: UserOAuth2Repository) : UserOAuth2Service {
     override suspend fun save(entity: UserOAuth2Entity) = withContext(Dispatchers.IO) { repository.save(entity) }
 
+    override suspend fun delete(entity: UserOAuth2Entity) = withContext(Dispatchers.IO) { repository.delete(entity) }
+
     override suspend fun getAll(): List<UserOAuth2Entity> = withContext(Dispatchers.IO) { repository.findAll() }
 
     override suspend fun findById(id: String) = withContext(Dispatchers.IO) { repository.findByIdOrNull(id) }
+
+    override suspend fun deleteById(id: String) = withContext(Dispatchers.IO) { repository.deleteById(id) }
+
+    override suspend fun exists(entity: UserOAuth2Entity) =
+        withContext(Dispatchers.IO) { repository.existsById(entity.id) }
 
     override suspend fun findByAccessToken(accessToken: String) =
         withContext(Dispatchers.IO) { repository.findByAccessToken(accessToken) }

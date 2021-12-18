@@ -1,15 +1,10 @@
 package io.github.tuguzt.pcbuilder.backend.spring.model
 
+import io.github.tuguzt.pcbuilder.domain.model.user.User
 import io.github.tuguzt.pcbuilder.domain.model.user.UserNamePassword
-import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
-import io.github.tuguzt.pcbuilder.domain.randomNanoId
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.springframework.data.util.ProxyUtils
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
+import javax.persistence.*
 
 /**
  * Serializable entity class for [UserNamePassword].
@@ -18,22 +13,20 @@ import javax.persistence.Table
 @Table(name = "user_name_password")
 @Serializable
 class UserNamePasswordEntity(
-    @Id
-    override val id: String = randomNanoId(),
+    @OneToOne(cascade = [CascadeType.ALL])
+    @MapsId
+    @JoinColumn(name = "user_id")
+    val user: UserEntity,
 
     @Column(unique = true)
     override val username: String,
 
-    override val role: UserRole,
-
     override val password: String,
+) : User by user, UserNamePassword {
+    @Id
+    @Column(name = "user_id")
+    override val id = user.id
 
-    @Column(unique = true)
-    override val email: String?,
-
-    @SerialName("image_uri")
-    override val imageUri: String?,
-) : UserNamePassword {
     override fun equals(other: Any?): Boolean {
         other ?: return false
         if (this === other) return true
