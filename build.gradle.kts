@@ -1,7 +1,3 @@
-@file:Suppress("GradlePackageUpdate")
-
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id("org.springframework.boot") version "2.6.1"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
@@ -48,7 +44,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     runtimeOnly("com.h2database:h2")
-    runtimeOnly("org.postgresql:postgresql")
 
     // Third-Party
     implementation("io.github.microutils:kotlin-logging-jvm:2.1.0")
@@ -62,16 +57,16 @@ dependencies {
 }
 
 tasks {
-    withType<KotlinCompile> {
+    compileKotlin {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict")
             jvmTarget = "1.8"
         }
     }
-    withType<Test> {
+    test {
         useJUnitPlatform()
     }
-    getByName<Jar>("jar") {
+    named<Jar>("jar") {
         enabled = false
     }
 }
