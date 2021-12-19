@@ -2,7 +2,6 @@ package io.github.tuguzt.pcbuilder.backend.spring.controller
 
 import io.github.tuguzt.pcbuilder.backend.spring.controller.exceptions.UserAlreadyExistsException
 import io.github.tuguzt.pcbuilder.backend.spring.model.UserCredentialsData
-import io.github.tuguzt.pcbuilder.backend.spring.model.UserEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.UserNamePasswordEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.UserTokenData
 import io.github.tuguzt.pcbuilder.backend.spring.security.JwtUtils
@@ -54,11 +53,9 @@ class AuthController(
         checkUserNotExists(user)
 
         val userEntity = UserNamePasswordEntity(
-            user = UserEntity(
-                role = UserRole.User,
-                email = null,
-                imageUri = null,
-            ),
+            role = UserRole.User,
+            email = null,
+            imageUri = null,
             username = user.username,
             password = passwordEncoder.encode(user.password),
         )

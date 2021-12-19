@@ -1,6 +1,5 @@
 package io.github.tuguzt.pcbuilder.backend.spring.repository
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.UserEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.UserNamePasswordEntity
 import io.github.tuguzt.pcbuilder.domain.interactor.checkPassword
 import io.github.tuguzt.pcbuilder.domain.interactor.checkUsername
@@ -22,11 +21,9 @@ class DataInitializer(
                 val password = "S6iwekjbbi_92,!"
                 require(checkUsername(username) && checkPassword(password))
                 UserNamePasswordEntity(
-                    user = UserEntity(
-                        role = UserRole.Administrator,
-                        email = null,
-                        imageUri = null,
-                    ),
+                    role = UserRole.Administrator,
+                    email = null,
+                    imageUri = null,
                     username = username,
                     password = passwordEncoder.encode(password),
                 )
@@ -36,11 +33,9 @@ class DataInitializer(
                 val password = "Y873lin)*odjv"
                 require(checkUsername(username) && checkPassword(password))
                 UserNamePasswordEntity(
-                    user = UserEntity(
-                        role = UserRole.Moderator,
-                        email = null,
-                        imageUri = null,
-                    ),
+                    role = UserRole.Moderator,
+                    email = null,
+                    imageUri = null,
                     username = username,
                     password = passwordEncoder.encode(password),
                 )

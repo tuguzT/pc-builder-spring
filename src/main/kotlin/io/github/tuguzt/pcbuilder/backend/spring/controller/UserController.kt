@@ -40,7 +40,7 @@ class UserController(
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
         logger.info { "Found user with ID $id" }
-        return ResponseEntity.ok(namePasswordUser.user)
+        return ResponseEntity.ok(namePasswordUser as UserEntity)
     }
 
     @GetMapping("username/{username}")
@@ -52,6 +52,6 @@ class UserController(
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
         logger.info { "Found user with username $username" }
-        return ResponseEntity.ok(user.user)
+        return ResponseEntity.ok(user as UserEntity)
     }
 }
