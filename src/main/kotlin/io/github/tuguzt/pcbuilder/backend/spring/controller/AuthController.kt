@@ -9,6 +9,9 @@ import io.github.tuguzt.pcbuilder.backend.spring.security.UserDetailsService
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserNamePasswordService
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserOAuth2Service
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.tags.Tag
 import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController
 private val logger = KotlinLogging.logger {}
 
 @RestController
+@Tag(name = "Аутентификация", description = "Конечные сетевые точки обращения для аутентификации")
 class AuthController(
     private val authenticationManager: AuthenticationManager,
     private val passwordEncoder: PasswordEncoder,
@@ -30,7 +34,12 @@ class AuthController(
     private val userOAuth2Service: UserOAuth2Service,
 ) {
     @PostMapping("auth")
-    suspend fun auth(@RequestBody credentials: UserCredentialsData): ResponseEntity<UserTokenData> {
+    @Operation(summary = "Вход", description = "Вход пользователя по логину и паролю")
+    suspend fun auth(
+        @RequestBody
+        @Parameter(name = "Данные для входа: имя пользователя и пароль")
+        credentials: UserCredentialsData,
+    ): ResponseEntity<UserTokenData> {
         val username = credentials.username
         val password = credentials.password
         val authentication = UsernamePasswordAuthenticationToken(username, password)
@@ -49,7 +58,12 @@ class AuthController(
     }
 
     @PostMapping("register")
-    suspend fun register(@RequestBody user: UserNamePasswordEntity): ResponseEntity<UserTokenData> {
+    @Operation(summary = "Регистрация", description = "Регистрация нового пользователя по его данным")
+    suspend fun register(
+        @RequestBody
+        @Parameter(name = "Данные пользователя для регистрации")
+        user: UserNamePasswordEntity,
+    ): ResponseEntity<UserTokenData> {
         checkUserNotExists(user)
 
         val userEntity = UserNamePasswordEntity(
