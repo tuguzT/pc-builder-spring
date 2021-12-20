@@ -6,3 +6,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+
+springdoc:
+  swagger-ui:
+    path: /docs/swagger-ui.html
+    filter: true
+    try-it-out-enabled: true
+  api-docs.path: /docs/api.html

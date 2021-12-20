@@ -49,11 +49,16 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
 
+    // Documentation
+    implementation("org.springdoc:springdoc-openapi-ui:1.6.2")
+    implementation("org.springdoc:springdoc-openapi-security:1.6.2")
+    implementation("org.springdoc:springdoc-openapi-kotlin:1.6.2")
+
     // Third-Party
-    implementation("io.github.microutils:kotlin-logging-jvm:2.1.0")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.1.16")
     implementation("io.insert-koin:koin-core:3.1.4")
     implementation("io.jsonwebtoken:jjwt:0.9.1")
-    implementation("org.bouncycastle:bcprov-jdk15on:1.64")
+    implementation("org.bouncycastle:bcprov-jdk15on:1.69")
 
     // Testing
     testImplementation(kotlin("test"))

@@ -27,7 +27,7 @@ class SecurityConfig(
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
         http.authorizeRequests()
-            .antMatchers("/auth", "/register", "/oauth2").permitAll()
+            .antMatchers("/auth", "/register", "/oauth2", "/docs/**").permitAll()
             .anyRequest().authenticated()
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter::class.java)
