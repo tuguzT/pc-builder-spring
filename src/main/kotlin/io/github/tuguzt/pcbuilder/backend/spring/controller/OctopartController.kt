@@ -32,7 +32,7 @@ class OctopartController : KoinComponent {
         @RequestParam limit: Int,
     ): ResponseEntity<List<SearchResult>> {
         logger.info { "Requested query `$query` with start $start and limit $limit" }
-        val response = octopartAPI.searchQuery(query, token.orEmpty(), start, limit).await()
+        val response = octopartAPI.searchQuery(query, token, start, limit).await()
         return ResponseEntity.ok(response.toResults())
     }
 }
