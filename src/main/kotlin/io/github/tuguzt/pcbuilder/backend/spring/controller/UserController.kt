@@ -22,7 +22,10 @@ class UserController(
     private val userOAuth2Service: UserOAuth2Service,
 ) {
     @GetMapping("all")
-    suspend fun allUsers() = userService.getAll()
+    suspend fun allUsers(): List<UserEntity> {
+        logger.info { "Requested all users" }
+        return userService.getAll()
+    }
 
     @GetMapping("current")
     suspend fun current(@RequestHeader(HttpHeaders.AUTHORIZATION) bearer: String): ResponseEntity<UserEntity> {
