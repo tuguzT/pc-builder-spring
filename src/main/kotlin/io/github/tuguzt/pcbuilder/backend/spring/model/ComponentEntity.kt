@@ -8,6 +8,7 @@ import io.nacular.measured.units.Mass
 import io.nacular.measured.units.Mass.Companion.grams
 import io.nacular.measured.units.Measure
 import io.nacular.measured.units.times
+import io.swagger.v3.oas.annotations.media.Schema
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.springframework.data.util.ProxyUtils
@@ -18,29 +19,37 @@ import javax.persistence.*
  */
 @Entity
 @Table(name = "component")
+@Schema(description = "Данные компонента ПК системы")
 @Serializable
 class ComponentEntity(
     @Id
+    @Schema(description = "Идентификатор компонента")
     override val id: String = randomNanoId(),
 
+    @Schema(description = "Название компонента")
     override val name: String,
 
+    @Schema(description = "Описание компонента")
     override val description: String,
 
     @Column(name = "weight")
     @SerialName("weight")
+    @Schema(description = "Вес компонента в граммах")
     private val weightInGrams: Double,
 
     @Column(name = "length")
     @SerialName("length")
+    @Schema(description = "Длина компонента в метрах")
     private val lengthInMeters: Double,
 
     @Column(name = "width")
     @SerialName("width")
+    @Schema(description = "Ширина компонента в метрах")
     private val widthInMeters: Double,
 
     @Column(name = "height")
     @SerialName("height")
+    @Schema(description = "Высота компонента в метрах")
     private val heightInMeters: Double,
 ) : Component {
 
