@@ -6,15 +6,13 @@ import io.github.tuguzt.pcbuilder.domain.randomNanoId
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.springframework.data.util.ProxyUtils
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity
 @Table(name = "\"user\"")
+@Inheritance(strategy = InheritanceType.JOINED)
 @Serializable
-class UserEntity(
+open class UserEntity(
     @Id
     override val id: String = randomNanoId(),
 

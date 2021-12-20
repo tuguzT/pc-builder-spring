@@ -8,7 +8,7 @@ import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import java.util.Date
-import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.days
 
 @Service
 class JwtUtils {
@@ -41,7 +41,7 @@ class JwtUtils {
         .setClaims(claims)
         .setSubject(subject)
         .setIssuedAt(Date())
-        .setExpiration(Date(System.currentTimeMillis() + 1.hours.inWholeMilliseconds))
+        .setExpiration(Date(System.currentTimeMillis() + 1.days.inWholeMilliseconds))
         .signWith(SignatureAlgorithm.HS512, secretKey)
         .compact()
 
