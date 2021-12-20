@@ -19,8 +19,8 @@ class ComponentController(private val service: ComponentService) {
     /**
      * GET request which returns all PC components.
      */
-    @GetMapping
-    suspend fun index() = service.getAll()
+    @GetMapping("all")
+    suspend fun allComponents() = service.getAll()
 
     /**
      * GET request which returns component found by [id], if any.
