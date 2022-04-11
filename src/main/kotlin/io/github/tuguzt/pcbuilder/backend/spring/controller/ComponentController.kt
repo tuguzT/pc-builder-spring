@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
-private val logger = KotlinLogging.logger {}
-
 /**
  * REST API controller of the server for [PC components][Component].
  */
@@ -20,6 +18,10 @@ private val logger = KotlinLogging.logger {}
 @RequestMapping("components")
 @Tag(name = "Компоненты ПК", description = "Конечные сетевые точки обращения данных компонентов ПК системы")
 class ComponentController(private val service: ComponentService) {
+    companion object {
+        private val logger = KotlinLogging.logger {}
+    }
+
     /**
      * GET request which returns all PC components.
      */

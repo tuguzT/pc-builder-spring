@@ -19,10 +19,11 @@ class DataInitializer(
             kotlin.run {
                 val username = "tuguzT"
                 val password = "S6iwekjbbi_92,!"
+                val email = "timurka.tugushev@gmail.com"
                 require(checkUsername(username) && checkPassword(password))
                 UserNamePasswordEntity(
                     role = UserRole.Administrator,
-                    email = null,
+                    email = email,
                     imageUri = null,
                     username = username,
                     password = passwordEncoder.encode(password),

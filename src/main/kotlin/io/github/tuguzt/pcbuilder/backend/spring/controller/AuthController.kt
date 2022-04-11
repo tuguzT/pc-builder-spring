@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
-private val logger = KotlinLogging.logger {}
-
 @RestController
 @Tag(name = "Аутентификация", description = "Конечные сетевые точки обращения для аутентификации")
 class AuthController(
@@ -33,6 +31,10 @@ class AuthController(
     private val userNamePasswordService: UserNamePasswordService,
     private val userOAuth2Service: UserOAuth2Service,
 ) {
+    companion object {
+        private val logger = KotlinLogging.logger {}
+    }
+
     @PostMapping("auth")
     @Operation(summary = "Вход", description = "Вход пользователя по логину и паролю")
     suspend fun auth(

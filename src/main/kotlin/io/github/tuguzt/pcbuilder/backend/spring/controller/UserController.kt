@@ -14,8 +14,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
-private val logger = KotlinLogging.logger {}
-
 @RestController
 @RequestMapping("users")
 @Tag(name = "Пользователи", description = "Конечные сетевые точки обращения пользовательских данных")
@@ -25,6 +23,10 @@ class UserController(
     private val userNamePasswordService: UserNamePasswordService,
     private val userOAuth2Service: UserOAuth2Service,
 ) {
+    companion object {
+        private val logger = KotlinLogging.logger {}
+    }
+
     @GetMapping("all")
     @Operation(summary = "Все пользователи", description = "Получение данных обо всех пользователях системы")
     suspend fun allUsers(): List<UserEntity> {

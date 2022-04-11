@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.util.WebUtils
 
-private val logger = KotlinLogging.logger {}
-
 @ControllerAdvice
 class RestResponseExceptionHandler {
+    companion object {
+        private val logger = KotlinLogging.logger {}
+    }
+
     @ExceptionHandler(
         BadCredentialsException::class,
         UsernameNotFoundException::class,
