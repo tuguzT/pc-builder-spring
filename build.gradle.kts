@@ -5,6 +5,7 @@ plugins {
     kotlin("plugin.jpa") version "1.6.20"
     kotlin("plugin.spring") version "1.6.20"
     kotlin("plugin.serialization") version "1.6.20"
+    kotlin("kapt") version "1.6.20"
 }
 
 group = "io.github.tuguzt.pcbuilder.backend"
@@ -15,8 +16,13 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+kapt {
+    useBuildCache = false
+}
+
 repositories {
     mavenCentral()
+    google()
     maven(url = "https://jitpack.io")
 }
 
@@ -43,6 +49,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    kapt("org.springframework.boot:spring-boot-configuration-processor")
     runtimeOnly("com.h2database:h2")
 
     // Retrofit
@@ -59,6 +66,7 @@ dependencies {
     implementation("io.insert-koin:koin-core:3.2.0-beta-1")
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("org.bouncycastle:bcprov-jdk15on:1.70")
+    implementation("com.google.api-client:google-api-client:1.33.4")
 
     // Testing
     testImplementation(kotlin("test"))

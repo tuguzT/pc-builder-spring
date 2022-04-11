@@ -19,50 +19,58 @@ class RestResponseExceptionHandler {
 
     @ExceptionHandler(
         BadCredentialsException::class,
+        OAuth2FailedException::class,
         UsernameNotFoundException::class,
         UserAlreadyExistsException::class,
     )
     final fun handleException(exception: Exception, request: WebRequest): ResponseEntity<RestApiError> {
         val headers = HttpHeaders()
         return when (exception) {
-            is UserAlreadyExistsException -> handleUserAlreadyExistsException(exception, headers, request)
-            is UsernameNotFoundException -> handleUsernameNotFoundException(exception, headers, request)
-            is BadCredentialsException -> handleBadCredentialsException(exception, headers, request)
-            else -> handleExceptionInternal(exception, null, headers, HttpStatus.INTERNAL_SERVER_ERROR, request)
+            is UserAlreadyExistsException -> handleUserAlreadyExists(exception, headers, request)
+            is UsernameNotFoundException -> handleUsernameNotFound(exception, headers, request)
+            is BadCredentialsException -> handleBadCredentials(exception, headers, request)
+            is OAuth2FailedException -> handleOAuth2Failed(exception, headers, request)
+            else -> handleInternal(exception, null, headers, HttpStatus.INTERNAL_SERVER_ERROR, request)
         }
     }
 
-    protected fun handleUserAlreadyExistsException(
+    protected fun handleOAuth2Failed(
+        exception: OAuth2FailedException,
+        headers: HttpHeaders,
+        request: WebRequest,
+    ): ResponseEntity<RestApiError> {
+        val error = RestApiError(exception.message)
+        return handleInternal(exception, error, headers, HttpStatus.BAD_REQUEST, request)
+    }
+
+    protected fun handleUserAlreadyExists(
         exception: UserAlreadyExistsException,
         headers: HttpHeaders,
         request: WebRequest,
     ): ResponseEntity<RestApiError> {
         val error = RestApiError("User already exists")
-        logger.error(exception) { error.message }
-        return handleExceptionInternal(exception, error, headers, HttpStatus.BAD_REQUEST, request)
+        return handleInternal(exception, error, headers, HttpStatus.BAD_REQUEST, request)
     }
 
-    protected fun handleUsernameNotFoundException(
+    protected fun handleUsernameNotFound(
         exception: UsernameNotFoundException,
         headers: HttpHeaders,
         request: WebRequest,
     ): ResponseEntity<RestApiError> {
         val error = RestApiError("User not found")
-        logger.error(exception) { error.message }
-        return handleExceptionInternal(exception, error, headers, HttpStatus.NOT_FOUND, request)
+        return handleInternal(exception, error, headers, HttpStatus.NOT_FOUND, request)
     }
 
-    protected fun handleBadCredentialsException(
+    protected fun handleBadCredentials(
         exception: BadCredentialsException,
         headers: HttpHeaders,
         request: WebRequest,
     ): ResponseEntity<RestApiError> {
         val error = RestApiError("Bad credentials provided")
-        logger.error(exception) { error.message }
-        return handleExceptionInternal(exception, error, headers, HttpStatus.UNAUTHORIZED, request)
+        return handleInternal(exception, error, headers, HttpStatus.UNAUTHORIZED, request)
     }
 
-    protected fun handleExceptionInternal(
+    protected fun handleInternal(
         exception: Exception,
         body: RestApiError?,
         headers: HttpHeaders,

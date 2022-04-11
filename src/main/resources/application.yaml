@@ -13,3 +13,8 @@ springdoc:
     filter: true
     try-it-out-enabled: true
   api-docs.path: /docs/api.html
+
+app:
+  oauth2:
+    google-client-ids:
+      - SECRET

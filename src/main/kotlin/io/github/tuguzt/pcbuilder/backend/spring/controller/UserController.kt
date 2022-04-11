@@ -42,6 +42,13 @@ class UserController(
         bearer: String,
     ): ResponseEntity<UserEntity> {
         val token = bearer.substringAfter("Bearer ")
+
+        val oauth2User = userOAuth2Service.findByAccessToken(token)
+        if (oauth2User != null) {
+            logger.info { "OAuth 2.0 user was found" }
+            return ResponseEntity.ok(oauth2User.user)
+        }
+
         val username = jwtUtils.extractUsername(token)
         return findByUsername(username)
     }

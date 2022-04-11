@@ -1,9 +1,13 @@
 package io.github.tuguzt.pcbuilder.backend.spring.controller
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
+import com.google.api.client.http.HttpTransport
+import com.google.api.client.json.JsonFactory
+import io.github.tuguzt.pcbuilder.backend.spring.ApplicationConfiguration
+import io.github.tuguzt.pcbuilder.backend.spring.controller.exceptions.OAuth2FailedException
 import io.github.tuguzt.pcbuilder.backend.spring.controller.exceptions.UserAlreadyExistsException
-import io.github.tuguzt.pcbuilder.backend.spring.model.UserCredentialsData
-import io.github.tuguzt.pcbuilder.backend.spring.model.UserNamePasswordEntity
-import io.github.tuguzt.pcbuilder.backend.spring.model.UserTokenData
+import io.github.tuguzt.pcbuilder.backend.spring.model.*
 import io.github.tuguzt.pcbuilder.backend.spring.security.JwtUtils
 import io.github.tuguzt.pcbuilder.backend.spring.security.UserDetailsService
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserNamePasswordService
@@ -13,6 +17,8 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import mu.KotlinLogging
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -24,16 +30,21 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @Tag(name = "Аутентификация", description = "Конечные сетевые точки обращения для аутентификации")
 class AuthController(
+    private val applicationConfiguration: ApplicationConfiguration,
     private val authenticationManager: AuthenticationManager,
     private val passwordEncoder: PasswordEncoder,
     private val jwtUtils: JwtUtils,
     private val userDetailsService: UserDetailsService,
     private val userNamePasswordService: UserNamePasswordService,
     private val userOAuth2Service: UserOAuth2Service,
-) {
+): KoinComponent {
+
     companion object {
         private val logger = KotlinLogging.logger {}
     }
+
+    private val httpTransport: HttpTransport by inject()
+    private val jsonFactory: JsonFactory by inject()
 
     @PostMapping("auth")
     @Operation(summary = "Вход", description = "Вход пользователя по логину и паролю")
@@ -83,8 +94,28 @@ class AuthController(
         return response
     }
 
-    @PostMapping("oauth2")
-    suspend fun oauth2(@RequestBody token: UserTokenData) {
-        TODO()
+    @PostMapping("oauth2/google")
+    @Operation(summary = "Google OAuth 2.0", description = "Аутентификация пользователя Google")
+    suspend fun googleOAuth2(@RequestBody tokenData: UserTokenData): ResponseEntity<UserTokenData> {
+        val verifier: GoogleIdTokenVerifier by lazy {
+            val googleClientIds = applicationConfiguration.oauth2.googleClientIds
+            GoogleIdTokenVerifier.Builder(httpTransport, jsonFactory)
+                .setAudience(googleClientIds)
+                .build()
+        }
+
+        val googleIdToken = verifier.verify(tokenData.accessToken)
+            ?: throw OAuth2FailedException("Google OAuth 2.0 failed")
+
+        val payload: GoogleIdToken.Payload = googleIdToken.payload
+        val userId = payload.subject
+        val email = payload.email
+        val pictureUrl = payload["picture"] as String?
+        val user = UserEntity(userId, UserRole.User, email, pictureUrl)
+        val entity = UserOAuth2Entity(user, tokenData.accessToken)
+        userOAuth2Service.save(entity)
+
+        logger.info { "Google user successfully authorized" }
+        return ResponseEntity.ok(tokenData)
     }
 }
