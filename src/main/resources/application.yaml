@@ -16,5 +16,7 @@ springdoc:
 
 app:
   oauth2:
-    google-client-ids:
-      - SECRET
+    google:
+      client-id: SECRET
+      client-secret: SECRET
+      token-uri: SECRET

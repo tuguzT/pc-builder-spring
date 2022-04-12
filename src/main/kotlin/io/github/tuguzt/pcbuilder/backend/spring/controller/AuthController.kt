@@ -1,11 +1,9 @@
 package io.github.tuguzt.pcbuilder.backend.spring.controller
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier
+import com.google.api.client.googleapis.auth.oauth2.*
 import com.google.api.client.http.HttpTransport
 import com.google.api.client.json.JsonFactory
 import io.github.tuguzt.pcbuilder.backend.spring.ApplicationConfiguration
-import io.github.tuguzt.pcbuilder.backend.spring.controller.exceptions.OAuth2FailedException
 import io.github.tuguzt.pcbuilder.backend.spring.controller.exceptions.UserAlreadyExistsException
 import io.github.tuguzt.pcbuilder.backend.spring.model.*
 import io.github.tuguzt.pcbuilder.backend.spring.security.JwtUtils
@@ -97,15 +95,18 @@ class AuthController(
     @PostMapping("oauth2/google")
     @Operation(summary = "Google OAuth 2.0", description = "Аутентификация пользователя Google")
     suspend fun googleOAuth2(@RequestBody tokenData: UserTokenData): ResponseEntity<UserTokenData> {
-        val verifier: GoogleIdTokenVerifier by lazy {
-            val googleClientIds = applicationConfiguration.oauth2.googleClientIds
-            GoogleIdTokenVerifier.Builder(httpTransport, jsonFactory)
-                .setAudience(googleClientIds)
-                .build()
-        }
+        val clientSecrets = applicationConfiguration.oauth2.google
+        val tokenResponse = GoogleAuthorizationCodeTokenRequest(
+            httpTransport,
+            jsonFactory,
+            clientSecrets.tokenUri,
+            clientSecrets.clientId,
+            clientSecrets.clientSecret,
+            tokenData.accessToken,
+            "",
+        ).execute()
 
-        val googleIdToken = verifier.verify(tokenData.accessToken)
-            ?: throw OAuth2FailedException("Google OAuth 2.0 failed")
+        val googleIdToken: GoogleIdToken = tokenResponse.parseIdToken()
 
         val payload: GoogleIdToken.Payload = googleIdToken.payload
         val userId = payload.subject
