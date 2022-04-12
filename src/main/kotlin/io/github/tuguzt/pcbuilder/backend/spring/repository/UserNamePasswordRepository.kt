@@ -8,6 +8,4 @@ import org.springframework.stereotype.Repository
  * [JpaRepository] which contains data of type [UserNamePasswordEntity].
  */
 @Repository
-interface UserNamePasswordRepository : JpaRepository<UserNamePasswordEntity, String> {
-    fun findByUsername(username: String): UserNamePasswordEntity?
-}
+interface UserNamePasswordRepository : JpaRepository<UserNamePasswordEntity, String>

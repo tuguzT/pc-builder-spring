@@ -7,8 +7,12 @@ import kotlinx.serialization.Serializable
 import org.springframework.data.util.ProxyUtils
 import javax.persistence.*
 
+/**
+ * Serializable entity class for [UserOAuth2].
+ */
 @Entity
 @Table(name = "user_oauth2")
+@PrimaryKeyJoinColumn(name = "user_id")
 @Serializable
 class UserOAuth2Entity(
     @OneToOne(cascade = [CascadeType.ALL])

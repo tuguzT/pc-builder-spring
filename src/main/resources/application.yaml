@@ -12,9 +12,10 @@ springdoc:
     path: /docs/swagger-ui.html
     filter: true
     try-it-out-enabled: true
-  api-docs.path: /docs/api.html
+  api-docs:
+    path: /docs/api.html
 
-app:
+pc-builder:
   oauth2:
     google:
       client-id: SECRET

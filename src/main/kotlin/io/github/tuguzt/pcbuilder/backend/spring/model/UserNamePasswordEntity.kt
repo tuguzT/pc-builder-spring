@@ -1,10 +1,8 @@
 package io.github.tuguzt.pcbuilder.backend.spring.model
 
+import io.github.tuguzt.pcbuilder.domain.model.user.User
 import io.github.tuguzt.pcbuilder.domain.model.user.UserNamePassword
-import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
-import io.github.tuguzt.pcbuilder.domain.randomNanoId
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 import org.springframework.data.util.ProxyUtils
 import javax.persistence.*
 
@@ -16,23 +14,16 @@ import javax.persistence.*
 @PrimaryKeyJoinColumn(name = "user_id")
 @Serializable
 class UserNamePasswordEntity(
-    @Transient
-    override val id: String = randomNanoId(),
-
-    @Transient
-    override val email: String? = null,
-
-    @Transient
-    override val imageUri: String? = null,
-
-    @Transient
-    override val role: UserRole = UserRole.User,
-
-    @Column(unique = true)
-    override val username: String,
+    @OneToOne(cascade = [CascadeType.ALL])
+    @MapsId
+    @JoinColumn(name = "user_id")
+    val user: UserEntity,
 
     override val password: String,
-) : UserEntity(id, role, email, imageUri), UserNamePassword {
+) : User by user, UserNamePassword {
+    @Id
+    @Column(name = "user_id")
+    override val id = user.id
 
     override fun equals(other: Any?): Boolean {
         other ?: return false

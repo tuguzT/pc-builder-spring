@@ -67,7 +67,7 @@ class UserController(
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
         logger.info { "Found user with ID $id" }
-        return ResponseEntity.ok(namePasswordUser as UserEntity)
+        return ResponseEntity.ok(namePasswordUser.user)
     }
 
     @GetMapping("username/{username}")
@@ -81,12 +81,12 @@ class UserController(
         username: String,
     ): ResponseEntity<UserEntity> {
         logger.info { "Requested user with username $username" }
-        val user = userNamePasswordService.findByUsername(username)
-        if (user == null) {
+        val namePasswordUser = userNamePasswordService.findByUsername(username)
+        if (namePasswordUser == null) {
             logger.info { "User with username $username not found" }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
         logger.info { "Found user with username $username" }
-        return ResponseEntity.ok(user as UserEntity)
+        return ResponseEntity.ok(namePasswordUser.user)
     }
 }

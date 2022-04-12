@@ -21,4 +21,6 @@ class UserServiceImpl(private val repository: UserRepository) : UserService {
     override suspend fun deleteById(id: String) = withContext(Dispatchers.IO) { repository.deleteById(id) }
 
     override suspend fun exists(entity: UserEntity) = withContext(Dispatchers.IO) { repository.existsById(entity.id) }
+
+    override suspend fun findByEmail(email: String) = withContext(Dispatchers.IO) { repository.findByEmail(email) }
 }

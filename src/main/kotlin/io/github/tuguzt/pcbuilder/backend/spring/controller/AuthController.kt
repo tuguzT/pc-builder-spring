@@ -1,6 +1,7 @@
 package io.github.tuguzt.pcbuilder.backend.spring.controller
 
-import com.google.api.client.googleapis.auth.oauth2.*
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken
 import com.google.api.client.http.HttpTransport
 import com.google.api.client.json.JsonFactory
 import io.github.tuguzt.pcbuilder.backend.spring.ApplicationConfiguration
@@ -10,10 +11,14 @@ import io.github.tuguzt.pcbuilder.backend.spring.security.JwtUtils
 import io.github.tuguzt.pcbuilder.backend.spring.security.UserDetailsService
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserNamePasswordService
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserOAuth2Service
+import io.github.tuguzt.pcbuilder.backend.spring.service.UserService
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
+import io.github.tuguzt.pcbuilder.domain.randomNanoId
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -33,6 +38,7 @@ class AuthController(
     private val passwordEncoder: PasswordEncoder,
     private val jwtUtils: JwtUtils,
     private val userDetailsService: UserDetailsService,
+    private val userService: UserService,
     private val userNamePasswordService: UserNamePasswordService,
     private val userOAuth2Service: UserOAuth2Service,
 ): KoinComponent {
@@ -78,10 +84,12 @@ class AuthController(
         checkUserNotExists(user)
 
         val userEntity = UserNamePasswordEntity(
-            role = UserRole.User,
-            email = null,
-            imageUri = null,
-            username = user.username,
+            user = UserEntity(
+                role = UserRole.User,
+                email = null,
+                imageUri = null,
+                username = user.username,
+            ),
             password = passwordEncoder.encode(user.password),
         )
         userNamePasswordService.save(userEntity)
@@ -96,7 +104,7 @@ class AuthController(
     @Operation(summary = "Google OAuth 2.0", description = "Аутентификация пользователя Google")
     suspend fun googleOAuth2(@RequestBody tokenData: UserTokenData): ResponseEntity<UserTokenData> {
         val clientSecrets = applicationConfiguration.oauth2.google
-        val tokenResponse = GoogleAuthorizationCodeTokenRequest(
+        val tokenRequest = GoogleAuthorizationCodeTokenRequest(
             httpTransport,
             jsonFactory,
             clientSecrets.tokenUri,
@@ -104,15 +112,20 @@ class AuthController(
             clientSecrets.clientSecret,
             tokenData.accessToken,
             "",
-        ).execute()
+        )
+        val tokenResponse = withContext(Dispatchers.IO) { tokenRequest.execute() }
 
         val googleIdToken: GoogleIdToken = tokenResponse.parseIdToken()
 
         val payload: GoogleIdToken.Payload = googleIdToken.payload
-        val userId = payload.subject
-        val email = payload.email
+        val name = payload["name"] as String
+        val email: String? = payload.email
+        val userId: String = when (val entityByEmail = email?.let { userService.findByEmail(it) }) {
+            null -> randomNanoId()
+            else -> entityByEmail.id
+        }
         val pictureUrl = payload["picture"] as String?
-        val user = UserEntity(userId, UserRole.User, email, pictureUrl)
+        val user = UserEntity(userId, UserRole.User, name, email, pictureUrl)
         val entity = UserOAuth2Entity(user, tokenData.accessToken)
         userOAuth2Service.save(entity)
 

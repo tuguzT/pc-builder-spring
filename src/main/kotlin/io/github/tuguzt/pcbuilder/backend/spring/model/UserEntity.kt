@@ -22,6 +22,9 @@ open class UserEntity(
     @Schema(description = "Роль пользователя системы")
     override val role: UserRole,
 
+    @Schema(description = "Имя пользователя системы")
+    override val username: String,
+
     @Column(unique = true)
     @Schema(description = "Адрес электронной почты пользователя системы")
     override val email: String?,
