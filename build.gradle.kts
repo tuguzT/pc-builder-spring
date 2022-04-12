@@ -66,7 +66,7 @@ dependencies {
     implementation("io.insert-koin:koin-core:3.2.0-beta-1")
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("org.bouncycastle:bcprov-jdk15on:1.70")
-    implementation("com.google.api-client:google-api-client:1.33.4")
+    implementation("com.google.apis:google-api-services-oauth2:v2-rev20200213-1.32.1")
 
     // Testing
     testImplementation(kotlin("test"))
