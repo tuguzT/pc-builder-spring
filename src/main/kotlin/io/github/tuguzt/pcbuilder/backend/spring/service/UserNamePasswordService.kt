@@ -1,7 +1,7 @@
 package io.github.tuguzt.pcbuilder.backend.spring.service
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.UserNamePasswordEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.UserNamePasswordData
 
-interface UserNamePasswordService : EntityService<UserNamePasswordEntity, String> {
-    suspend fun findByUsername(username: String): UserNamePasswordEntity?
+interface UserNamePasswordService : RepositoryService<UserNamePasswordData, String> {
+    suspend fun findByUsername(username: String): UserNamePasswordData?
 }

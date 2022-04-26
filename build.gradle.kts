@@ -32,7 +32,7 @@ configurations.all {
 
 dependencies {
     // Domain layer
-    implementation("com.github.tuguzT:pc_builder_domain:main-SNAPSHOT") {
+    implementation("com.github.tuguzT:pc_builder_domain:develop-SNAPSHOT") {
         isChanging = true
     }
 
@@ -57,9 +57,9 @@ dependencies {
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
 
     // Documentation
-    implementation("org.springdoc:springdoc-openapi-ui:1.6.6")
-    implementation("org.springdoc:springdoc-openapi-security:1.6.6")
-    implementation("org.springdoc:springdoc-openapi-kotlin:1.6.6")
+    implementation("org.springdoc:springdoc-openapi-ui:1.6.7")
+    implementation("org.springdoc:springdoc-openapi-security:1.6.7")
+    implementation("org.springdoc:springdoc-openapi-kotlin:1.6.7")
 
     // Third-Party
     implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")

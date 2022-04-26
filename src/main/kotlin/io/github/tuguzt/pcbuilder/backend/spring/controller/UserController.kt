@@ -1,6 +1,7 @@
 package io.github.tuguzt.pcbuilder.backend.spring.controller
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.UserEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.UserData
+import io.github.tuguzt.pcbuilder.backend.spring.model.toUser
 import io.github.tuguzt.pcbuilder.backend.spring.security.JwtUtils
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserNamePasswordService
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserOAuth2Service
@@ -29,7 +30,7 @@ class UserController(
 
     @GetMapping("all")
     @Operation(summary = "Все пользователи", description = "Получение данных обо всех пользователях системы")
-    suspend fun allUsers(): List<UserEntity> {
+    suspend fun allUsers(): List<UserData> {
         logger.info { "Requested all users" }
         return userService.getAll()
     }
@@ -40,13 +41,13 @@ class UserController(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
         @Parameter(name = "Токен пользователя с префиксом 'Bearer '")
         bearer: String,
-    ): ResponseEntity<UserEntity> {
+    ): ResponseEntity<UserData> {
         val accessToken = bearer.substringAfter("Bearer ")
 
         val oauth2User = userOAuth2Service.findByAccessToken(accessToken)
         if (oauth2User != null) {
             logger.info { "OAuth 2.0 user was found" }
-            return ResponseEntity.ok(oauth2User.user)
+            return ResponseEntity.ok(oauth2User.toUser())
         }
 
         val username = jwtUtils.extractUsername(accessToken)
@@ -59,7 +60,7 @@ class UserController(
         @PathVariable
         @Parameter(name = "Идентификатор пользователя")
         id: String,
-    ): ResponseEntity<UserEntity> {
+    ): ResponseEntity<UserData> {
         logger.info { "Requested user with ID $id" }
         val namePasswordUser = userNamePasswordService.findById(id)
         if (namePasswordUser == null) {
@@ -67,7 +68,7 @@ class UserController(
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
         logger.info { "Found user with ID $id" }
-        return ResponseEntity.ok(namePasswordUser.user)
+        return ResponseEntity.ok(namePasswordUser.toUser())
     }
 
     @GetMapping("username/{username}")
@@ -79,7 +80,7 @@ class UserController(
         @PathVariable
         @Parameter(name = "Имя пользователя")
         username: String,
-    ): ResponseEntity<UserEntity> {
+    ): ResponseEntity<UserData> {
         logger.info { "Requested user with username $username" }
         val namePasswordUser = userNamePasswordService.findByUsername(username)
         if (namePasswordUser == null) {
@@ -87,6 +88,6 @@ class UserController(
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
         logger.info { "Found user with username $username" }
-        return ResponseEntity.ok(namePasswordUser.user)
+        return ResponseEntity.ok(namePasswordUser.toUser())
     }
 }

@@ -1,6 +1,6 @@
 package io.github.tuguzt.pcbuilder.backend.spring.controller
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.ComponentEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.ComponentEntity
 import io.github.tuguzt.pcbuilder.backend.spring.service.ComponentService
 import io.github.tuguzt.pcbuilder.domain.model.component.Component
 import io.swagger.v3.oas.annotations.Operation

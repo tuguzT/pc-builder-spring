@@ -69,7 +69,7 @@ class AuthController(
         return ResponseEntity.ok(tokenData)
     }
 
-    protected suspend fun checkUserNotExists(user: UserNamePasswordEntity) {
+    protected suspend fun checkUserNotExists(user: UserNamePasswordData) {
         if (userNamePasswordService.findByUsername(user.username) == null) return
         throw UserAlreadyExistsException("User with username ${user.username} already exists")
     }
@@ -79,20 +79,18 @@ class AuthController(
     suspend fun register(
         @RequestBody
         @Parameter(name = "Данные пользователя для регистрации")
-        user: UserNamePasswordEntity,
+        user: UserNamePasswordData,
     ): ResponseEntity<UserTokenData> {
         checkUserNotExists(user)
 
-        val userEntity = UserNamePasswordEntity(
-            user = UserEntity(
-                role = UserRole.User,
-                email = null,
-                imageUri = null,
-                username = user.username,
-            ),
+        val registeredUser = UserNamePasswordData(
+            role = UserRole.User,
+            email = null,
+            imageUri = null,
+            username = user.username,
             password = passwordEncoder.encode(user.password),
         )
-        userNamePasswordService.save(userEntity)
+        userNamePasswordService.save(registeredUser)
 
         val credentials = UserCredentialsData(user.username, user.password)
         val response = auth(credentials)
@@ -125,8 +123,14 @@ class AuthController(
             else -> entityByEmail.id
         }
         val pictureUrl = payload["picture"] as String?
-        val user = UserEntity(userId, UserRole.User, name, email, pictureUrl)
-        val entity = UserOAuth2Entity(user, tokenData.accessToken)
+        val entity = UserOAuth2Data(
+            id = userId,
+            role = UserRole.User,
+            username = name,
+            email = email,
+            imageUri = pictureUrl,
+            accessToken = tokenData.accessToken,
+        )
         userOAuth2Service.save(entity)
 
         logger.info { "Google user successfully authorized" }

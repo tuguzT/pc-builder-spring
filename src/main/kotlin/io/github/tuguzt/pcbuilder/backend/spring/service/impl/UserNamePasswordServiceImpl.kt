@@ -1,8 +1,10 @@
 package io.github.tuguzt.pcbuilder.backend.spring.service.impl
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.UserNamePasswordEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.UserNamePasswordData
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.UserNamePasswordEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.toData
+import io.github.tuguzt.pcbuilder.backend.spring.model.toEntity
 import io.github.tuguzt.pcbuilder.backend.spring.repository.UserNamePasswordRepository
-import io.github.tuguzt.pcbuilder.backend.spring.repository.UserRepository
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserNamePasswordService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -10,30 +12,25 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
-class UserNamePasswordServiceImpl(
-    private val repository: UserNamePasswordRepository,
-    private val parentRepository: UserRepository,
-) : UserNamePasswordService {
+class UserNamePasswordServiceImpl(private val repository: UserNamePasswordRepository) : UserNamePasswordService {
+    override suspend fun save(item: UserNamePasswordData): UserNamePasswordData =
+        withContext(Dispatchers.IO) { repository.save(item.toEntity()) }.toData()
 
-    override suspend fun save(entity: UserNamePasswordEntity) = withContext(Dispatchers.IO) { repository.save(entity) }
+    override suspend fun delete(item: UserNamePasswordData) =
+        withContext(Dispatchers.IO) { repository.delete(item.toEntity()) }
 
-    override suspend fun delete(entity: UserNamePasswordEntity) =
-        withContext(Dispatchers.IO) { repository.delete(entity) }
+    override suspend fun getAll(): List<UserNamePasswordData> =
+        withContext(Dispatchers.IO) { repository.findAll() }.map(UserNamePasswordEntity::toData)
 
-    override suspend fun getAll(): List<UserNamePasswordEntity> = withContext(Dispatchers.IO) { repository.findAll() }
+    override suspend fun findById(id: String): UserNamePasswordData? =
+        withContext(Dispatchers.IO) { repository.findByIdOrNull(id) }?.toData()
 
-    override suspend fun findById(id: String) = withContext(Dispatchers.IO) { repository.findByIdOrNull(id) }
+    override suspend fun deleteById(id: String) =
+        withContext(Dispatchers.IO) { repository.deleteById(id) }
 
-    override suspend fun deleteById(id: String) = withContext(Dispatchers.IO) { repository.deleteById(id) }
+    override suspend fun exists(item: UserNamePasswordData): Boolean =
+        withContext(Dispatchers.IO) { repository.existsById(item.id) }
 
-    override suspend fun exists(entity: UserNamePasswordEntity) =
-        withContext(Dispatchers.IO) { repository.existsById(entity.id) }
-
-    override suspend fun findByUsername(username: String): UserNamePasswordEntity? {
-        val entity = withContext(Dispatchers.IO) { parentRepository.findByUsername(username) }
-        if (entity != null) {
-            return findById(entity.id)
-        }
-        return null
-    }
+    override suspend fun findByUsername(username: String): UserNamePasswordData? =
+        withContext(Dispatchers.IO) { repository.findByUsername(username) }?.toData()
 }
