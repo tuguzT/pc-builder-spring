@@ -1,5 +1,6 @@
 package io.github.tuguzt.pcbuilder.backend.spring.model
 
+import io.github.tuguzt.pcbuilder.domain.interactor.randomNanoId
 import io.github.tuguzt.pcbuilder.domain.model.user.User
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
 import io.swagger.v3.oas.annotations.media.Schema
@@ -10,7 +11,7 @@ import kotlinx.serialization.Serializable
 @Schema(description = "Данные пользователя системы")
 data class UserData(
     @Schema(description = "Идентификатор пользователя системы")
-    override val id: String,
+    override val id: String = randomNanoId(),
 
     @Schema(description = "Адрес электронной почты пользователя системы")
     override val email: String?,

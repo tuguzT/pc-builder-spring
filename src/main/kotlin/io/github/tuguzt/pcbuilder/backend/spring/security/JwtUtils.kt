@@ -7,7 +7,7 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
-import java.util.Date
+import java.util.*
 import kotlin.time.Duration.Companion.days
 
 private inline fun <reified T> Claims.getTyped(claimName: String): T = get(claimName, T::class.java)

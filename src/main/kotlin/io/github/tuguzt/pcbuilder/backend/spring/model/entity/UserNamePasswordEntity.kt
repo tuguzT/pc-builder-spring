@@ -1,10 +1,12 @@
 package io.github.tuguzt.pcbuilder.backend.spring.model.entity
 
+import io.github.tuguzt.pcbuilder.domain.interactor.randomNanoId
 import io.github.tuguzt.pcbuilder.domain.model.user.UserNamePassword
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
-import io.github.tuguzt.pcbuilder.domain.randomNanoId
 import org.springframework.data.util.ProxyUtils
-import javax.persistence.*
+import javax.persistence.Entity
+import javax.persistence.PrimaryKeyJoinColumn
+import javax.persistence.Table
 
 @Entity
 @Table(name = "user_name_password")

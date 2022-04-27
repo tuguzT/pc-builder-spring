@@ -1,11 +1,11 @@
 plugins {
     id("org.springframework.boot") version "2.6.6"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.6.20"
+    kotlin("jvm") version "1.6.21"
     kotlin("plugin.jpa") version "1.6.20"
     kotlin("plugin.spring") version "1.6.20"
-    kotlin("plugin.serialization") version "1.6.20"
-    kotlin("kapt") version "1.6.20"
+    kotlin("plugin.serialization") version "1.6.21"
+    kotlin("kapt") version "1.6.21"
 }
 
 group = "io.github.tuguzt.pcbuilder.backend"
@@ -43,7 +43,6 @@ dependencies {
     // Kotlin extensions
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.6.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
 
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

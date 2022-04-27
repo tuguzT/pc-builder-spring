@@ -1,8 +1,8 @@
 package io.github.tuguzt.pcbuilder.backend.spring.model
 
+import io.github.tuguzt.pcbuilder.domain.interactor.randomNanoId
 import io.github.tuguzt.pcbuilder.domain.model.user.UserOAuth2
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
-import io.github.tuguzt.pcbuilder.domain.randomNanoId
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
