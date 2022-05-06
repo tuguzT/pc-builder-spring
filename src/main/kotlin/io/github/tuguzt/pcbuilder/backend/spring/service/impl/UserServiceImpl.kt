@@ -1,11 +1,11 @@
 package io.github.tuguzt.pcbuilder.backend.spring.service.impl
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.UserData
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.UserEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.toData
 import io.github.tuguzt.pcbuilder.backend.spring.model.toEntity
 import io.github.tuguzt.pcbuilder.backend.spring.repository.UserRepository
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserService
+import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.springframework.data.repository.findByIdOrNull

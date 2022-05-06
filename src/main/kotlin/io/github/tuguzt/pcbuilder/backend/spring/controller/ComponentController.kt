@@ -1,8 +1,8 @@
 package io.github.tuguzt.pcbuilder.backend.spring.controller
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.ComponentData
 import io.github.tuguzt.pcbuilder.backend.spring.service.ComponentService
 import io.github.tuguzt.pcbuilder.domain.model.component.Component
+import io.github.tuguzt.pcbuilder.domain.model.component.ComponentData
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag

@@ -6,10 +6,8 @@ import com.google.api.client.http.HttpTransport
 import com.google.api.client.json.JsonFactory
 import io.github.tuguzt.pcbuilder.backend.spring.ApplicationConfiguration
 import io.github.tuguzt.pcbuilder.backend.spring.controller.exceptions.UserAlreadyExistsException
-import io.github.tuguzt.pcbuilder.backend.spring.model.UserCredentialsData
 import io.github.tuguzt.pcbuilder.backend.spring.model.UserNamePasswordData
 import io.github.tuguzt.pcbuilder.backend.spring.model.UserOAuth2Data
-import io.github.tuguzt.pcbuilder.backend.spring.model.UserTokenData
 import io.github.tuguzt.pcbuilder.backend.spring.security.JwtUtils
 import io.github.tuguzt.pcbuilder.backend.spring.security.UserDetailsService
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserNamePasswordService
@@ -17,6 +15,8 @@ import io.github.tuguzt.pcbuilder.backend.spring.service.UserOAuth2Service
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserService
 import io.github.tuguzt.pcbuilder.domain.interactor.randomNanoId
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
+import io.github.tuguzt.pcbuilder.domain.model.user.data.UserCredentialsData
+import io.github.tuguzt.pcbuilder.domain.model.user.data.UserTokenData
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag

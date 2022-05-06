@@ -4,6 +4,8 @@ import io.github.tuguzt.pcbuilder.backend.spring.model.entity.ComponentEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.UserEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.UserNamePasswordEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.UserOAuth2Entity
+import io.github.tuguzt.pcbuilder.domain.model.component.ComponentData
+import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData
 import io.nacular.measured.units.Length.Companion.meters
 import io.nacular.measured.units.Mass.Companion.grams
 

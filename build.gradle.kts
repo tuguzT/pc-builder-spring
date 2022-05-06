@@ -2,8 +2,8 @@ plugins {
     id("org.springframework.boot") version "2.6.6"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("jvm") version "1.6.21"
-    kotlin("plugin.jpa") version "1.6.20"
-    kotlin("plugin.spring") version "1.6.20"
+    kotlin("plugin.jpa") version "1.6.21"
+    kotlin("plugin.spring") version "1.6.21"
     kotlin("plugin.serialization") version "1.6.21"
     kotlin("kapt") version "1.6.21"
 }
@@ -56,9 +56,9 @@ dependencies {
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
 
     // Documentation
-    implementation("org.springdoc:springdoc-openapi-ui:1.6.7")
-    implementation("org.springdoc:springdoc-openapi-security:1.6.7")
-    implementation("org.springdoc:springdoc-openapi-kotlin:1.6.7")
+    implementation("org.springdoc:springdoc-openapi-ui:1.6.8")
+    implementation("org.springdoc:springdoc-openapi-security:1.6.8")
+    implementation("org.springdoc:springdoc-openapi-kotlin:1.6.8")
 
     // Third-Party
     implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")

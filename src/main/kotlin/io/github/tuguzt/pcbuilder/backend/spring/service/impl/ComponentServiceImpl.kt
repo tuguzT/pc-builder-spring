@@ -1,11 +1,11 @@
 package io.github.tuguzt.pcbuilder.backend.spring.service.impl
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.ComponentData
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.ComponentEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.toData
 import io.github.tuguzt.pcbuilder.backend.spring.model.toEntity
 import io.github.tuguzt.pcbuilder.backend.spring.repository.ComponentRepository
 import io.github.tuguzt.pcbuilder.backend.spring.service.ComponentService
+import io.github.tuguzt.pcbuilder.domain.model.component.ComponentData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.springframework.data.repository.findByIdOrNull

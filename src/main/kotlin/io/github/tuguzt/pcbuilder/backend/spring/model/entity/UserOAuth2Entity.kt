@@ -1,8 +1,8 @@
 package io.github.tuguzt.pcbuilder.backend.spring.model.entity
 
 import io.github.tuguzt.pcbuilder.domain.interactor.randomNanoId
-import io.github.tuguzt.pcbuilder.domain.model.user.UserOAuth2
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
+import io.github.tuguzt.pcbuilder.domain.model.user.UserToken
 import org.springframework.data.util.ProxyUtils
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -19,7 +19,7 @@ class UserOAuth2Entity(
     override val email: String?,
     override val imageUri: String?,
     @Column(unique = true) override val accessToken: String,
-) : UserEntity(id, role, username, email, imageUri), UserOAuth2 {
+) : UserEntity(id, role, username, email, imageUri), UserToken {
     override fun equals(other: Any?): Boolean {
         other ?: return false
         if (this === other) return true

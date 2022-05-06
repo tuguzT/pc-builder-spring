@@ -1,11 +1,11 @@
 package io.github.tuguzt.pcbuilder.backend.spring.controller
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.UserData
 import io.github.tuguzt.pcbuilder.backend.spring.model.toUser
 import io.github.tuguzt.pcbuilder.backend.spring.security.JwtUtils
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserNamePasswordService
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserOAuth2Service
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserService
+import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
