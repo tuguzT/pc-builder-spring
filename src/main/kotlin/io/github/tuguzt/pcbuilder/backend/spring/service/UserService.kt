@@ -1,5 +1,7 @@
 package io.github.tuguzt.pcbuilder.backend.spring.service
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.UserEntity
+import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData
 
-interface UserService : EntityService<UserEntity, String>
+interface UserService : RepositoryService<UserData, String> {
+    suspend fun findByEmail(email: String): UserData?
+}

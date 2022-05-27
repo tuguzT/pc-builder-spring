@@ -7,8 +7,10 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
-import java.util.Date
+import java.util.*
 import kotlin.time.Duration.Companion.days
+
+private inline fun <reified T> Claims.getTyped(claimName: String): T = get(claimName, T::class.java)
 
 @Service
 class JwtUtils {
@@ -21,7 +23,7 @@ class JwtUtils {
     fun extractExpiration(token: String): Date = extractClaim(token, Claims::getExpiration)
 
     fun extractRole(token: String): UserRole = extractClaim(token) {
-        UserRole.valueOf(get(User::role.name, String::class.java))
+        UserRole.valueOf(getTyped(User::role.name))
     }
 
     fun <T> extractClaim(token: String, claimsResolver: Claims.() -> T): T {

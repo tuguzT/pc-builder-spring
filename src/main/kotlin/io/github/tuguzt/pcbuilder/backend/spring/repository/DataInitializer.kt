@@ -1,6 +1,6 @@
 package io.github.tuguzt.pcbuilder.backend.spring.repository
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.UserNamePasswordEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.UserNamePasswordEntity
 import io.github.tuguzt.pcbuilder.domain.interactor.checkPassword
 import io.github.tuguzt.pcbuilder.domain.interactor.checkUsername
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
@@ -15,20 +15,21 @@ class DataInitializer(
     private val passwordEncoder: PasswordEncoder,
 ) : ApplicationRunner {
     override fun run(args: ApplicationArguments?) {
-        val users = listOf(
-            kotlin.run {
+        fun generateUsers(): List<UserNamePasswordEntity> {
+            val administrator = kotlin.run {
                 val username = "tuguzT"
                 val password = "S6iwekjbbi_92,!"
+                val email = "timurka.tugushev@gmail.com"
                 require(checkUsername(username) && checkPassword(password))
                 UserNamePasswordEntity(
                     role = UserRole.Administrator,
-                    email = null,
+                    email = email,
                     imageUri = null,
                     username = username,
                     password = passwordEncoder.encode(password),
                 )
-            },
-            kotlin.run {
+            }
+            val moderator = kotlin.run {
                 val username = "dr3am_b3ast"
                 val password = "Y873lin)*odjv"
                 require(checkUsername(username) && checkPassword(password))
@@ -39,8 +40,11 @@ class DataInitializer(
                     username = username,
                     password = passwordEncoder.encode(password),
                 )
-            },
-        )
+            }
+            return listOf(administrator, moderator)
+        }
+
+        val users = generateUsers()
         userNamePasswordRepository.saveAll(users)
     }
 }

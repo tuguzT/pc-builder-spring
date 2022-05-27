@@ -1,7 +1,7 @@
 package io.github.tuguzt.pcbuilder.backend.spring.service
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.UserOAuth2Entity
+import io.github.tuguzt.pcbuilder.backend.spring.model.UserOAuth2Data
 
-interface UserOAuth2Service : EntityService<UserOAuth2Entity, String> {
-    suspend fun findByAccessToken(accessToken: String): UserOAuth2Entity?
+interface UserOAuth2Service : RepositoryService<UserOAuth2Data, String> {
+    suspend fun findByAccessToken(accessToken: String): UserOAuth2Data?
 }

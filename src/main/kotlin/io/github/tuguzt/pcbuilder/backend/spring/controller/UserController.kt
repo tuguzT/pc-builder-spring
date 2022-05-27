@@ -1,10 +1,11 @@
 package io.github.tuguzt.pcbuilder.backend.spring.controller
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.UserEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.toUser
 import io.github.tuguzt.pcbuilder.backend.spring.security.JwtUtils
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserNamePasswordService
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserOAuth2Service
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserService
+import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -13,8 +14,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-
-private val logger = KotlinLogging.logger {}
 
 @RestController
 @RequestMapping("users")
@@ -25,9 +24,13 @@ class UserController(
     private val userNamePasswordService: UserNamePasswordService,
     private val userOAuth2Service: UserOAuth2Service,
 ) {
+    companion object {
+        private val logger = KotlinLogging.logger {}
+    }
+
     @GetMapping("all")
     @Operation(summary = "Все пользователи", description = "Получение данных обо всех пользователях системы")
-    suspend fun allUsers(): List<UserEntity> {
+    suspend fun allUsers(): List<UserData> {
         logger.info { "Requested all users" }
         return userService.getAll()
     }
@@ -38,9 +41,16 @@ class UserController(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
         @Parameter(name = "Токен пользователя с префиксом 'Bearer '")
         bearer: String,
-    ): ResponseEntity<UserEntity> {
-        val token = bearer.substringAfter("Bearer ")
-        val username = jwtUtils.extractUsername(token)
+    ): ResponseEntity<UserData> {
+        val accessToken = bearer.substringAfter("Bearer ")
+
+        val oauth2User = userOAuth2Service.findByAccessToken(accessToken)
+        if (oauth2User != null) {
+            logger.info { "OAuth 2.0 user was found" }
+            return ResponseEntity.ok(oauth2User.toUser())
+        }
+
+        val username = jwtUtils.extractUsername(accessToken)
         return findByUsername(username)
     }
 
@@ -50,7 +60,7 @@ class UserController(
         @PathVariable
         @Parameter(name = "Идентификатор пользователя")
         id: String,
-    ): ResponseEntity<UserEntity> {
+    ): ResponseEntity<UserData> {
         logger.info { "Requested user with ID $id" }
         val namePasswordUser = userNamePasswordService.findById(id)
         if (namePasswordUser == null) {
@@ -58,7 +68,7 @@ class UserController(
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
         logger.info { "Found user with ID $id" }
-        return ResponseEntity.ok(namePasswordUser as UserEntity)
+        return ResponseEntity.ok(namePasswordUser.toUser())
     }
 
     @GetMapping("username/{username}")
@@ -70,14 +80,14 @@ class UserController(
         @PathVariable
         @Parameter(name = "Имя пользователя")
         username: String,
-    ): ResponseEntity<UserEntity> {
+    ): ResponseEntity<UserData> {
         logger.info { "Requested user with username $username" }
-        val user = userNamePasswordService.findByUsername(username)
-        if (user == null) {
+        val namePasswordUser = userNamePasswordService.findByUsername(username)
+        if (namePasswordUser == null) {
             logger.info { "User with username $username not found" }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
         logger.info { "Found user with username $username" }
-        return ResponseEntity.ok(user as UserEntity)
+        return ResponseEntity.ok(namePasswordUser.toUser())
     }
 }
