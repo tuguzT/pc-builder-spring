@@ -72,9 +72,9 @@ class AuthController(
         return ResponseEntity.ok(tokenData)
     }
 
-    protected suspend fun checkUserNotExists(user: UserNamePasswordData) {
-        if (userNamePasswordService.findByUsername(user.username) == null) return
-        throw UserAlreadyExistsException("User with username ${user.username} already exists")
+    protected suspend fun checkUserNotExists(credentials: UserCredentialsData) {
+        if (userNamePasswordService.findByUsername(credentials.username) == null) return
+        throw UserAlreadyExistsException("User with username ${credentials.username} already exists")
     }
 
     @PostMapping("register")
@@ -82,28 +82,30 @@ class AuthController(
     suspend fun register(
         @RequestBody
         @Parameter(name = "Данные пользователя для регистрации")
-        user: UserNamePasswordData,
+        credentials: UserCredentialsData,
     ): ResponseEntity<UserTokenData> {
-        checkUserNotExists(user)
+        checkUserNotExists(credentials)
 
         val registeredUser = UserNamePasswordData(
             role = UserRole.User,
             email = null,
             imageUri = null,
-            username = user.username,
-            password = passwordEncoder.encode(user.password),
+            username = credentials.username,
+            password = passwordEncoder.encode(credentials.password),
         )
         userNamePasswordService.save(registeredUser)
 
-        val credentials = UserCredentialsData(user.username, user.password)
         val response = auth(credentials)
-        logger.info { "User with username ${user.username} successfully registered" }
+        logger.info { "User with username ${credentials.username} successfully registered" }
         return response
     }
 
+    @Suppress("UNREACHABLE_CODE")
     @PostMapping("oauth2/google")
     @Operation(summary = "Google OAuth 2.0", description = "Аутентификация пользователя Google")
     suspend fun googleOAuth2(@RequestBody tokenData: UserTokenData): ResponseEntity<UserTokenData> {
+        TODO("much more to do")
+
         val clientSecrets = applicationConfiguration.oauth2.google
         val tokenRequest = GoogleAuthorizationCodeTokenRequest(
             httpTransport,
