@@ -32,7 +32,7 @@ configurations.all {
 
 dependencies {
     // Domain layer
-    implementation("com.github.tuguzT:pc_builder_domain:develop-SNAPSHOT") {
+    implementation("com.github.tuguzT:pc-builder-domain:main-SNAPSHOT") {
         isChanging = true
     }
 
