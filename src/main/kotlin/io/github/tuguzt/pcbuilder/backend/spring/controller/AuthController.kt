@@ -137,7 +137,7 @@ class AuthController(
         googleUserService.save(entity)
         logger.info { "Google user $name successfully authorized" }
 
-        val userDetails = userDetailsService.loadUserByUsername(entity.username)
+        val userDetails = userDetailsService.loadUserByUsername(name)
         val token = jwtUtils.generateToken(userDetails)
         val tokenData = UserTokenData(token)
         return ResponseEntity.ok(tokenData)

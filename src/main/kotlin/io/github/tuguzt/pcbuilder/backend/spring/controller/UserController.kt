@@ -40,7 +40,7 @@ class UserController(
         val accessToken = bearer.substringAfter("Bearer ")
 
         val username = jwtUtils.extractUsername(accessToken)
-        return findById(username)
+        return findByUsername(username)
     }
 
     @GetMapping("id/{id}")
@@ -57,6 +57,26 @@ class UserController(
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
         logger.info { "Found user with ID $id" }
+        return ResponseEntity.ok(user)
+    }
+
+    @GetMapping("username/{username}")
+    @Operation(
+        summary = "Поиск по имени пользователя",
+        description = "Поиск пользователя в системе по его имени пользователя",
+    )
+    suspend fun findByUsername(
+        @PathVariable
+        @Parameter(name = "Имя пользователя")
+        username: String,
+    ): ResponseEntity<UserData> {
+        logger.info { "Requested user with username $username" }
+        val user = userService.findByUsername(username)
+        if (user == null) {
+            logger.info { "User with username $username not found" }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+        }
+        logger.info { "Found user with username $username" }
         return ResponseEntity.ok(user)
     }
 }
