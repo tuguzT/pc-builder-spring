@@ -1,5 +1,5 @@
 plugins {
-    id("org.springframework.boot") version "2.6.6"
+    id("org.springframework.boot") version "2.7.0"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("jvm") version "1.6.21"
     kotlin("plugin.jpa") version "1.6.21"
@@ -12,8 +12,8 @@ group = "io.github.tuguzt.pcbuilder.backend"
 version = "0.1.0"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 kapt {
@@ -38,7 +38,7 @@ dependencies {
 
     // Kotlin
     implementation(kotlin("reflect"))
-    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("stdlib"))
 
     // Kotlin extensions
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1")
@@ -62,7 +62,8 @@ dependencies {
 
     // Third-Party
     implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
-    implementation("io.insert-koin:koin-core:3.2.0-beta-1")
+    implementation("io.insert-koin:koin-core:3.2.0")
+    implementation("io.insert-koin:koin-logger-slf4j:3.2.0")
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("org.bouncycastle:bcprov-jdk15on:1.70")
     implementation("com.google.apis:google-api-services-oauth2:v2-rev20200213-1.32.1")
@@ -77,7 +78,7 @@ tasks {
     compileKotlin {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict", "-opt-in=kotlin.RequiresOptIn")
-            jvmTarget = "1.8"
+            jvmTarget = "11"
         }
     }
     test {

@@ -1,5 +1,6 @@
 package io.github.tuguzt.pcbuilder.backend.spring.security
 
+import io.github.tuguzt.pcbuilder.backend.spring.ApplicationConfiguration
 import io.github.tuguzt.pcbuilder.domain.model.user.User
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
 import io.jsonwebtoken.Claims
@@ -13,10 +14,8 @@ import kotlin.time.Duration.Companion.days
 private inline fun <reified T> Claims.getTyped(claimName: String): T = get(claimName, T::class.java)
 
 @Service
-class JwtUtils {
-    companion object {
-        private const val secretKey = "uYfv87Rfb(*GTb8%^D8[)*mj9,k)hyRsc$3qvF*B7"
-    }
+class JwtUtils(private val applicationConfiguration: ApplicationConfiguration) {
+    private val secretKey get() = applicationConfiguration.jwt.secretKey
 
     fun extractUsername(token: String): String = extractClaim(token, Claims::getSubject)
 

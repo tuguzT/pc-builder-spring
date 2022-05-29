@@ -16,6 +16,8 @@ springdoc:
     path: /docs/api.html
 
 pc-builder:
+  jwt:
+    secret-key: SECRET
   oauth2:
     google:
       client-id: SECRET

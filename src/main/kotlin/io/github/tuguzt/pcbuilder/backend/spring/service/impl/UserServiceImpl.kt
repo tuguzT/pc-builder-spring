@@ -31,6 +31,6 @@ class UserServiceImpl(private val repository: UserRepository) : UserService {
     override suspend fun exists(item: UserData): Boolean =
         withContext(Dispatchers.IO) { repository.existsById(item.id) }
 
-    override suspend fun findByEmail(email: String): UserData? =
-        withContext(Dispatchers.IO) { repository.findByEmail(email) }?.toData()
+    override suspend fun findByUsername(username: String): UserData? =
+        withContext(Dispatchers.IO) { repository.findByUsername(username) }?.toData()
 }

@@ -13,7 +13,7 @@ open class UserEntity(
     @Id override val id: String = randomNanoId(),
     override val role: UserRole,
     override val username: String,
-    @Column(unique = true) override val email: String?,
+    override val email: String?,
     override val imageUri: String?,
 ) : User {
     override fun equals(other: Any?): Boolean {

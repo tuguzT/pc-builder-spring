@@ -1,9 +1,6 @@
 package io.github.tuguzt.pcbuilder.backend.spring.controller
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.toUser
 import io.github.tuguzt.pcbuilder.backend.spring.security.JwtUtils
-import io.github.tuguzt.pcbuilder.backend.spring.service.UserNamePasswordService
-import io.github.tuguzt.pcbuilder.backend.spring.service.UserOAuth2Service
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserService
 import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData
 import io.swagger.v3.oas.annotations.Operation
@@ -21,8 +18,6 @@ import org.springframework.web.bind.annotation.*
 class UserController(
     private val jwtUtils: JwtUtils,
     private val userService: UserService,
-    private val userNamePasswordService: UserNamePasswordService,
-    private val userOAuth2Service: UserOAuth2Service,
 ) {
     companion object {
         private val logger = KotlinLogging.logger {}
@@ -44,14 +39,8 @@ class UserController(
     ): ResponseEntity<UserData> {
         val accessToken = bearer.substringAfter("Bearer ")
 
-        val oauth2User = userOAuth2Service.findByAccessToken(accessToken)
-        if (oauth2User != null) {
-            logger.info { "OAuth 2.0 user was found" }
-            return ResponseEntity.ok(oauth2User.toUser())
-        }
-
         val username = jwtUtils.extractUsername(accessToken)
-        return findByUsername(username)
+        return findById(username)
     }
 
     @GetMapping("id/{id}")
@@ -62,32 +51,12 @@ class UserController(
         id: String,
     ): ResponseEntity<UserData> {
         logger.info { "Requested user with ID $id" }
-        val namePasswordUser = userNamePasswordService.findById(id)
-        if (namePasswordUser == null) {
+        val user = userService.findById(id)
+        if (user == null) {
             logger.info { "User with ID $id not found" }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
         logger.info { "Found user with ID $id" }
-        return ResponseEntity.ok(namePasswordUser.toUser())
-    }
-
-    @GetMapping("username/{username}")
-    @Operation(
-        summary = "Поиск по имени пользователя",
-        description = "Поиск пользователя в системе по его имени пользователя",
-    )
-    suspend fun findByUsername(
-        @PathVariable
-        @Parameter(name = "Имя пользователя")
-        username: String,
-    ): ResponseEntity<UserData> {
-        logger.info { "Requested user with username $username" }
-        val namePasswordUser = userNamePasswordService.findByUsername(username)
-        if (namePasswordUser == null) {
-            logger.info { "User with username $username not found" }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
-        }
-        logger.info { "Found user with username $username" }
-        return ResponseEntity.ok(namePasswordUser.toUser())
+        return ResponseEntity.ok(user)
     }
 }
