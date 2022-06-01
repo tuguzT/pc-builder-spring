@@ -1,23 +1,20 @@
-package io.github.tuguzt.pcbuilder.backend.spring.model.entity
+package io.github.tuguzt.pcbuilder.backend.spring.model.entity.user
 
-import io.github.tuguzt.pcbuilder.domain.interactor.randomNanoId
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.user.UserCredentials
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
 import org.springframework.data.util.ProxyUtils
 import javax.persistence.Entity
-import javax.persistence.PrimaryKeyJoinColumn
 import javax.persistence.Table
 
 @Entity
 @Table(name = "user_name_password")
-@PrimaryKeyJoinColumn(name = "user_id")
 class UserNamePasswordEntity(
-    override val id: NanoId = randomNanoId(),
-    override val role: UserRole,
-    override val username: String,
-    override val email: String?,
-    override val imageUri: String?,
+    id: NanoId,
+    role: UserRole,
+    username: String,
+    email: String?,
+    imageUri: String?,
     override val password: String,
 ) : UserEntity(id, role, username, email, imageUri), UserCredentials {
     override fun equals(other: Any?): Boolean {

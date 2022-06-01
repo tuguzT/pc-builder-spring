@@ -2,6 +2,11 @@ package io.github.tuguzt.pcbuilder.backend.spring.model.entity
 
 import io.github.tuguzt.pcbuilder.backend.spring.model.GoogleUserData
 import io.github.tuguzt.pcbuilder.backend.spring.model.UserNamePasswordData
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.ComponentEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.ManufacturerEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.GoogleUserEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.UserEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.UserNamePasswordEntity
 import io.github.tuguzt.pcbuilder.domain.model.component.ComponentData
 import io.github.tuguzt.pcbuilder.domain.model.component.ManufacturerData
 import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData

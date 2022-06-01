@@ -1,8 +1,9 @@
 package io.github.tuguzt.pcbuilder.backend.spring.repository
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.entity.UserNamePasswordEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.UserNamePasswordEntity
 import io.github.tuguzt.pcbuilder.domain.interactor.checkPassword
 import io.github.tuguzt.pcbuilder.domain.interactor.checkUsername
+import io.github.tuguzt.pcbuilder.domain.interactor.randomNanoId
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
@@ -22,6 +23,7 @@ class DataInitializer(
                 val email = "timurka.tugushev@gmail.com"
                 require(checkUsername(username) && checkPassword(password))
                 UserNamePasswordEntity(
+                    id = randomNanoId(),
                     role = UserRole.Administrator,
                     email = email,
                     imageUri = null,
@@ -34,6 +36,7 @@ class DataInitializer(
                 val password = "Y873lin)*odjv"
                 require(checkUsername(username) && checkPassword(password))
                 UserNamePasswordEntity(
+                    id = randomNanoId(),
                     role = UserRole.Moderator,
                     email = null,
                     imageUri = null,

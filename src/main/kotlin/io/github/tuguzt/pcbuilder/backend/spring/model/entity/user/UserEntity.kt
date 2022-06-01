@@ -1,6 +1,5 @@
-package io.github.tuguzt.pcbuilder.backend.spring.model.entity
+package io.github.tuguzt.pcbuilder.backend.spring.model.entity.user
 
-import io.github.tuguzt.pcbuilder.domain.interactor.randomNanoId
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.user.User
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
@@ -11,7 +10,7 @@ import javax.persistence.*
 @Table(name = "\"user\"")
 @Inheritance(strategy = InheritanceType.JOINED)
 open class UserEntity(
-    @Id override val id: NanoId = randomNanoId(),
+    @Id override val id: NanoId,
     override val role: UserRole,
     override val username: String,
     override val email: String?,

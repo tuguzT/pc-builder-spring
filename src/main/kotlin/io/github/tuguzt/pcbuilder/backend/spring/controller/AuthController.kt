@@ -11,8 +11,8 @@ import io.github.tuguzt.pcbuilder.backend.spring.model.GoogleUserData
 import io.github.tuguzt.pcbuilder.backend.spring.model.UserNamePasswordData
 import io.github.tuguzt.pcbuilder.backend.spring.security.JwtUtils
 import io.github.tuguzt.pcbuilder.backend.spring.security.UserDetailsService
-import io.github.tuguzt.pcbuilder.backend.spring.service.GoogleUserService
-import io.github.tuguzt.pcbuilder.backend.spring.service.UserNamePasswordService
+import io.github.tuguzt.pcbuilder.backend.spring.service.repository.GoogleUserService
+import io.github.tuguzt.pcbuilder.backend.spring.service.repository.UserNamePasswordService
 import io.github.tuguzt.pcbuilder.domain.interactor.randomNanoId
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
 import io.github.tuguzt.pcbuilder.domain.model.user.data.UserCredentialsData

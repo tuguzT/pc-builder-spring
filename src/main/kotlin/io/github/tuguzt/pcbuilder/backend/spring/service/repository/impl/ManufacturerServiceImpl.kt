@@ -1,10 +1,10 @@
-package io.github.tuguzt.pcbuilder.backend.spring.service.impl
+package io.github.tuguzt.pcbuilder.backend.spring.service.repository.impl
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.entity.ManufacturerEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.ManufacturerEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.toData
 import io.github.tuguzt.pcbuilder.backend.spring.model.toEntity
 import io.github.tuguzt.pcbuilder.backend.spring.repository.ManufacturerRepository
-import io.github.tuguzt.pcbuilder.backend.spring.service.ManufacturerService
+import io.github.tuguzt.pcbuilder.backend.spring.service.repository.ManufacturerService
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.component.ManufacturerData
 import kotlinx.coroutines.Dispatchers

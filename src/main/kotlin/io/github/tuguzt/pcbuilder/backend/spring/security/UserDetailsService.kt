@@ -1,7 +1,7 @@
 package io.github.tuguzt.pcbuilder.backend.spring.security
 
-import io.github.tuguzt.pcbuilder.backend.spring.service.UserNamePasswordService
-import io.github.tuguzt.pcbuilder.backend.spring.service.UserService
+import io.github.tuguzt.pcbuilder.backend.spring.service.repository.UserNamePasswordService
+import io.github.tuguzt.pcbuilder.backend.spring.service.repository.UserService
 import kotlinx.coroutines.runBlocking
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User

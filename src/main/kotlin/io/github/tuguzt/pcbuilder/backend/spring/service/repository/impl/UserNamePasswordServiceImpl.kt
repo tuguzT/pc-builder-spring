@@ -1,11 +1,11 @@
-package io.github.tuguzt.pcbuilder.backend.spring.service.impl
+package io.github.tuguzt.pcbuilder.backend.spring.service.repository.impl
 
 import io.github.tuguzt.pcbuilder.backend.spring.model.UserNamePasswordData
-import io.github.tuguzt.pcbuilder.backend.spring.model.entity.UserNamePasswordEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.UserNamePasswordEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.toData
 import io.github.tuguzt.pcbuilder.backend.spring.model.toEntity
 import io.github.tuguzt.pcbuilder.backend.spring.repository.UserNamePasswordRepository
-import io.github.tuguzt.pcbuilder.backend.spring.service.UserNamePasswordService
+import io.github.tuguzt.pcbuilder.backend.spring.service.repository.UserNamePasswordService
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

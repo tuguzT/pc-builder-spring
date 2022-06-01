@@ -1,38 +1,36 @@
-package io.github.tuguzt.pcbuilder.backend.spring.model.entity
+package io.github.tuguzt.pcbuilder.backend.spring.model.entity.component
 
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.component.Component
 import io.github.tuguzt.pcbuilder.domain.model.component.Size
 import io.github.tuguzt.pcbuilder.domain.model.component.Weight
-import io.nacular.measured.units.Length.Companion.meters
-import io.nacular.measured.units.Mass.Companion.grams
-import io.nacular.measured.units.times
 import org.springframework.data.util.ProxyUtils
 import javax.persistence.*
 
 @Entity
 @Table(name = "component")
-class ComponentEntity(
+@Inheritance(strategy = InheritanceType.JOINED)
+open class ComponentEntity(
     @Id override val id: NanoId,
     override val name: String,
     override val description: String,
-    @Column(name = "weight") private val weightInGrams: Double,
-    @Column(name = "length") private val lengthInMeters: Double,
-    @Column(name = "width") private val widthInMeters: Double,
-    @Column(name = "height") private val heightInMeters: Double,
-    @ManyToOne
-    @JoinColumn(name = "manufacturer_id")
+    weight: WeightEmbeddable,
+    size: SizeEmbeddable,
+    @ManyToOne @JoinColumn(name = "manufacturer_id")
     override val manufacturer: ManufacturerEntity,
 ) : Component {
 
-    override val weight: Weight get() = Weight(weightInGrams * grams)
+    @Embedded
+    private val sizeEmbeddable = size
 
-    override val size
-        get() = Size(
-            length = lengthInMeters * meters,
-            width = widthInMeters * meters,
-            height = heightInMeters * meters,
-        )
+    @Embedded
+    private val weightEmbeddable = weight
+
+    final override val weight: Weight
+        get() = weightEmbeddable.toWeight()
+
+    final override val size: Size
+        get() = sizeEmbeddable.toSize()
 
     override fun equals(other: Any?): Boolean {
         other ?: return false
