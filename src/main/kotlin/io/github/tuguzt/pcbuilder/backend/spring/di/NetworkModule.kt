@@ -7,6 +7,6 @@ import com.google.api.client.json.gson.GsonFactory
 import org.koin.dsl.module
 
 val networkModule = module {
-    single { GoogleNetHttpTransport.newTrustedTransport() as HttpTransport }
-    single { GsonFactory.getDefaultInstance() as JsonFactory }
+    single<HttpTransport> { GoogleNetHttpTransport.newTrustedTransport() }
+    single<JsonFactory> { GsonFactory.getDefaultInstance() }
 }

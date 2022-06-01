@@ -5,6 +5,7 @@ import io.github.tuguzt.pcbuilder.backend.spring.model.entity.toData
 import io.github.tuguzt.pcbuilder.backend.spring.model.toEntity
 import io.github.tuguzt.pcbuilder.backend.spring.repository.ComponentRepository
 import io.github.tuguzt.pcbuilder.backend.spring.service.ComponentService
+import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.component.ComponentData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,10 +26,10 @@ class ComponentServiceImpl(private val repository: ComponentRepository) : Compon
     override suspend fun getAll(): List<ComponentData> =
         withContext(Dispatchers.IO) { repository.findAll() }.map(ComponentEntity::toData)
 
-    override suspend fun findById(id: String): ComponentData? =
+    override suspend fun findById(id: NanoId): ComponentData? =
         withContext(Dispatchers.IO) { repository.findByIdOrNull(id) }?.toData()
 
-    override suspend fun deleteById(id: String) = withContext(Dispatchers.IO) { repository.deleteById(id) }
+    override suspend fun deleteById(id: NanoId) = withContext(Dispatchers.IO) { repository.deleteById(id) }
 
     override suspend fun exists(item: ComponentData) =
         withContext(Dispatchers.IO) { repository.existsById(item.id) }

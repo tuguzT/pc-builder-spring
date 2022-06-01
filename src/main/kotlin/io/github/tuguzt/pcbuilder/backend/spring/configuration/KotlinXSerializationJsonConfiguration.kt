@@ -1,4 +1,4 @@
-package io.github.tuguzt.pcbuilder.backend.spring.serialization
+package io.github.tuguzt.pcbuilder.backend.spring.configuration
 
 import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
@@ -9,7 +9,7 @@ import org.springframework.http.converter.json.KotlinSerializationJsonHttpMessag
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
-class MessageConvertersConfiguration : WebMvcConfigurer, KoinComponent {
+class KotlinXSerializationJsonConfiguration : WebMvcConfigurer, KoinComponent {
     private val json: Json by inject()
 
     override fun extendMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {

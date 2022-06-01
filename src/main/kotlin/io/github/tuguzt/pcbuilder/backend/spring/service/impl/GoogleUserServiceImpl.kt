@@ -6,6 +6,7 @@ import io.github.tuguzt.pcbuilder.backend.spring.model.entity.toData
 import io.github.tuguzt.pcbuilder.backend.spring.model.toEntity
 import io.github.tuguzt.pcbuilder.backend.spring.repository.GoogleUserRepository
 import io.github.tuguzt.pcbuilder.backend.spring.service.GoogleUserService
+import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.springframework.data.repository.findByIdOrNull
@@ -22,10 +23,10 @@ class GoogleUserServiceImpl(private val repository: GoogleUserRepository) : Goog
     override suspend fun getAll(): List<GoogleUserData> =
         withContext(Dispatchers.IO) { repository.findAll() }.map(GoogleUserEntity::toData)
 
-    override suspend fun findById(id: String): GoogleUserData? =
+    override suspend fun findById(id: NanoId): GoogleUserData? =
         withContext(Dispatchers.IO) { repository.findByIdOrNull(id) }?.toData()
 
-    override suspend fun deleteById(id: String) =
+    override suspend fun deleteById(id: NanoId) =
         withContext(Dispatchers.IO) { repository.deleteById(id) }
 
     override suspend fun exists(item: GoogleUserData): Boolean =

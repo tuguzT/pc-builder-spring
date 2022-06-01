@@ -1,6 +1,7 @@
 package io.github.tuguzt.pcbuilder.backend.spring.controller
 
 import io.github.tuguzt.pcbuilder.backend.spring.service.ComponentService
+import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.component.Component
 import io.github.tuguzt.pcbuilder.domain.model.component.ComponentData
 import io.swagger.v3.oas.annotations.Operation
@@ -37,7 +38,7 @@ class ComponentController(private val service: ComponentService) {
     suspend fun findById(
         @PathVariable
         @Parameter(name = "Идентификатор компонента ПК")
-        id: String,
+        id: NanoId,
     ): ResponseEntity<ComponentData> {
         logger.info { "Requested component with ID $id" }
         val component = service.findById(id)

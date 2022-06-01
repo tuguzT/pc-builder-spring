@@ -102,7 +102,7 @@ class AuthController(
     @PostMapping("oauth2/google")
     @Operation(summary = "Google OAuth 2.0", description = "Аутентификация пользователя Google")
     suspend fun googleOAuth2(@RequestBody idToken: UserTokenData): ResponseEntity<UserTokenData> {
-        val idTokenString = idToken.accessToken
+        val idTokenString = idToken.token
 
         val clientSecrets = applicationConfiguration.oauth2.google
         val tokenRequest = GoogleAuthorizationCodeTokenRequest(

@@ -6,6 +6,7 @@ import io.github.tuguzt.pcbuilder.backend.spring.model.entity.toData
 import io.github.tuguzt.pcbuilder.backend.spring.model.toEntity
 import io.github.tuguzt.pcbuilder.backend.spring.repository.UserNamePasswordRepository
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserNamePasswordService
+import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.springframework.data.repository.findByIdOrNull
@@ -22,10 +23,10 @@ class UserNamePasswordServiceImpl(private val repository: UserNamePasswordReposi
     override suspend fun getAll(): List<UserNamePasswordData> =
         withContext(Dispatchers.IO) { repository.findAll() }.map(UserNamePasswordEntity::toData)
 
-    override suspend fun findById(id: String): UserNamePasswordData? =
+    override suspend fun findById(id: NanoId): UserNamePasswordData? =
         withContext(Dispatchers.IO) { repository.findByIdOrNull(id) }?.toData()
 
-    override suspend fun deleteById(id: String) =
+    override suspend fun deleteById(id: NanoId) =
         withContext(Dispatchers.IO) { repository.deleteById(id) }
 
     override suspend fun exists(item: UserNamePasswordData): Boolean =

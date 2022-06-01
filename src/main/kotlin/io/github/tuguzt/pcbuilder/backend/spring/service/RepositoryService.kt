@@ -2,7 +2,7 @@ package io.github.tuguzt.pcbuilder.backend.spring.service
 
 import io.github.tuguzt.pcbuilder.domain.model.Identifiable
 
-sealed interface RepositoryService<T : Identifiable<I>, I : Any> {
+sealed interface RepositoryService<I, T : Identifiable<I>> {
     suspend fun getAll(): List<T>
 
     suspend fun save(item: T): T

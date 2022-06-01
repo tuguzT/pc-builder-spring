@@ -18,6 +18,7 @@ java {
 
 kapt {
     useBuildCache = false
+    correctErrorTypes = true
 }
 
 repositories {
@@ -32,7 +33,7 @@ configurations.all {
 
 dependencies {
     // Domain layer
-    implementation("com.github.tuguzT:pc_builder_domain:develop-SNAPSHOT") {
+    implementation("com.github.tuguzT:pc-builder-domain:develop-SNAPSHOT") {
         isChanging = true
     }
 
@@ -60,13 +61,20 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-security:1.6.8")
     implementation("org.springdoc:springdoc-openapi-kotlin:1.6.8")
 
-    // Third-Party
-    implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
+    // Dependency Injection
     implementation("io.insert-koin:koin-core:3.2.0")
     implementation("io.insert-koin:koin-logger-slf4j:3.2.0")
+
+    // Third-Party
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("org.bouncycastle:bcprov-jdk15on:1.70")
     implementation("com.google.apis:google-api-services-oauth2:v2-rev20200213-1.32.1")
+
+    // Web scraping
+    implementation("it.skrape:skrapeit:1.2.1")
+
+    // Logging
+    implementation("io.github.microutils:kotlin-logging-jvm:2.1.21")
 
     // Testing
     testImplementation(kotlin("test"))

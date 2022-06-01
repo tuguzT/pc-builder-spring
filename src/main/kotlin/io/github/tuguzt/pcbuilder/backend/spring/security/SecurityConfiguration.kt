@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @EnableWebSecurity
-class SecurityConfig(
+class SecurityConfiguration(
     private val userDetailsService: UserDetailsService,
     private val jwtRequestFilter: JwtRequestFilter,
 ) : WebSecurityConfigurerAdapter() {

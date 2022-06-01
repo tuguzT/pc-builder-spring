@@ -2,6 +2,7 @@ package io.github.tuguzt.pcbuilder.backend.spring.controller
 
 import io.github.tuguzt.pcbuilder.backend.spring.security.JwtUtils
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserService
+import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -48,7 +49,7 @@ class UserController(
     suspend fun findById(
         @PathVariable
         @Parameter(name = "Идентификатор пользователя")
-        id: String,
+        id: NanoId,
     ): ResponseEntity<UserData> {
         logger.info { "Requested user with ID $id" }
         val user = userService.findById(id)

@@ -5,6 +5,7 @@ import io.github.tuguzt.pcbuilder.backend.spring.model.entity.toData
 import io.github.tuguzt.pcbuilder.backend.spring.model.toEntity
 import io.github.tuguzt.pcbuilder.backend.spring.repository.UserRepository
 import io.github.tuguzt.pcbuilder.backend.spring.service.UserService
+import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,10 +23,10 @@ class UserServiceImpl(private val repository: UserRepository) : UserService {
     override suspend fun delete(item: UserData) =
         withContext(Dispatchers.IO) { repository.delete(item.toEntity()) }
 
-    override suspend fun findById(id: String): UserData? =
+    override suspend fun findById(id: NanoId): UserData? =
         withContext(Dispatchers.IO) { repository.findByIdOrNull(id) }?.toData()
 
-    override suspend fun deleteById(id: String) =
+    override suspend fun deleteById(id: NanoId) =
         withContext(Dispatchers.IO) { repository.deleteById(id) }
 
     override suspend fun exists(item: UserData): Boolean =
