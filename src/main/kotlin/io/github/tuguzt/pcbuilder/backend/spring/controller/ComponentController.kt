@@ -3,7 +3,7 @@ package io.github.tuguzt.pcbuilder.backend.spring.controller
 import io.github.tuguzt.pcbuilder.backend.spring.service.repository.ComponentService
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.component.Component
-import io.github.tuguzt.pcbuilder.domain.model.component.ComponentData
+import io.github.tuguzt.pcbuilder.domain.model.component.data.ComponentData
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -28,7 +28,7 @@ class ComponentController(private val service: ComponentService) {
      */
     @GetMapping("all")
     @Operation(summary = "Все компоненты", description = "Получение списка всех компонентов ПК в системе")
-    suspend fun allComponents(): List<ComponentData> = service.getAll()
+    suspend fun all(): List<ComponentData> = service.getAll()
 
     /**
      * GET request which returns component found by [id], if any.

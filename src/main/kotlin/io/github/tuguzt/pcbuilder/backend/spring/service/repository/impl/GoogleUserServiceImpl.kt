@@ -4,7 +4,7 @@ import io.github.tuguzt.pcbuilder.backend.spring.model.GoogleUserData
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.GoogleUserEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.toData
 import io.github.tuguzt.pcbuilder.backend.spring.model.toEntity
-import io.github.tuguzt.pcbuilder.backend.spring.repository.GoogleUserRepository
+import io.github.tuguzt.pcbuilder.backend.spring.repository.user.GoogleUserRepository
 import io.github.tuguzt.pcbuilder.backend.spring.service.repository.GoogleUserService
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import kotlinx.coroutines.Dispatchers

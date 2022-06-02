@@ -6,8 +6,8 @@ import io.nacular.measured.units.times
 import javax.persistence.Embeddable
 
 @Embeddable
-data class CasePowerSupplyEmbeddable(private val power: Double) {
-    fun toPowerSupply() = CasePowerSupply(power = power * watt)
+data class CasePowerSupplyEmbeddable(private val power: Double?) {
+    fun toPowerSupply() = CasePowerSupply(power = (power ?: 0) * watt)
 }
 
 fun CasePowerSupply.toEmbeddable() = CasePowerSupplyEmbeddable(power = power `in` watt)

@@ -1,6 +1,7 @@
 package io.github.tuguzt.pcbuilder.backend.spring.repository
 
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.UserNamePasswordEntity
+import io.github.tuguzt.pcbuilder.backend.spring.repository.user.UserNamePasswordRepository
 import io.github.tuguzt.pcbuilder.domain.interactor.checkPassword
 import io.github.tuguzt.pcbuilder.domain.interactor.checkUsername
 import io.github.tuguzt.pcbuilder.domain.interactor.randomNanoId

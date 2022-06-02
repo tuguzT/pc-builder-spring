@@ -4,13 +4,12 @@ import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.Componen
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.ManufacturerEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.SizeEmbeddable
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.WeightEmbeddable
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.motherboard.MotherboardFormFactorEntity
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.component.cases.*
 import io.github.tuguzt.pcbuilder.domain.model.component.motherboard.MotherboardFormFactor
 import org.springframework.data.util.ProxyUtils
-import javax.persistence.Embedded
-import javax.persistence.Entity
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity
 @Table(name = "\"case\"")
@@ -25,7 +24,8 @@ class CaseEntity(
     powerSupply: CasePowerSupplyEmbeddable?,
     override val powerSupplyShroud: CasePowerSupplyShroud,
     override val sidePanelWindow: CaseSidePanelWindow?,
-    override val motherboardFormFactor: MotherboardFormFactor,
+    @ManyToMany(fetch = FetchType.EAGER)
+    private val motherboardFormFactorEntities: List<MotherboardFormFactorEntity>,
     driveBays: CaseDriveBaysEmbeddable,
     expansionSlots: CaseExpansionSlotsEmbeddable,
 ) : ComponentEntity(id, name, description, weight, size, manufacturer), Case {
@@ -52,6 +52,9 @@ class CaseEntity(
 
     override val expansionSlots: CaseExpansionSlots
         get() = expansionSlotsEmbeddable.toExpansionSlots()
+
+    override val motherboardFormFactors: List<MotherboardFormFactor>
+        get() = motherboardFormFactorEntities.map { it.id }
 
     override fun equals(other: Any?): Boolean {
         other ?: return false

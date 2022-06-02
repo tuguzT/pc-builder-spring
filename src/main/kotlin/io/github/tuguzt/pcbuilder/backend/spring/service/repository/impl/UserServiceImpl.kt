@@ -3,7 +3,7 @@ package io.github.tuguzt.pcbuilder.backend.spring.service.repository.impl
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.UserEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.toData
 import io.github.tuguzt.pcbuilder.backend.spring.model.toEntity
-import io.github.tuguzt.pcbuilder.backend.spring.repository.UserRepository
+import io.github.tuguzt.pcbuilder.backend.spring.repository.user.UserRepository
 import io.github.tuguzt.pcbuilder.backend.spring.service.repository.UserService
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData

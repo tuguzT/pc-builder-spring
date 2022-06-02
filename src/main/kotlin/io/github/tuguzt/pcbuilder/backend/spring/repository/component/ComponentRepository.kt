@@ -1,4 +1,4 @@
-package io.github.tuguzt.pcbuilder.backend.spring.repository
+package io.github.tuguzt.pcbuilder.backend.spring.repository.component
 
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.ComponentEntity
 import io.github.tuguzt.pcbuilder.domain.model.NanoId

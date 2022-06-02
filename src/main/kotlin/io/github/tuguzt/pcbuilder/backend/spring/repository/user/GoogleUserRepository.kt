@@ -1,4 +1,4 @@
-package io.github.tuguzt.pcbuilder.backend.spring.repository
+package io.github.tuguzt.pcbuilder.backend.spring.repository.user
 
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.GoogleUserEntity
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
