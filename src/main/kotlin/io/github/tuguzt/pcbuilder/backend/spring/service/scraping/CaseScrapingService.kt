@@ -19,84 +19,27 @@ import io.github.tuguzt.pcbuilder.domain.model.units.watt
 import io.nacular.measured.units.Length.Companion.millimeters
 import io.nacular.measured.units.Mass.Companion.grams
 import io.nacular.measured.units.times
-import it.skrape.core.htmlDocument
-import it.skrape.fetcher.AsyncFetcher
-import it.skrape.fetcher.response
-import it.skrape.fetcher.skrape
-import it.skrape.selects.eachHref
-import it.skrape.selects.html5.*
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import mu.KotlinLogging
 import org.springframework.stereotype.Service
-import javax.annotation.PostConstruct
 
 @Service
 class CaseScrapingService(
+    coroutineScope: CoroutineScope,
     private val caseService: CaseService,
     private val manufacturerService: ManufacturerService,
     private val formFactorService: MotherboardFormFactorService,
-    private val coroutineScope: CoroutineScope,
-) {
-    companion object {
-        private val logger = KotlinLogging.logger {}
-    }
+) : AbstractScrapingService<CaseData>(path = "/en/browse/case", coroutineScope) {
 
-    private suspend fun itemsFromPage(page: UInt = 1u): List<String> = skrape(AsyncFetcher) {
-        request { url = "https://pangoly.com/en/browse/case?page=$page" }
-        val itemRefs = response {
-            htmlDocument {
-                a {
-                    withClass = "productItemLink"
-                    findAll { eachHref }
-                }
-            }
-        }
-        return@skrape itemRefs
-    }
-
-    private suspend fun dataFromItem(itemUrl: String): ParseRawData = skrape(AsyncFetcher) {
-        request { url = itemUrl }
-        response {
-            htmlDocument {
-                val manufacturerName = ol {
-                    withClass = "breadcrumb"
-                    li { 2 { text } }
-                }
-                val name = div {
-                    withClass = "product-info"
-                    h2 { findFirst { text } }
-                }
-                val data = table {
-                    withClass = "table"
-                    tbody { this }.tr { this }.findAll { this }.associate {
-                        it.td {
-                            val key = findFirst { text }
-                            val value = findLast {
-                                text.ifEmpty {
-                                    children { first().attributes["title"]!! }
-                                }
-                            }
-                            key to value
-                        }
-                    }
-                }
-                ParseRawData(name, manufacturerName, data)
-            }
-        }
-    }
-
-    private suspend fun parse(data: ParseRawData): CaseData? {
+    override suspend fun parse(data: ParseRawData): CaseData? {
         val (name, manufacturerName, map) = data
         if (map.isEmpty()) return null
 
         val type = map["Type"]?.toCaseType() ?: return null
         val powerSupply = CasePowerSupply(power = 1 * watt).takeIf { map["Includes Power Supply"] == "Yes" }
-        val external5_25_count = map["External 5.25\" Drive Bays"]?.toUInt() ?: 0u
-        val external3_5_count = map["External 3.5\" Drive Bays"]?.toUInt() ?: 0u
-        val internal3_5_count = map["Internal 2.5\" Drive Bays"]?.toUInt() ?: 0u
-        val internal2_5_count = map["Internal 3.5\" Drive Bays"]?.toUInt() ?: 0u
+        val external5x25Count = map["External 5.25\" Drive Bays"]?.toUInt() ?: 0u
+        val external3x5Count = map["External 3.5\" Drive Bays"]?.toUInt() ?: 0u
+        val internal3x5Count = map["Internal 2.5\" Drive Bays"]?.toUInt() ?: 0u
+        val internal2x5Count = map["Internal 3.5\" Drive Bays"]?.toUInt() ?: 0u
         val expansionSlots = map["Expansion Slots"]?.toUInt() ?: 0u
         val size = kotlin.run {
             val doubles = map["Dimensions"]
@@ -128,10 +71,10 @@ class CaseScrapingService(
                 size = size,
                 manufacturer = manufacturer,
                 driveBays = CaseDriveBays(
-                    external5_25_count,
-                    external3_5_count,
-                    internal3_5_count,
-                    internal2_5_count,
+                    external5x25Count,
+                    external3x5Count,
+                    internal3x5Count,
+                    internal2x5Count,
                 ),
                 expansionSlots = CaseExpansionSlots(expansionSlots, 0u),
                 type = type,
@@ -142,30 +85,6 @@ class CaseScrapingService(
                     .map { formFactorService.save(it.toEntity()).id },
             )
             caseService.save(case)
-        }
-    }
-
-    @PostConstruct
-    fun scrapeCases() {
-        coroutineScope.launch {
-            while (isActive) {
-                tailrec suspend fun task(page: UInt = 1u) {
-                    val itemRefs = itemsFromPage(page)
-                    itemRefs.forEach { itemUrl ->
-                        logger.info { "Item URL: $itemUrl" }
-                        val data = dataFromItem(itemUrl)
-                        val case = parse(data)
-                        logger.info { "Scraped data: $case" }
-                    }
-                    logger.info { "Page $page scraped" }
-                    task(page + 1u)
-                }
-
-                val result = kotlin.runCatching { task() }
-                result.exceptionOrNull()?.let {
-                    logger.error(it) { "Scraping error" }
-                }
-            }
         }
     }
 }
