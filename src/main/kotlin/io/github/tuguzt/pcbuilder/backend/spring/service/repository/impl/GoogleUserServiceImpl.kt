@@ -9,6 +9,7 @@ import io.github.tuguzt.pcbuilder.backend.spring.service.repository.GoogleUserSe
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
@@ -22,6 +23,9 @@ class GoogleUserServiceImpl(private val repository: GoogleUserRepository) : Goog
 
     override suspend fun getAll(): List<GoogleUserData> =
         withContext(Dispatchers.IO) { repository.findAll() }.map(GoogleUserEntity::toData)
+
+    override suspend fun getAll(pageable: Pageable): List<GoogleUserData> =
+        withContext(Dispatchers.IO) { repository.findAll(pageable) }.content.map(GoogleUserEntity::toData)
 
     override suspend fun findById(id: NanoId): GoogleUserData? =
         withContext(Dispatchers.IO) { repository.findByIdOrNull(id) }?.toData()

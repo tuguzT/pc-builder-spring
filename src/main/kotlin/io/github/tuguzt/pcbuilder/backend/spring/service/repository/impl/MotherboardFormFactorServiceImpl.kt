@@ -6,6 +6,7 @@ import io.github.tuguzt.pcbuilder.backend.spring.service.repository.MotherboardF
 import io.github.tuguzt.pcbuilder.domain.model.component.motherboard.MotherboardFormFactor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
@@ -15,6 +16,9 @@ class MotherboardFormFactorServiceImpl(private val repository: MotherboardFormFa
 
     override suspend fun getAll(): List<MotherboardFormFactorEntity> =
         withContext(Dispatchers.IO) { repository.findAll() }
+
+    override suspend fun getAll(pageable: Pageable): List<MotherboardFormFactorEntity> =
+        withContext(Dispatchers.IO) { repository.findAll(pageable) }.content
 
     override suspend fun save(item: MotherboardFormFactorEntity): MotherboardFormFactorEntity =
         withContext(Dispatchers.IO) { repository.save(item) }

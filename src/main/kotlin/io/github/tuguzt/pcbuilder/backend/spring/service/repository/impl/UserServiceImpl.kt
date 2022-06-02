@@ -1,7 +1,7 @@
 package io.github.tuguzt.pcbuilder.backend.spring.service.repository.impl
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.UserEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.toData
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.UserEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.toEntity
 import io.github.tuguzt.pcbuilder.backend.spring.repository.user.UserRepository
 import io.github.tuguzt.pcbuilder.backend.spring.service.repository.UserService
@@ -9,6 +9,7 @@ import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
@@ -16,6 +17,9 @@ import org.springframework.stereotype.Service
 class UserServiceImpl(private val repository: UserRepository) : UserService {
     override suspend fun getAll(): List<UserData> =
         withContext(Dispatchers.IO) { repository.findAll() }.map(UserEntity::toData)
+
+    override suspend fun getAll(pageable: Pageable): List<UserData> =
+        withContext(Dispatchers.IO) { repository.findAll(pageable) }.content.map(UserEntity::toData)
 
     override suspend fun save(item: UserData): UserData =
         withContext(Dispatchers.IO) { repository.save(item.toEntity()) }.toData()

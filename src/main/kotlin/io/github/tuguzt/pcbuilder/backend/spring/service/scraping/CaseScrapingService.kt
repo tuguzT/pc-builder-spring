@@ -152,10 +152,10 @@ class CaseScrapingService(
                 tailrec suspend fun task(page: UInt = 1u) {
                     val itemRefs = itemsFromPage(page)
                     itemRefs.forEach { itemUrl ->
-                        logger.info { itemUrl }
+                        logger.info { "Item URL: $itemUrl" }
                         val data = dataFromItem(itemUrl)
                         val case = parse(data)
-                        logger.info { case }
+                        logger.info { "Scraped data: $case" }
                     }
                     logger.info { "Page $page scraped" }
                     task(page + 1u)

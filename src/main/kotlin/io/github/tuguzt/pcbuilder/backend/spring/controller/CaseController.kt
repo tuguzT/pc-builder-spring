@@ -8,12 +8,10 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import mu.KotlinLogging
+import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 /**
  * REST API controller of the server for [PC cases][Case].
@@ -32,6 +30,20 @@ class CaseController(private val service: CaseService) {
     @GetMapping("all")
     @Operation(summary = "Все корпусы", description = "Получение списка всех корпусов ПК в системе")
     suspend fun all(): List<CaseData> = service.getAll()
+
+    /**
+     * GET request which returns all PC cases with paging.
+     */
+    @GetMapping("paged")
+    @Operation(summary = "Все корпусы", description = "Получение списка всех корпусов ПК в системе постранично")
+    suspend fun paged(
+        @RequestParam
+        @Parameter(name = "Номер страницы")
+        page: Int,
+        @RequestParam
+        @Parameter(name = "Количество элементов в странице")
+        size: Int,
+    ): List<CaseData> = service.getAll(PageRequest.of(page, size))
 
     /**
      * GET request which returns case found by [id], if any.

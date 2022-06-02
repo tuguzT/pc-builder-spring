@@ -9,6 +9,7 @@ import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.component.data.ComponentData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
@@ -25,6 +26,9 @@ class ComponentServiceImpl(private val repository: ComponentRepository) : Compon
 
     override suspend fun getAll(): List<ComponentData> =
         withContext(Dispatchers.IO) { repository.findAll() }.map(ComponentEntity::toData)
+
+    override suspend fun getAll(pageable: Pageable): List<ComponentData> =
+        withContext(Dispatchers.IO) { repository.findAll(pageable) }.content.map(ComponentEntity::toData)
 
     override suspend fun findById(id: NanoId): ComponentData? =
         withContext(Dispatchers.IO) { repository.findByIdOrNull(id) }?.toData()

@@ -9,6 +9,7 @@ import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.component.data.ManufacturerData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
@@ -16,6 +17,9 @@ import org.springframework.stereotype.Service
 class ManufacturerServiceImpl(private val repository: ManufacturerRepository) : ManufacturerService {
     override suspend fun getAll(): List<ManufacturerData> =
         withContext(Dispatchers.IO) { repository.findAll() }.map(ManufacturerEntity::toData)
+
+    override suspend fun getAll(pageable: Pageable): List<ManufacturerData> =
+        withContext(Dispatchers.IO) { repository.findAll(pageable) }.content.map(ManufacturerEntity::toData)
 
     override suspend fun save(item: ManufacturerData): ManufacturerData =
         withContext(Dispatchers.IO) { repository.save(item.toEntity()) }.toData()
