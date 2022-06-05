@@ -9,8 +9,6 @@ import it.skrape.selects.html5.*
 import kotlinx.coroutines.*
 import mu.KLogger
 import mu.KotlinLogging
-import javax.annotation.PostConstruct
-import javax.annotation.PreDestroy
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
 
@@ -27,10 +25,11 @@ sealed class AbstractScrapingService<T>(
     }
 
     private suspend fun itemsFromPage(page: UInt = 1u): List<String> = skrape(AsyncFetcher) {
-        randomDelay(5.0..10.0)
+        randomDelay(10.0..20.0)
         request {
             url = "https://pangoly.com$path?page=$page"
-            userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.63 Safari/537.36"
+            userAgent =
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.63 Safari/537.36"
         }
         val itemRefs = response {
             htmlDocument {
@@ -44,10 +43,11 @@ sealed class AbstractScrapingService<T>(
     }
 
     private suspend fun dataFromItem(itemUrl: String): ParseRawData = skrape(AsyncFetcher) {
-        randomDelay(5.0..10.0)
+        randomDelay(10.0..20.0)
         request {
             url = itemUrl
-            userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.63 Safari/537.36"
+            userAgent =
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.63 Safari/537.36"
         }
         response {
             htmlDocument {
@@ -78,17 +78,22 @@ sealed class AbstractScrapingService<T>(
         }
     }
 
-    @PostConstruct
-    private fun scrapeCases() {
+    fun start() {
+        scrapingJob?.cancel()
         scrapingJob = coroutineScope.launch {
             while (isActive) {
                 tailrec suspend fun task(page: UInt = 1u) {
                     val itemRefs = itemsFromPage(page)
                     itemRefs.forEach { itemUrl ->
                         logger.info { "Item URL: $itemUrl" }
-                        val data = dataFromItem(itemUrl)
-                        val case = parse(data)
-                        logger.info { "Scraped data: $case" }
+                        val result = runCatching { dataFromItem(itemUrl) }
+                        result.exceptionOrNull()?.let {
+                            logger.error(it) { "Item scraping error" }
+                        }
+                        result.getOrNull()?.let {
+                            val case = parse(it)
+                            logger.info { "Scraped data: $case" }
+                        }
                     }
                     logger.info { "Page $page scraped" }
                     task(page + 1u)
@@ -96,7 +101,7 @@ sealed class AbstractScrapingService<T>(
 
                 val result = kotlin.runCatching { task() }
                 result.exceptionOrNull()?.let {
-                    logger.error(it) { "Scraping error" }
+                    logger.error(it) { "Page scraping error" }
                 }
             }
         }
@@ -104,8 +109,7 @@ sealed class AbstractScrapingService<T>(
 
     private var scrapingJob: Job? = null
 
-    @PreDestroy
-    private fun shutdown() = runBlocking {
+    fun stop() = runBlocking {
         scrapingJob?.cancelAndJoin()
     }
 }

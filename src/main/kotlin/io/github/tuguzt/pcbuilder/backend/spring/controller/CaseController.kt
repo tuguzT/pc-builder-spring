@@ -29,7 +29,10 @@ class CaseController(private val service: CaseService) {
      */
     @GetMapping("all")
     @Operation(summary = "Все корпусы", description = "Получение списка всех корпусов ПК в системе")
-    suspend fun all(): List<CaseData> = service.getAll()
+    suspend fun all(): List<CaseData> {
+        logger.info { "Requested all cases" }
+        return service.getAll()
+    }
 
     /**
      * GET request which returns all PC cases with paging.
@@ -49,7 +52,10 @@ class CaseController(private val service: CaseService) {
      * GET request which returns case found by [id], if any.
      */
     @GetMapping("id/{id}")
-    @Operation(summary = "Поиск по ID", description = "Поиск корпуса ПК в системе по его идентификатору")
+    @Operation(
+        summary = "Поиск по идентификатору",
+        description = "Поиск корпуса ПК в системе по его идентификатору",
+    )
     suspend fun findById(
         @PathVariable
         @Parameter(name = "Идентификатор корпуса ПК")
@@ -62,6 +68,26 @@ class CaseController(private val service: CaseService) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
         logger.info { "Found case with ID $id" }
+        return ResponseEntity.ok(component)
+    }
+
+    /**
+     * GET request which returns case found by [name], if any.
+     */
+    @GetMapping("name/{name}")
+    @Operation(summary = "Поиск по названию", description = "Поиск корпуса ПК в системе по его названию")
+    suspend fun findByName(
+        @PathVariable
+        @Parameter(name = "Название корпуса ПК")
+        name: String,
+    ): ResponseEntity<CaseData> {
+        logger.info { "Requested case with name $name" }
+        val component = service.findByName(name)
+        if (component == null) {
+            logger.info { "Case with name $name not found" }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+        }
+        logger.info { "Found case with name $name" }
         return ResponseEntity.ok(component)
     }
 }

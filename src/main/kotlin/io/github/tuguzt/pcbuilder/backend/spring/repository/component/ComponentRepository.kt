@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository
  * [JpaRepository] which contains data of type [ComponentEntity].
  */
 @Repository
-interface ComponentRepository : JpaRepository<ComponentEntity, NanoId>
+interface ComponentRepository : JpaRepository<ComponentEntity, NanoId> {
+    fun findByName(name: String): ComponentEntity?
+}

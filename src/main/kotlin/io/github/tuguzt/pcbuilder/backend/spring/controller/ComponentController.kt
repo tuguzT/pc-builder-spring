@@ -10,7 +10,10 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 /**
  * REST API controller of the server for [PC components][Component].
@@ -28,13 +31,19 @@ class ComponentController(private val service: ComponentService) {
      */
     @GetMapping("all")
     @Operation(summary = "Все компоненты", description = "Получение списка всех компонентов ПК в системе")
-    suspend fun all(): List<ComponentData> = service.getAll()
+    suspend fun all(): List<ComponentData> {
+        logger.info { "Requested all components" }
+        return service.getAll()
+    }
 
     /**
      * GET request which returns component found by [id], if any.
      */
     @GetMapping("id/{id}")
-    @Operation(summary = "Поиск по ID", description = "Поиск компонента в системе по его идентификатору")
+    @Operation(
+        summary = "Поиск по идентификатору",
+        description = "Поиск компонента в системе по его идентификатору",
+    )
     suspend fun findById(
         @PathVariable
         @Parameter(name = "Идентификатор компонента ПК")
@@ -51,17 +60,22 @@ class ComponentController(private val service: ComponentService) {
     }
 
     /**
-     * POST request which inserts [component] into the server repository.
+     * GET request which returns component found by [name], if any.
      */
-    @PostMapping("save")
-    @Operation(summary = "Сохранение компонента", description = "Сохранить данные компонента в системе")
-    suspend fun save(
-        @RequestBody
-        @Parameter(name = "Данные компонента для сохранения")
-        component: ComponentData,
-    ): ComponentData {
-        val data = service.save(component)
-        logger.info { "Inserted component with ID ${data.id}" }
-        return data
+    @GetMapping("name/{name}")
+    @Operation(summary = "Поиск по названию", description = "Поиск компонента в системе по его названию")
+    suspend fun findByName(
+        @PathVariable
+        @Parameter(name = "Название компонента ПК")
+        name: String,
+    ): ResponseEntity<ComponentData> {
+        logger.info { "Requested component with name $name" }
+        val component = service.findByName(name)
+        if (component == null) {
+            logger.info { "Component with name $name not found" }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+        }
+        logger.info { "Found component with name $name" }
+        return ResponseEntity.ok(component)
     }
 }

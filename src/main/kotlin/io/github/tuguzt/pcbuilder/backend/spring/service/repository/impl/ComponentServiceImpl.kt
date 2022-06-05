@@ -24,6 +24,9 @@ class ComponentServiceImpl(private val repository: ComponentRepository) : Compon
     override suspend fun delete(item: ComponentData) =
         withContext(Dispatchers.IO) { repository.delete(item.toEntity()) }
 
+    override suspend fun findByName(name: String): ComponentData? =
+        withContext(Dispatchers.IO) { repository.findByName(name) }?.toData()
+
     override suspend fun getAll(): List<ComponentData> =
         withContext(Dispatchers.IO) { repository.findAll() }.map(ComponentEntity::toData)
 

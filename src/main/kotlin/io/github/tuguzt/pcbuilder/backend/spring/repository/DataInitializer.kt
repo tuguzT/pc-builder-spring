@@ -17,38 +17,38 @@ class DataInitializer(
     private val passwordEncoder: PasswordEncoder,
 ) : ApplicationRunner {
     override fun run(args: ApplicationArguments?) {
-        fun generateUsers(): List<UserNamePasswordEntity> {
-            val administrator = kotlin.run {
-                val username = "tuguzT"
-                val password = "S6iwekjbbi_92,!"
-                val email = "timurka.tugushev@gmail.com"
-                require(checkUsername(username) && checkPassword(password))
-                UserNamePasswordEntity(
-                    id = randomNanoId(),
-                    role = UserRole.Administrator,
-                    email = email,
-                    imageUri = null,
-                    username = username,
-                    password = passwordEncoder.encode(password),
-                )
-            }
-            val moderator = kotlin.run {
-                val username = "dr3am_b3ast"
-                val password = "Y873lin)*odjv"
-                require(checkUsername(username) && checkPassword(password))
-                UserNamePasswordEntity(
-                    id = randomNanoId(),
-                    role = UserRole.Moderator,
-                    email = null,
-                    imageUri = null,
-                    username = username,
-                    password = passwordEncoder.encode(password),
-                )
-            }
-            return listOf(administrator, moderator)
-        }
-
         val users = generateUsers()
         userNamePasswordRepository.saveAll(users)
+    }
+
+    private fun generateUsers(): List<UserNamePasswordEntity> {
+        val administrator = kotlin.run {
+            val username = "tuguzT"
+            val password = "S6iwekjbbi_92,!"
+            val email = "timurka.tugushev@gmail.com"
+            require(checkUsername(username) && checkPassword(password))
+            UserNamePasswordEntity(
+                id = randomNanoId(),
+                role = UserRole.Administrator,
+                email = email,
+                imageUri = null,
+                username = username,
+                password = passwordEncoder.encode(password),
+            )
+        }
+        val moderator = kotlin.run {
+            val username = "dr3am_b3ast"
+            val password = "Y873lin)*odjv"
+            require(checkUsername(username) && checkPassword(password))
+            UserNamePasswordEntity(
+                id = randomNanoId(),
+                role = UserRole.Moderator,
+                email = null,
+                imageUri = null,
+                username = username,
+                password = passwordEncoder.encode(password),
+            )
+        }
+        return listOf(administrator, moderator)
     }
 }
