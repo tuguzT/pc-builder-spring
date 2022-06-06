@@ -7,7 +7,11 @@ import io.github.tuguzt.pcbuilder.domain.model.component.data.PolymorphicCompone
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import mu.KotlinLogging
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -22,10 +26,12 @@ import org.springframework.web.bind.annotation.*
 class ComponentController(
     private val userController: UserController,
     private val service: ComponentService,
-) {
+): KoinComponent {
     companion object {
         private val logger = KotlinLogging.logger {}
     }
+
+    private val json: Json by inject()
 
     /**
      * GET request which returns all PC components.
@@ -36,12 +42,13 @@ class ComponentController(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
         @Parameter(name = "Токен пользователя с префиксом 'Bearer '")
         bearer: String,
-    ): ResponseEntity<List<PolymorphicComponent>> {
+    ): ResponseEntity<String> {
         val currentUser = userController.current(bearer).body
             ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
 
         logger.info { "Requested all components" }
-        return ResponseEntity.ok(service.getAll(currentUser))
+        val all = service.getAll(currentUser)
+        return ResponseEntity.ok(json.encodeToString(all))
     }
 
     /**

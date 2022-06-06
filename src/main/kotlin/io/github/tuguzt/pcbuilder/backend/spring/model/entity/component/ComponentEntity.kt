@@ -1,6 +1,7 @@
 package io.github.tuguzt.pcbuilder.backend.spring.model.entity.component
 
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.UserEntity
+import io.github.tuguzt.pcbuilder.domain.model.Identifiable
 import io.github.tuguzt.pcbuilder.domain.model.component.Size
 import io.github.tuguzt.pcbuilder.domain.model.component.Weight
 import org.springframework.data.util.ProxyUtils
@@ -10,7 +11,7 @@ import javax.persistence.*
 @Table(name = "component")
 @Inheritance(strategy = InheritanceType.JOINED)
 open class ComponentEntity(
-    @Id open val id: String,
+    @Id override val id: String,
     open val name: String,
     open val description: String,
     weight: WeightEmbeddable,
@@ -20,7 +21,7 @@ open class ComponentEntity(
     open val imageUri: String?,
     @ManyToMany(fetch = FetchType.EAGER)
     open val favorites: Set<UserEntity>,
-) {
+) : Identifiable<String> {
     @Embedded
     private val sizeEmbeddable = size
 

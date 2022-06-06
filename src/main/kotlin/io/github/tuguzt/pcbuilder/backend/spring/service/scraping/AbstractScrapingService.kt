@@ -4,6 +4,7 @@ import it.skrape.core.htmlDocument
 import it.skrape.fetcher.AsyncFetcher
 import it.skrape.fetcher.response
 import it.skrape.fetcher.skrape
+import it.skrape.selects.eachAttribute
 import it.skrape.selects.eachHref
 import it.skrape.selects.html5.*
 import kotlinx.coroutines.*
@@ -25,7 +26,7 @@ sealed class AbstractScrapingService<T>(
     }
 
     private suspend fun itemsFromPage(page: UInt = 1u): List<String> = skrape(AsyncFetcher) {
-        randomDelay(10.0..20.0)
+        randomDelay(5.0..20.0)
         request {
             url = "https://pangoly.com$path?page=$page"
             userAgent =
@@ -43,7 +44,7 @@ sealed class AbstractScrapingService<T>(
     }
 
     private suspend fun dataFromItem(itemUrl: String): ParseRawData = skrape(AsyncFetcher) {
-        randomDelay(10.0..20.0)
+        randomDelay(5.0..20.0)
         request {
             url = itemUrl
             userAgent =
@@ -59,6 +60,10 @@ sealed class AbstractScrapingService<T>(
                     withClass = "product-info"
                     h2 { findFirst { text } }
                 }
+                val imageUris = img {
+                    withClass = "tns-lazy-img"
+                    findAll { eachAttribute("data-src") }
+                }
                 val data = table {
                     withClass = "table"
                     tbody { this }.tr { this }.findAll { this }.associate {
@@ -73,7 +78,7 @@ sealed class AbstractScrapingService<T>(
                         }
                     }
                 }
-                ParseRawData(name, manufacturerName, data)
+                ParseRawData(name, manufacturerName, imageUris, data)
             }
         }
     }
@@ -85,14 +90,13 @@ sealed class AbstractScrapingService<T>(
                 tailrec suspend fun task(page: UInt = 1u) {
                     val itemRefs = itemsFromPage(page)
                     itemRefs.forEach { itemUrl ->
-                        logger.info { "Item URL: $itemUrl" }
                         val result = runCatching { dataFromItem(itemUrl) }
                         result.exceptionOrNull()?.let {
                             logger.error(it) { "Item scraping error" }
                         }
                         result.getOrNull()?.let {
                             val case = parse(it)
-                            logger.info { "Scraped data: $case" }
+                            logger.info { "Item URL: ${itemUrl}\nScraped data: $case" }
                         }
                     }
                     logger.info { "Page $page scraped" }

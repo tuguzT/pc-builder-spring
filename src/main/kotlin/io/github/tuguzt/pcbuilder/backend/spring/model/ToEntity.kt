@@ -4,13 +4,17 @@ import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.Componen
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.ManufacturerEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.cases.CaseEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.cases.toEmbeddable
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.gpu.toEmbeddable
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.motherboard.MotherboardEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.motherboard.MotherboardFormFactorEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.motherboard.toEmbeddable
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.toEmbeddable
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.GoogleUserEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.UserEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.UserNamePasswordEntity
 import io.github.tuguzt.pcbuilder.domain.model.component.Manufacturer
 import io.github.tuguzt.pcbuilder.domain.model.component.data.CaseData
+import io.github.tuguzt.pcbuilder.domain.model.component.data.MotherboardData
 import io.github.tuguzt.pcbuilder.domain.model.component.data.PolymorphicComponent
 import io.github.tuguzt.pcbuilder.domain.model.component.motherboard.MotherboardFormFactor
 import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData
@@ -72,4 +76,26 @@ fun CaseData.toEntity(favorites: Set<UserEntity>) = CaseEntity(
     motherboardFormFactorEntities = motherboardFormFactors.map { it.toEntity() },
     driveBays = driveBays.toEmbeddable(),
     expansionSlots = expansionSlots.toEmbeddable(),
+)
+
+fun MotherboardData.toEntity(favorites: Set<UserEntity>) = MotherboardEntity(
+    id = id.toString(),
+    name = name,
+    description = description,
+    weight = weight.toEmbeddable(),
+    size = size.toEmbeddable(),
+    manufacturer = manufacturer.toEntity(),
+    imageUri = imageUri,
+    favorites = favorites,
+    formFactorEntity = formFactor.toEntity(),
+    memoryAmount = memoryAmount.toEmbeddable(),
+    memorySlotCount = memorySlotCount.toEmbeddable(),
+    memoryECCType = memoryECCType,
+    memoryType = memoryType,
+    multiGpuSupport = multiGpuSupport?.toEmbeddable(),
+    ports = ports.toEmbeddable(),
+    slots = slots.toEmbeddable(),
+    usbHeaders = usbHeaders.toEmbeddable(),
+    chipset = chipset.toEmbeddable(),
+    cpuSocket = cpuSocket.toEmbeddable(),
 )

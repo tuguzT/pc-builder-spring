@@ -14,7 +14,6 @@ import io.github.tuguzt.pcbuilder.domain.model.component.cases.CasePowerSupply
 import io.github.tuguzt.pcbuilder.domain.model.component.cases.CasePowerSupplyShroud
 import io.github.tuguzt.pcbuilder.domain.model.component.data.CaseData
 import io.github.tuguzt.pcbuilder.domain.model.component.data.ManufacturerData
-import io.github.tuguzt.pcbuilder.domain.model.component.motherboard.MotherboardFormFactor
 import io.github.tuguzt.pcbuilder.domain.model.units.watt
 import io.nacular.measured.units.Length.Companion.millimeters
 import io.nacular.measured.units.Mass.Companion.grams
@@ -31,7 +30,7 @@ class CaseScrapingService(
 ) : AbstractScrapingService<CaseData>(path = "/en/browse/case", coroutineScope) {
 
     override suspend fun parse(data: ParseRawData): CaseData? {
-        val (name, manufacturerName, map) = data
+        val (name, manufacturerName, imageUris, map) = data
         if (map.isEmpty()) return null
 
         val type = map["Type"]?.toCaseType() ?: return null
@@ -53,7 +52,7 @@ class CaseScrapingService(
             Size(length, width, height)
         }
         val motherboardFormFactors = map["Motherboard Compatibility"]
-            ?.toMotherboardFormFactor()
+            ?.toMotherboardFormFactors()
             ?: emptyList()
 
         val manufacturer = kotlin.run {
@@ -69,7 +68,7 @@ class CaseScrapingService(
                 description = "",
                 weight = Weight(0 * grams),
                 size = size,
-                imageUri = null,
+                imageUri = imageUris.firstOrNull(),
                 isFavorite = false,
                 manufacturer = manufacturer,
                 driveBays = CaseDriveBays(
@@ -89,9 +88,4 @@ class CaseScrapingService(
             caseService.save(case, currentUser = null)
         }
     }
-}
-
-private fun String.toMotherboardFormFactor(): List<MotherboardFormFactor> {
-    val strings = split(",").map { it.trim() }
-    return MotherboardFormFactor.values().filter { "$it" in strings }
 }

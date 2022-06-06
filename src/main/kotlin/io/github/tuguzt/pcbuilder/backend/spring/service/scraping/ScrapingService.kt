@@ -5,14 +5,19 @@ import javax.annotation.PostConstruct
 import javax.annotation.PreDestroy
 
 @Service
-class ScrapingService(private val caseScrapingService: CaseScrapingService) {
+class ScrapingService(
+    private val caseScrapingService: CaseScrapingService,
+    private val motherboardScrapingService: MotherboardScrapingService,
+) {
     @PostConstruct
     private fun start() {
         caseScrapingService.start()
+        motherboardScrapingService.start()
     }
 
     @PreDestroy
     private fun stop() {
         caseScrapingService.stop()
+        motherboardScrapingService.stop()
     }
 }
