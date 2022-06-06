@@ -28,13 +28,13 @@ class ManufacturerServiceImpl(private val repository: ManufacturerRepository) : 
         withContext(Dispatchers.IO) { repository.delete(item.toEntity()) }
 
     override suspend fun findById(id: NanoId): ManufacturerData? =
-        withContext(Dispatchers.IO) { repository.findByIdOrNull(id) }?.toData()
+        withContext(Dispatchers.IO) { repository.findByIdOrNull(id.toString()) }?.toData()
 
     override suspend fun deleteById(id: NanoId): Unit =
-        withContext(Dispatchers.IO) { repository.deleteById(id) }
+        withContext(Dispatchers.IO) { repository.deleteById(id.toString()) }
 
     override suspend fun exists(item: ManufacturerData): Boolean =
-        withContext(Dispatchers.IO) { repository.existsById(item.id) }
+        withContext(Dispatchers.IO) { repository.existsById(item.id.toString()) }
 
     override suspend fun findByName(name: String): ManufacturerData? =
         withContext(Dispatchers.IO) { repository.findByName(name) }?.toData()

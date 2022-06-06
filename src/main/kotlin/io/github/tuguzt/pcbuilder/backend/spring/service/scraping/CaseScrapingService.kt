@@ -12,7 +12,7 @@ import io.github.tuguzt.pcbuilder.domain.model.component.cases.CaseDriveBays
 import io.github.tuguzt.pcbuilder.domain.model.component.cases.CaseExpansionSlots
 import io.github.tuguzt.pcbuilder.domain.model.component.cases.CasePowerSupply
 import io.github.tuguzt.pcbuilder.domain.model.component.cases.CasePowerSupplyShroud
-import io.github.tuguzt.pcbuilder.domain.model.component.cases.data.CaseData
+import io.github.tuguzt.pcbuilder.domain.model.component.data.CaseData
 import io.github.tuguzt.pcbuilder.domain.model.component.data.ManufacturerData
 import io.github.tuguzt.pcbuilder.domain.model.component.motherboard.MotherboardFormFactor
 import io.github.tuguzt.pcbuilder.domain.model.units.watt
@@ -62,13 +62,15 @@ class CaseScrapingService(
             manufacturerService.save(manufacturer)
         }
         return kotlin.run {
-            val id = caseService.findByName(name)?.id ?: randomNanoId()
+            val id = caseService.findByName(name, currentUser = null)?.id ?: randomNanoId()
             val case = CaseData(
                 id = id,
                 name = name,
                 description = "",
                 weight = Weight(0 * grams),
                 size = size,
+                imageUri = null,
+                isFavorite = false,
                 manufacturer = manufacturer,
                 driveBays = CaseDriveBays(
                     external5x25Count,
@@ -77,14 +79,14 @@ class CaseScrapingService(
                     internal2x5Count,
                 ),
                 expansionSlots = CaseExpansionSlots(expansionSlots, 0u),
-                type = type,
+                caseType = type,
                 powerSupplyShroud = CasePowerSupplyShroud.NonShroud,
                 sidePanelWindow = null,
                 powerSupply = powerSupply,
                 motherboardFormFactors = motherboardFormFactors
                     .map { formFactorService.save(it.toEntity()).id },
             )
-            caseService.save(case)
+            caseService.save(case, currentUser = null)
         }
     }
 }

@@ -1,7 +1,6 @@
 package io.github.tuguzt.pcbuilder.backend.spring.model.entity.component
 
-import io.github.tuguzt.pcbuilder.domain.model.NanoId
-import io.github.tuguzt.pcbuilder.domain.model.component.Component
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.UserEntity
 import io.github.tuguzt.pcbuilder.domain.model.component.Size
 import io.github.tuguzt.pcbuilder.domain.model.component.Weight
 import org.springframework.data.util.ProxyUtils
@@ -11,25 +10,27 @@ import javax.persistence.*
 @Table(name = "component")
 @Inheritance(strategy = InheritanceType.JOINED)
 open class ComponentEntity(
-    @Id override val id: NanoId,
-    override val name: String,
-    override val description: String,
+    @Id open val id: String,
+    open val name: String,
+    open val description: String,
     weight: WeightEmbeddable,
     size: SizeEmbeddable,
     @ManyToOne @JoinColumn(name = "manufacturer_id")
-    override val manufacturer: ManufacturerEntity,
-) : Component {
-
+    open val manufacturer: ManufacturerEntity,
+    open val imageUri: String?,
+    @ManyToMany(fetch = FetchType.EAGER)
+    open val favorites: Set<UserEntity>,
+) {
     @Embedded
     private val sizeEmbeddable = size
 
     @Embedded
     private val weightEmbeddable = weight
 
-    final override val weight: Weight
+    val weight: Weight
         get() = weightEmbeddable.toWeight()
 
-    final override val size: Size
+    val size: Size
         get() = sizeEmbeddable.toSize()
 
     override fun equals(other: Any?): Boolean {

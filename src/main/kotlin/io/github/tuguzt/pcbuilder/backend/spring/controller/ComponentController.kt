@@ -3,17 +3,15 @@ package io.github.tuguzt.pcbuilder.backend.spring.controller
 import io.github.tuguzt.pcbuilder.backend.spring.service.repository.ComponentService
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.component.Component
-import io.github.tuguzt.pcbuilder.domain.model.component.data.ComponentData
+import io.github.tuguzt.pcbuilder.domain.model.component.data.PolymorphicComponent
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import mu.KotlinLogging
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 /**
  * REST API controller of the server for [PC components][Component].
@@ -21,7 +19,10 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("components")
 @Tag(name = "Компоненты ПК", description = "Конечные сетевые точки обращения данных компонентов ПК системы")
-class ComponentController(private val service: ComponentService) {
+class ComponentController(
+    private val userController: UserController,
+    private val service: ComponentService,
+) {
     companion object {
         private val logger = KotlinLogging.logger {}
     }
@@ -31,9 +32,16 @@ class ComponentController(private val service: ComponentService) {
      */
     @GetMapping("all")
     @Operation(summary = "Все компоненты", description = "Получение списка всех компонентов ПК в системе")
-    suspend fun all(): List<ComponentData> {
+    suspend fun all(
+        @RequestHeader(HttpHeaders.AUTHORIZATION)
+        @Parameter(name = "Токен пользователя с префиксом 'Bearer '")
+        bearer: String,
+    ): ResponseEntity<List<PolymorphicComponent>> {
+        val currentUser = userController.current(bearer).body
+            ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+
         logger.info { "Requested all components" }
-        return service.getAll()
+        return ResponseEntity.ok(service.getAll(currentUser))
     }
 
     /**
@@ -45,12 +53,18 @@ class ComponentController(private val service: ComponentService) {
         description = "Поиск компонента в системе по его идентификатору",
     )
     suspend fun findById(
+        @RequestHeader(HttpHeaders.AUTHORIZATION)
+        @Parameter(name = "Токен пользователя с префиксом 'Bearer '")
+        bearer: String,
         @PathVariable
         @Parameter(name = "Идентификатор компонента ПК")
         id: NanoId,
-    ): ResponseEntity<ComponentData> {
+    ): ResponseEntity<PolymorphicComponent> {
+        val currentUser = userController.current(bearer).body
+            ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+
         logger.info { "Requested component with ID $id" }
-        val component = service.findById(id)
+        val component = service.findById(id, currentUser)
         if (component == null) {
             logger.info { "Component with ID $id not found" }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
@@ -65,12 +79,18 @@ class ComponentController(private val service: ComponentService) {
     @GetMapping("name/{name}")
     @Operation(summary = "Поиск по названию", description = "Поиск компонента в системе по его названию")
     suspend fun findByName(
+        @RequestHeader(HttpHeaders.AUTHORIZATION)
+        @Parameter(name = "Токен пользователя с префиксом 'Bearer '")
+        bearer: String,
         @PathVariable
         @Parameter(name = "Название компонента ПК")
         name: String,
-    ): ResponseEntity<ComponentData> {
+    ): ResponseEntity<PolymorphicComponent> {
+        val currentUser = userController.current(bearer).body
+            ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+
         logger.info { "Requested component with name $name" }
-        val component = service.findByName(name)
+        val component = service.findByName(name, currentUser)
         if (component == null) {
             logger.info { "Component with name $name not found" }
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build()

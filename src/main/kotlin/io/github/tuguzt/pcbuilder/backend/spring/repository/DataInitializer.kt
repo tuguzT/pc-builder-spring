@@ -28,7 +28,7 @@ class DataInitializer(
             val email = "timurka.tugushev@gmail.com"
             require(checkUsername(username) && checkPassword(password))
             UserNamePasswordEntity(
-                id = randomNanoId(),
+                id = randomNanoId().toString(),
                 role = UserRole.Administrator,
                 email = email,
                 imageUri = null,
@@ -41,7 +41,7 @@ class DataInitializer(
             val password = "Y873lin)*odjv"
             require(checkUsername(username) && checkPassword(password))
             UserNamePasswordEntity(
-                id = randomNanoId(),
+                id = randomNanoId().toString(),
                 role = UserRole.Moderator,
                 email = null,
                 imageUri = null,

@@ -38,9 +38,9 @@ class UserController(
         @Parameter(name = "Токен пользователя с префиксом 'Bearer '")
         bearer: String,
     ): ResponseEntity<UserData> {
-        val accessToken = bearer.substringAfter("Bearer ")
+        val token = bearer.substringAfter("Bearer ")
 
-        val username = jwtUtils.extractUsername(accessToken)
+        val username = jwtUtils.extractUsername(token)
         return findByUsername(username)
     }
 

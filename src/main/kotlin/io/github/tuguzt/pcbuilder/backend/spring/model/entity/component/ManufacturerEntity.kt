@@ -1,7 +1,5 @@
 package io.github.tuguzt.pcbuilder.backend.spring.model.entity.component
 
-import io.github.tuguzt.pcbuilder.domain.model.NanoId
-import io.github.tuguzt.pcbuilder.domain.model.component.Manufacturer
 import org.springframework.data.util.ProxyUtils
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -11,10 +9,10 @@ import javax.persistence.Table
 @Entity
 @Table(name = "manufacturer")
 class ManufacturerEntity(
-    @Id override val id: NanoId,
-    @Column(unique = true) override val name: String,
-    override val description: String,
-) : Manufacturer {
+    @Id val id: String,
+    @Column(unique = true) val name: String,
+    val description: String,
+) {
     override fun equals(other: Any?): Boolean {
         other ?: return false
         if (this === other) return true

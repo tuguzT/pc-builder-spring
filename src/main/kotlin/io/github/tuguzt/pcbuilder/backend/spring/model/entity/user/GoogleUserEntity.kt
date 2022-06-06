@@ -1,6 +1,5 @@
 package io.github.tuguzt.pcbuilder.backend.spring.model.entity.user
 
-import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
 import org.springframework.data.util.ProxyUtils
 import javax.persistence.Column
@@ -10,7 +9,7 @@ import javax.persistence.Table
 @Entity
 @Table(name = "user_google")
 class GoogleUserEntity(
-    id: NanoId,
+    id: String,
     role: UserRole,
     username: String,
     email: String?,

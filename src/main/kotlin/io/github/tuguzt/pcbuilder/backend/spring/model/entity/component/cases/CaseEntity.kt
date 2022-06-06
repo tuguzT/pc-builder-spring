@@ -5,7 +5,7 @@ import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.Manufact
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.SizeEmbeddable
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.WeightEmbeddable
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.motherboard.MotherboardFormFactorEntity
-import io.github.tuguzt.pcbuilder.domain.model.NanoId
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.UserEntity
 import io.github.tuguzt.pcbuilder.domain.model.component.cases.*
 import io.github.tuguzt.pcbuilder.domain.model.component.motherboard.MotherboardFormFactor
 import org.springframework.data.util.ProxyUtils
@@ -14,21 +14,23 @@ import javax.persistence.*
 @Entity
 @Table(name = "\"case\"")
 class CaseEntity(
-    id: NanoId,
+    id: String,
     name: String,
     description: String,
     weight: WeightEmbeddable,
     size: SizeEmbeddable,
     manufacturer: ManufacturerEntity,
+    imageUri: String?,
+    favorites: Set<UserEntity>,
     type: CaseTypeEmbeddable,
     powerSupply: CasePowerSupplyEmbeddable?,
-    override val powerSupplyShroud: CasePowerSupplyShroud,
-    override val sidePanelWindow: CaseSidePanelWindow?,
+    val powerSupplyShroud: CasePowerSupplyShroud,
+    val sidePanelWindow: CaseSidePanelWindow?,
     @ManyToMany(fetch = FetchType.EAGER)
     private val motherboardFormFactorEntities: List<MotherboardFormFactorEntity>,
     driveBays: CaseDriveBaysEmbeddable,
     expansionSlots: CaseExpansionSlotsEmbeddable,
-) : ComponentEntity(id, name, description, weight, size, manufacturer), Case {
+) : ComponentEntity(id, name, description, weight, size, manufacturer, imageUri, favorites) {
     @Embedded
     private val typeEmbeddable = type
 
@@ -41,19 +43,19 @@ class CaseEntity(
     @Embedded
     private val expansionSlotsEmbeddable = expansionSlots
 
-    override val type: CaseType
+    val caseType: CaseType
         get() = typeEmbeddable.toCaseType()
 
-    override val powerSupply: CasePowerSupply?
+    val powerSupply: CasePowerSupply?
         get() = powerSupplyEmbeddable?.toPowerSupply()
 
-    override val driveBays: CaseDriveBays
+    val driveBays: CaseDriveBays
         get() = driveBaysEmbeddable.toCaseDriveBays()
 
-    override val expansionSlots: CaseExpansionSlots
+    val expansionSlots: CaseExpansionSlots
         get() = expansionSlotsEmbeddable.toExpansionSlots()
 
-    override val motherboardFormFactors: List<MotherboardFormFactor>
+    val motherboardFormFactors: List<MotherboardFormFactor>
         get() = motherboardFormFactorEntities.map { it.id }
 
     override fun equals(other: Any?): Boolean {

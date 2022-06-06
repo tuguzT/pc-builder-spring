@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface CaseRepository : JpaRepository<CaseEntity, NanoId> {
+interface CaseRepository : JpaRepository<CaseEntity, String> {
     fun findByName(name: String): CaseEntity?
 }
