@@ -1,5 +1,6 @@
 package io.github.tuguzt.pcbuilder.backend.spring.controller
 
+import io.github.tuguzt.pcbuilder.backend.spring.controller.exceptions.NotFoundException
 import io.github.tuguzt.pcbuilder.backend.spring.security.JwtUtils
 import io.github.tuguzt.pcbuilder.backend.spring.service.repository.UserService
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
@@ -9,8 +10,6 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import mu.KotlinLogging
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -37,7 +36,7 @@ class UserController(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
         @Parameter(name = "Токен пользователя с префиксом 'Bearer '")
         bearer: String,
-    ): ResponseEntity<UserData> {
+    ): UserData {
         val token = bearer.substringAfter("Bearer ")
 
         val username = jwtUtils.extractUsername(token)
@@ -50,15 +49,15 @@ class UserController(
         @PathVariable
         @Parameter(name = "Идентификатор пользователя")
         id: NanoId,
-    ): ResponseEntity<UserData> {
+    ): UserData {
         logger.info { "Requested user with ID $id" }
         val user = userService.findById(id)
         if (user == null) {
             logger.info { "User with ID $id not found" }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+            throw NotFoundException()
         }
         logger.info { "Found user with ID $id" }
-        return ResponseEntity.ok(user)
+        return user
     }
 
     @GetMapping("username/{username}")
@@ -70,14 +69,14 @@ class UserController(
         @PathVariable
         @Parameter(name = "Имя пользователя")
         username: String,
-    ): ResponseEntity<UserData> {
+    ): UserData {
         logger.info { "Requested user with username $username" }
         val user = userService.findByUsername(username)
         if (user == null) {
             logger.info { "User with username $username not found" }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+            throw NotFoundException()
         }
         logger.info { "Found user with username $username" }
-        return ResponseEntity.ok(user)
+        return user
     }
 }

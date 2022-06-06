@@ -25,7 +25,6 @@ import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -58,7 +57,7 @@ class AuthController(
         @RequestBody
         @Parameter(name = "Данные для входа: имя пользователя и пароль")
         credentials: UserCredentialsData,
-    ): ResponseEntity<UserTokenData> {
+    ): UserTokenData {
         val username = credentials.username
         val password = credentials.password
         val authentication = UsernamePasswordAuthenticationToken(username, password)
@@ -67,8 +66,7 @@ class AuthController(
         val userDetails = userDetailsService.loadUserByUsername(username)
         val token = jwtUtils.generateToken(userDetails)
         logger.info { "User with username $username successfully authenticated" }
-        val tokenData = UserTokenData(token)
-        return ResponseEntity.ok(tokenData)
+        return UserTokenData(token)
     }
 
     protected suspend fun checkUserNotExists(credentials: UserCredentialsData) {
@@ -82,7 +80,7 @@ class AuthController(
         @RequestBody
         @Parameter(name = "Данные пользователя для регистрации")
         credentials: UserCredentialsData,
-    ): ResponseEntity<UserTokenData> {
+    ): UserTokenData {
         checkUserNotExists(credentials)
 
         val registeredUser = UserNamePasswordData(
@@ -101,7 +99,7 @@ class AuthController(
 
     @PostMapping("oauth2/google")
     @Operation(summary = "Google OAuth 2.0", description = "Аутентификация пользователя Google")
-    suspend fun googleOAuth2(@RequestBody idToken: UserTokenData): ResponseEntity<UserTokenData> {
+    suspend fun googleOAuth2(@RequestBody idToken: UserTokenData): UserTokenData {
         val idTokenString = idToken.token
 
         val clientSecrets = applicationConfiguration.oauth2.google
@@ -139,7 +137,6 @@ class AuthController(
 
         val userDetails = userDetailsService.loadUserByUsername(name)
         val token = jwtUtils.generateToken(userDetails)
-        val tokenData = UserTokenData(token)
-        return ResponseEntity.ok(tokenData)
+        return UserTokenData(token)
     }
 }

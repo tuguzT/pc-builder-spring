@@ -1,5 +1,6 @@
 package io.github.tuguzt.pcbuilder.backend.spring.controller
 
+import io.github.tuguzt.pcbuilder.backend.spring.controller.exceptions.NotFoundException
 import io.github.tuguzt.pcbuilder.backend.spring.service.repository.ComponentService
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.component.Component
@@ -13,8 +14,6 @@ import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 /**
@@ -26,7 +25,7 @@ import org.springframework.web.bind.annotation.*
 class ComponentController(
     private val userController: UserController,
     private val service: ComponentService,
-): KoinComponent {
+) : KoinComponent {
     companion object {
         private val logger = KotlinLogging.logger {}
     }
@@ -42,13 +41,12 @@ class ComponentController(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
         @Parameter(name = "Токен пользователя с префиксом 'Bearer '")
         bearer: String,
-    ): ResponseEntity<String> {
-        val currentUser = userController.current(bearer).body
-            ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+    ): String {
+        val currentUser = userController.current(bearer)
 
         logger.info { "Requested all components" }
         val all = service.getAll(currentUser)
-        return ResponseEntity.ok(json.encodeToString(all))
+        return json.encodeToString(all)
     }
 
     /**
@@ -66,18 +64,17 @@ class ComponentController(
         @PathVariable
         @Parameter(name = "Идентификатор компонента ПК")
         id: NanoId,
-    ): ResponseEntity<PolymorphicComponent> {
-        val currentUser = userController.current(bearer).body
-            ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+    ): PolymorphicComponent {
+        val currentUser = userController.current(bearer)
 
         logger.info { "Requested component with ID $id" }
         val component = service.findById(id, currentUser)
         if (component == null) {
             logger.info { "Component with ID $id not found" }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+            throw NotFoundException()
         }
         logger.info { "Found component with ID $id" }
-        return ResponseEntity.ok(component)
+        return component
     }
 
     /**
@@ -92,17 +89,16 @@ class ComponentController(
         @PathVariable
         @Parameter(name = "Название компонента ПК")
         name: String,
-    ): ResponseEntity<PolymorphicComponent> {
-        val currentUser = userController.current(bearer).body
-            ?: return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+    ): PolymorphicComponent {
+        val currentUser = userController.current(bearer)
 
         logger.info { "Requested component with name $name" }
         val component = service.findByName(name, currentUser)
         if (component == null) {
             logger.info { "Component with name $name not found" }
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+            throw NotFoundException()
         }
         logger.info { "Found component with name $name" }
-        return ResponseEntity.ok(component)
+        return component
     }
 }
