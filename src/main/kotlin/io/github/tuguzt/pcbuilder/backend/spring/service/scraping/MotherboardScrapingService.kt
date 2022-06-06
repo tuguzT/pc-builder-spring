@@ -24,7 +24,7 @@ class MotherboardScrapingService(
 ) : AbstractScrapingService<MotherboardData>(path = "/en/browse/motherboard", coroutineScope) {
 
     override suspend fun parse(data: ParseRawData): MotherboardData? {
-        val (name, manufacturerName, imageUris, map) = data
+        val (name, description, manufacturerName, imageUris, map) = data
         if (map.isEmpty()) return null
 
         val motherboardFormFactor = map["Form factor"]?.toMotherboardFormFactor() ?: return null
@@ -54,7 +54,7 @@ class MotherboardScrapingService(
             val motherboard = MotherboardData(
                 id = id,
                 name = name,
-                description = "",
+                description = description,
                 weight = Weight(weight = 0 * grams),
                 size = Size(length = 0 * meters, width = 0 * meters, height = 0 * meters),
                 manufacturer = manufacturer,

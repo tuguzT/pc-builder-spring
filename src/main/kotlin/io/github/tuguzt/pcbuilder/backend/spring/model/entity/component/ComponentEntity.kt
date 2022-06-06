@@ -13,7 +13,7 @@ import javax.persistence.*
 open class ComponentEntity(
     @Id override val id: String,
     open val name: String,
-    open val description: String,
+    @Column(columnDefinition = "TEXT") open val description: String,
     weight: WeightEmbeddable,
     size: SizeEmbeddable,
     @ManyToOne @JoinColumn(name = "manufacturer_id")

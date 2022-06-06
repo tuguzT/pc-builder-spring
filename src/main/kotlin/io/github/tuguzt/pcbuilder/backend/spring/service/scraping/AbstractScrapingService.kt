@@ -60,6 +60,13 @@ sealed class AbstractScrapingService<T>(
                     withClass = "product-info"
                     h2 { findFirst { text } }
                 }
+                val description = div {
+                    withClass = "product-info"
+                    ul {
+                        withClass = "list-group"
+                        li { this }.findAll { this }.joinToString(separator = "\n") { it.text }
+                    }
+                }
                 val imageUris = img {
                     withClass = "tns-lazy-img"
                     findAll { eachAttribute("data-src") }
@@ -78,7 +85,7 @@ sealed class AbstractScrapingService<T>(
                         }
                     }
                 }
-                ParseRawData(name, manufacturerName, imageUris, data)
+                ParseRawData(name, description, manufacturerName, imageUris, data)
             }
         }
     }

@@ -30,7 +30,7 @@ class CaseScrapingService(
 ) : AbstractScrapingService<CaseData>(path = "/en/browse/case", coroutineScope) {
 
     override suspend fun parse(data: ParseRawData): CaseData? {
-        val (name, manufacturerName, imageUris, map) = data
+        val (name, description, manufacturerName, imageUris, map) = data
         if (map.isEmpty()) return null
 
         val type = map["Type"]?.toCaseType() ?: return null
@@ -65,7 +65,7 @@ class CaseScrapingService(
             val case = CaseData(
                 id = id,
                 name = name,
-                description = "",
+                description = description,
                 weight = Weight(0 * grams),
                 size = size,
                 imageUri = imageUris.firstOrNull(),
