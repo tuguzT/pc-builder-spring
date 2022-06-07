@@ -13,6 +13,7 @@ import kotlinx.serialization.json.Json
 import mu.KotlinLogging
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpHeaders
 import org.springframework.web.bind.annotation.*
 
@@ -47,6 +48,28 @@ class ComponentController(
         logger.info { "Requested all components" }
         val all = service.getAll(currentUser)
         return json.encodeToString(all)
+    }
+
+    /**
+     * GET request which returns all PC components with paging.
+     */
+    @GetMapping("paged")
+    @Operation(summary = "Все компоненты", description = "Получение списка всех компонентов ПК в системе постранично")
+    suspend fun paged(
+        @RequestHeader(HttpHeaders.AUTHORIZATION)
+        @Parameter(name = "Токен пользователя с префиксом 'Bearer '")
+        bearer: String,
+        @RequestParam
+        @Parameter(name = "Номер страницы")
+        page: Int,
+        @RequestParam
+        @Parameter(name = "Количество элементов в странице")
+        size: Int,
+    ): List<PolymorphicComponent> {
+        val currentUser = userController.current(bearer)
+
+        logger.info { "Requested $size cases from page $page" }
+        return service.getAll(PageRequest.of(page, size), currentUser)
     }
 
     /**
