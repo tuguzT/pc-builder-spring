@@ -1,11 +1,10 @@
 package io.github.tuguzt.pcbuilder.backend.spring.repository.user
 
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.UserEntity
-import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface UserRepository : JpaRepository<UserEntity, NanoId> {
+interface UserRepository : JpaRepository<UserEntity, String> {
     fun findByUsername(username: String): UserEntity?
 }

@@ -22,19 +22,25 @@ class UserServiceImpl(private val repository: UserRepository) : UserService {
         withContext(Dispatchers.IO) { repository.findAll(pageable) }.content.map(UserEntity::toData)
 
     override suspend fun save(item: UserData): UserData =
-        withContext(Dispatchers.IO) { repository.save(item.toEntity()) }.toData()
+        withContext(Dispatchers.IO) {
+            val favoriteComponents = repository.findByIdOrNull(item.id.toString())?.favoriteComponents ?: setOf()
+            repository.save(item.toEntity(favoriteComponents))
+        }.toData()
 
     override suspend fun delete(item: UserData) =
-        withContext(Dispatchers.IO) { repository.delete(item.toEntity()) }
+        withContext(Dispatchers.IO) {
+            val favoriteComponents = repository.findByIdOrNull(item.id.toString())?.favoriteComponents ?: setOf()
+            repository.delete(item.toEntity(favoriteComponents))
+        }
 
     override suspend fun findById(id: NanoId): UserData? =
-        withContext(Dispatchers.IO) { repository.findByIdOrNull(id) }?.toData()
+        withContext(Dispatchers.IO) { repository.findByIdOrNull(id.toString()) }?.toData()
 
     override suspend fun deleteById(id: NanoId) =
-        withContext(Dispatchers.IO) { repository.deleteById(id) }
+        withContext(Dispatchers.IO) { repository.deleteById(id.toString()) }
 
     override suspend fun exists(item: UserData): Boolean =
-        withContext(Dispatchers.IO) { repository.existsById(item.id) }
+        withContext(Dispatchers.IO) { repository.existsById(item.id.toString()) }
 
     override suspend fun findByUsername(username: String): UserData? =
         withContext(Dispatchers.IO) { repository.findByUsername(username) }?.toData()

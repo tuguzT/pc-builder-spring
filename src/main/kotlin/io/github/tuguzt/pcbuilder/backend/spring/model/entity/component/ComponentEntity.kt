@@ -20,7 +20,12 @@ open class ComponentEntity(
     open val manufacturer: ManufacturerEntity,
     open val imageUri: String?,
     @ManyToMany(fetch = FetchType.EAGER)
-    open val favorites: Set<UserEntity>,
+    @JoinTable(
+        name = "favorite_components",
+        joinColumns = [JoinColumn(name = "component_id")],
+        inverseJoinColumns = [JoinColumn(name = "user_id")],
+    )
+    open val favorites: MutableSet<UserEntity>,
 ) : Identifiable<String> {
     @Embedded
     private val sizeEmbeddable = size

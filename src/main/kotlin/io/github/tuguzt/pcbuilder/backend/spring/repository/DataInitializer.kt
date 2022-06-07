@@ -33,6 +33,7 @@ class DataInitializer(
                 email = email,
                 imageUri = null,
                 username = username,
+                favoriteComponents = mutableSetOf(),
                 password = passwordEncoder.encode(password),
             )
         }
@@ -46,6 +47,7 @@ class DataInitializer(
                 email = null,
                 imageUri = null,
                 username = username,
+                favoriteComponents = mutableSetOf(),
                 password = passwordEncoder.encode(password),
             )
         }

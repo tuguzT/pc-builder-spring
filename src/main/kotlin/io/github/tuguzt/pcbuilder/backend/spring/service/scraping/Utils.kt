@@ -28,7 +28,8 @@ fun String.toMotherboardChipset(): MotherboardChipset? =
         ?: MotherboardChipset.NVIDIA.NForce.values().firstOrNull { it.name.substringAfter("NForce") in this }
         ?: MotherboardChipset.NVIDIA.ION.takeIf { "ION" in this }
 
-fun String.toMemoryType(): MemoryType? = MemoryType.values().firstOrNull { "$it" in this }
+fun String.toMemoryType(): MemoryType? =
+    MemoryType.values().reversedArray().firstOrNull { "$it" in substringBefore(':') }
 
 fun String.toMotherboardMemoryAmount(): MotherboardMemoryAmount? =
     split(' ').firstOrNull()?.toDoubleOrNull()?.let { MotherboardMemoryAmount(it * gigabytes) }

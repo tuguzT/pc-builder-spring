@@ -1,5 +1,6 @@
 package io.github.tuguzt.pcbuilder.backend.spring.model.entity.user
 
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.ComponentEntity
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
 import org.springframework.data.util.ProxyUtils
 import javax.persistence.Column
@@ -14,8 +15,9 @@ class GoogleUserEntity(
     username: String,
     email: String?,
     imageUri: String?,
+    favoriteComponents: MutableSet<ComponentEntity>,
     @Column(unique = true) val googleId: String,
-) : UserEntity(id, role, username, email, imageUri) {
+) : UserEntity(id, role, username, email, imageUri, favoriteComponents) {
     override fun equals(other: Any?): Boolean {
         other ?: return false
         if (this === other) return true

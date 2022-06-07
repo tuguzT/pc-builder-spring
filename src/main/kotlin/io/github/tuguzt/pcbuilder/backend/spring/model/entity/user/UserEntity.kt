@@ -1,5 +1,6 @@
 package io.github.tuguzt.pcbuilder.backend.spring.model.entity.user
 
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.ComponentEntity
 import io.github.tuguzt.pcbuilder.domain.model.Identifiable
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
 import org.springframework.data.util.ProxyUtils
@@ -14,6 +15,8 @@ open class UserEntity(
     open val username: String,
     open val email: String?,
     open val imageUri: String?,
+    @ManyToMany(mappedBy = "favorites", fetch = FetchType.EAGER)
+    open val favoriteComponents: MutableSet<ComponentEntity>,
 ) : Identifiable<String> {
     override fun equals(other: Any?): Boolean {
         other ?: return false

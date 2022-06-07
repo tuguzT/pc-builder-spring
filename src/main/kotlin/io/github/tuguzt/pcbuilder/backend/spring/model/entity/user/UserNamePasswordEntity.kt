@@ -1,5 +1,6 @@
 package io.github.tuguzt.pcbuilder.backend.spring.model.entity.user
 
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.ComponentEntity
 import io.github.tuguzt.pcbuilder.domain.model.user.UserCredentials
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
 import org.springframework.data.util.ProxyUtils
@@ -14,8 +15,9 @@ class UserNamePasswordEntity(
     username: String,
     email: String?,
     imageUri: String?,
+    favoriteComponents: MutableSet<ComponentEntity>,
     override val password: String,
-) : UserEntity(id, role, username, email, imageUri), UserCredentials {
+) : UserEntity(id, role, username, email, imageUri, favoriteComponents), UserCredentials {
     override fun equals(other: Any?): Boolean {
         other ?: return false
         if (this === other) return true

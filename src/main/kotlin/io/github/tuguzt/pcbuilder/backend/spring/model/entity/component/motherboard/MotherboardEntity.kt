@@ -26,7 +26,7 @@ class MotherboardEntity(
     size: SizeEmbeddable,
     manufacturer: ManufacturerEntity,
     imageUri: String?,
-    favorites: Set<UserEntity>,
+    favorites: MutableSet<UserEntity>,
     chipset: MotherboardChipsetEmbeddable,
     cpuSocket: MotherboardCpuSocketEmbeddable,
     @ManyToOne val formFactorEntity: MotherboardFormFactorEntity,

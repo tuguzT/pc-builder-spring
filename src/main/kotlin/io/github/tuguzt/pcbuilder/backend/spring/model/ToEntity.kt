@@ -13,50 +13,52 @@ import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.GoogleUserEnt
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.UserEntity
 import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.UserNamePasswordEntity
 import io.github.tuguzt.pcbuilder.domain.model.component.Manufacturer
-import io.github.tuguzt.pcbuilder.domain.model.component.data.CaseData
-import io.github.tuguzt.pcbuilder.domain.model.component.data.MotherboardData
-import io.github.tuguzt.pcbuilder.domain.model.component.data.PolymorphicComponent
+import io.github.tuguzt.pcbuilder.domain.model.component.data.*
 import io.github.tuguzt.pcbuilder.domain.model.component.motherboard.MotherboardFormFactor
 import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData
 
-fun UserNamePasswordData.toEntity() = UserNamePasswordEntity(
+fun UserNamePasswordData.toEntity(favoriteComponents: Set<ComponentEntity>) = UserNamePasswordEntity(
     id = id.toString(),
     role = role,
     username = username,
     email = email,
     imageUri = imageUri,
+    favoriteComponents = favoriteComponents.toMutableSet(),
     password = password,
 )
 
-fun GoogleUserData.toEntity() = GoogleUserEntity(
+fun GoogleUserData.toEntity(favoriteComponents: Set<ComponentEntity>) = GoogleUserEntity(
     id = id.toString(),
     role = role,
     username = username,
     email = email,
     imageUri = imageUri,
+    favoriteComponents = favoriteComponents.toMutableSet(),
     googleId = googleId,
 )
 
-fun UserData.toEntity() = UserEntity(
+fun UserData.toEntity(favoriteComponents: Set<ComponentEntity>) = UserEntity(
     id = id.toString(),
     role = role,
     username = username,
     email = email,
     imageUri = imageUri,
+    favoriteComponents = favoriteComponents.toMutableSet(),
 )
 
 fun Manufacturer.toEntity() = ManufacturerEntity(id.toString(), name, description)
 
-fun PolymorphicComponent.toEntity(favorites: Set<UserEntity>) = ComponentEntity(
-    id = id.toString(),
-    name = name,
-    description = description,
-    weight = weight.toEmbeddable(),
-    size = size.toEmbeddable(),
-    manufacturer = manufacturer.toEntity(),
-    imageUri = imageUri,
-    favorites = favorites,
-)
+fun PolymorphicComponent.toEntity(favorites: Set<UserEntity>) = when (this) {
+    is CaseData -> toEntity(favorites)
+    is CoolerData -> TODO()
+    is CpuData -> TODO()
+    is GpuData -> TODO()
+    is MemoryData -> TODO()
+    is MonitorData -> TODO()
+    is MotherboardData -> toEntity(favorites)
+    is PsuData -> TODO()
+    is StorageData -> TODO()
+}
 
 fun MotherboardFormFactor.toEntity() = MotherboardFormFactorEntity(id = this)
 
@@ -68,7 +70,7 @@ fun CaseData.toEntity(favorites: Set<UserEntity>) = CaseEntity(
     size = size.toEmbeddable(),
     manufacturer = manufacturer.toEntity(),
     imageUri = imageUri,
-    favorites = favorites,
+    favorites = favorites.toMutableSet(),
     type = caseType.toEmbeddable(),
     powerSupply = powerSupply?.toEmbeddable(),
     powerSupplyShroud = powerSupplyShroud,
@@ -86,7 +88,7 @@ fun MotherboardData.toEntity(favorites: Set<UserEntity>) = MotherboardEntity(
     size = size.toEmbeddable(),
     manufacturer = manufacturer.toEntity(),
     imageUri = imageUri,
-    favorites = favorites,
+    favorites = favorites.toMutableSet(),
     formFactorEntity = formFactor.toEntity(),
     memoryAmount = memoryAmount.toEmbeddable(),
     memorySlotCount = memorySlotCount.toEmbeddable(),

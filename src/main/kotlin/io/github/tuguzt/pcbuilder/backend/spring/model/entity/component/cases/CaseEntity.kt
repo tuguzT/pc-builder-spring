@@ -21,7 +21,7 @@ class CaseEntity(
     size: SizeEmbeddable,
     manufacturer: ManufacturerEntity,
     imageUri: String?,
-    favorites: Set<UserEntity>,
+    favorites: MutableSet<UserEntity>,
     type: CaseTypeEmbeddable,
     powerSupply: CasePowerSupplyEmbeddable?,
     val powerSupplyShroud: CasePowerSupplyShroud,
