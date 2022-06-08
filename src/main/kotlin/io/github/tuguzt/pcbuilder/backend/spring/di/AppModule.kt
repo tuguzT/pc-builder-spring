@@ -8,4 +8,4 @@ val appModule = module {
     single { json() }
 }
 
-private fun json() = Json(domainJson) {}
+private fun json(): Json = Json(domainJson) {}
