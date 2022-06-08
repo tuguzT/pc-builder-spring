@@ -34,14 +34,11 @@ class JwtRequestFilter(
             val userDetails = userDetailsService.loadUserByUsername(username)
             if (!jwtUtils.validateToken(token, userDetails)) return@run
 
-            val authentication = UsernamePasswordAuthenticationToken(
-                userDetails,
-                null,
-                when (role) {
-                    UserRole.valueOf(userDetails.authorities.first().authority) -> userDetails.authorities
-                    else -> setOf(SimpleGrantedAuthority(role.name))
-                }
-            )
+            val grantedAuthorities = when (role) {
+                UserRole.valueOf(userDetails.authorities.first().authority) -> userDetails.authorities
+                else -> setOf(SimpleGrantedAuthority(role.name))
+            }
+            val authentication = UsernamePasswordAuthenticationToken(userDetails, null, grantedAuthorities)
             authentication.details = WebAuthenticationDetailsSource().buildDetails(request)
             SecurityContextHolder.getContext().authentication = authentication
         }

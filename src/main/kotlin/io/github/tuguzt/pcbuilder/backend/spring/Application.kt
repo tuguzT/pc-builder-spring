@@ -2,8 +2,9 @@ package io.github.tuguzt.pcbuilder.backend.spring
 
 import io.github.tuguzt.pcbuilder.backend.spring.di.appModule
 import io.github.tuguzt.pcbuilder.backend.spring.di.networkModule
-import mu.KotlinLogging
 import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
+import org.koin.logger.slf4jLogger
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
@@ -15,14 +16,12 @@ import org.springframework.boot.runApplication
 @EnableConfigurationProperties(ApplicationConfiguration::class)
 class Application
 
-private val koinLogger = KotlinLogging.logger("koin")
-
 /**
  * Entry point of the server application.
  */
 fun main(vararg args: String) {
     startKoin {
-        kLogger(koinLogger)
+        slf4jLogger(level = Level.DEBUG)
         modules(appModule, networkModule)
     }
     runApplication<Application>(*args)

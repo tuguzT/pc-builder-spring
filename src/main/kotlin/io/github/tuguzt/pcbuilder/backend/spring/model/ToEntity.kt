@@ -1,26 +1,103 @@
 package io.github.tuguzt.pcbuilder.backend.spring.model
 
-import io.github.tuguzt.pcbuilder.backend.spring.model.entity.ComponentEntity
-import io.github.tuguzt.pcbuilder.backend.spring.model.entity.UserEntity
-import io.github.tuguzt.pcbuilder.backend.spring.model.entity.UserNamePasswordEntity
-import io.github.tuguzt.pcbuilder.backend.spring.model.entity.UserOAuth2Entity
-import io.github.tuguzt.pcbuilder.domain.model.component.ComponentData
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.ComponentEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.ManufacturerEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.cases.CaseEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.cases.toEmbeddable
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.gpu.toEmbeddable
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.motherboard.MotherboardEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.motherboard.MotherboardFormFactorEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.motherboard.toEmbeddable
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.component.toEmbeddable
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.GoogleUserEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.UserEntity
+import io.github.tuguzt.pcbuilder.backend.spring.model.entity.user.UserNamePasswordEntity
+import io.github.tuguzt.pcbuilder.domain.model.component.Manufacturer
+import io.github.tuguzt.pcbuilder.domain.model.component.data.*
+import io.github.tuguzt.pcbuilder.domain.model.component.motherboard.MotherboardFormFactor
 import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData
-import io.nacular.measured.units.Length.Companion.meters
-import io.nacular.measured.units.Mass.Companion.grams
 
-fun UserNamePasswordData.toEntity() = UserNamePasswordEntity(id, role, username, email, imageUri, password)
+fun UserNamePasswordData.toEntity(favoriteComponents: Set<ComponentEntity>) = UserNamePasswordEntity(
+    id = id.toString(),
+    role = role,
+    username = username,
+    email = email,
+    imageUri = imageUri,
+    favoriteComponents = favoriteComponents.toMutableSet(),
+    password = password,
+)
 
-fun UserOAuth2Data.toEntity() = UserOAuth2Entity(id, role, username, email, imageUri, accessToken)
+fun GoogleUserData.toEntity(favoriteComponents: Set<ComponentEntity>) = GoogleUserEntity(
+    id = id.toString(),
+    role = role,
+    username = username,
+    email = email,
+    imageUri = imageUri,
+    favoriteComponents = favoriteComponents.toMutableSet(),
+    googleId = googleId,
+)
 
-fun UserData.toEntity() = UserEntity(id, role, username, email, imageUri)
+fun UserData.toEntity(favoriteComponents: Set<ComponentEntity>) = UserEntity(
+    id = id.toString(),
+    role = role,
+    username = username,
+    email = email,
+    imageUri = imageUri,
+    favoriteComponents = favoriteComponents.toMutableSet(),
+)
 
-fun ComponentData.toEntity() = ComponentEntity(
-    id = id,
+fun Manufacturer.toEntity() = ManufacturerEntity(id.toString(), name, description)
+
+fun PolymorphicComponent.toEntity(favorites: Set<UserEntity>) = when (this) {
+    is CaseData -> toEntity(favorites)
+    is CoolerData -> TODO()
+    is CpuData -> TODO()
+    is GpuData -> TODO()
+    is MemoryData -> TODO()
+    is MonitorData -> TODO()
+    is MotherboardData -> toEntity(favorites)
+    is PsuData -> TODO()
+    is StorageData -> TODO()
+}
+
+fun MotherboardFormFactor.toEntity() = MotherboardFormFactorEntity(id = this)
+
+fun CaseData.toEntity(favorites: Set<UserEntity>) = CaseEntity(
+    id = id.toString(),
     name = name,
     description = description,
-    weightInGrams = weight `in` grams,
-    lengthInMeters = size.length `in` meters,
-    widthInMeters = size.width `in` meters,
-    heightInMeters = size.height `in` meters,
+    weight = weight.toEmbeddable(),
+    size = size.toEmbeddable(),
+    manufacturer = manufacturer.toEntity(),
+    imageUri = imageUri,
+    favorites = favorites.toMutableSet(),
+    type = caseType.toEmbeddable(),
+    powerSupply = powerSupply?.toEmbeddable(),
+    powerSupplyShroud = powerSupplyShroud,
+    sidePanelWindow = sidePanelWindow,
+    motherboardFormFactorEntities = motherboardFormFactors.map { it.toEntity() },
+    driveBays = driveBays.toEmbeddable(),
+    expansionSlots = expansionSlots.toEmbeddable(),
+)
+
+fun MotherboardData.toEntity(favorites: Set<UserEntity>) = MotherboardEntity(
+    id = id.toString(),
+    name = name,
+    description = description,
+    weight = weight.toEmbeddable(),
+    size = size.toEmbeddable(),
+    manufacturer = manufacturer.toEntity(),
+    imageUri = imageUri,
+    favorites = favorites.toMutableSet(),
+    formFactorEntity = formFactor.toEntity(),
+    memoryAmount = memoryAmount.toEmbeddable(),
+    memorySlotCount = memorySlotCount.toEmbeddable(),
+    memoryECCType = memoryECCType,
+    memoryType = memoryType,
+    multiGpuSupport = multiGpuSupport?.toEmbeddable(),
+    ports = ports.toEmbeddable(),
+    slots = slots.toEmbeddable(),
+    usbHeaders = usbHeaders.toEmbeddable(),
+    chipset = chipset.toEmbeddable(),
+    cpuSocket = cpuSocket.toEmbeddable(),
 )

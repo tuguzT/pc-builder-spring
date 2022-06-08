@@ -22,6 +22,7 @@ class RestResponseExceptionHandler {
         OAuth2FailedException::class,
         UsernameNotFoundException::class,
         UserAlreadyExistsException::class,
+        NotFoundException::class,
     )
     final fun handleException(exception: Exception, request: WebRequest): ResponseEntity<RestApiError> {
         val headers = HttpHeaders()
@@ -30,7 +31,8 @@ class RestResponseExceptionHandler {
             is UsernameNotFoundException -> handleUsernameNotFound(exception, headers, request)
             is BadCredentialsException -> handleBadCredentials(exception, headers, request)
             is OAuth2FailedException -> handleOAuth2Failed(exception, headers, request)
-            else -> handleInternal(exception, null, headers, HttpStatus.INTERNAL_SERVER_ERROR, request)
+            is NotFoundException -> handleNotFound(exception, headers, request)
+            else -> handleInternal(exception, body = null, headers, HttpStatus.INTERNAL_SERVER_ERROR, request)
         }
     }
 
@@ -68,6 +70,15 @@ class RestResponseExceptionHandler {
     ): ResponseEntity<RestApiError> {
         val error = RestApiError("Bad credentials provided")
         return handleInternal(exception, error, headers, HttpStatus.UNAUTHORIZED, request)
+    }
+
+    protected fun handleNotFound(
+        exception: NotFoundException,
+        headers: HttpHeaders,
+        request: WebRequest,
+    ): ResponseEntity<RestApiError> {
+        val error = RestApiError("Resource was not found")
+        return handleInternal(exception, error, headers, HttpStatus.NOT_FOUND, request)
     }
 
     protected fun handleInternal(
