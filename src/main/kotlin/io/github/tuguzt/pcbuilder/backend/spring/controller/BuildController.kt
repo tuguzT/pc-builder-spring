@@ -7,7 +7,12 @@ import io.github.tuguzt.pcbuilder.domain.model.build.BuildData
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import mu.KotlinLogging
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.springframework.http.HttpHeaders
 import org.springframework.web.bind.annotation.*
 
@@ -17,10 +22,12 @@ import org.springframework.web.bind.annotation.*
 class BuildController(
     private val userController: UserController,
     private val service: BuildService,
-) {
+) : KoinComponent {
     companion object {
         private val logger = KotlinLogging.logger {}
     }
+
+    private val json: Json by inject()
 
     /**
      * GET request which returns all PC builds.
@@ -31,11 +38,12 @@ class BuildController(
         @RequestHeader(HttpHeaders.AUTHORIZATION)
         @Parameter(name = "Токен пользователя с префиксом 'Bearer '")
         bearer: String,
-    ): List<BuildData> {
+    ): String {
         val currentUser = userController.current(bearer)
 
         logger.info { "Requested all builds" }
-        return service.getAll(currentUser)
+        val all = service.getAll(currentUser)
+        return json.encodeToString(all)
     }
 
     /**
@@ -47,7 +55,7 @@ class BuildController(
         @PathVariable
         @Parameter(name = "Идентификатор компонента ПК")
         id: NanoId,
-    ): BuildData {
+    ): String {
         logger.info { "Requested build with ID $id" }
         val build = service.findById(id)
         if (build == null) {
@@ -55,7 +63,7 @@ class BuildController(
             throw NotFoundException()
         }
         logger.info { "Found build with ID $id" }
-        return build
+        return json.encodeToString(build)
     }
 
     /**
@@ -67,7 +75,7 @@ class BuildController(
         @PathVariable
         @Parameter(name = "Название сборки ПК")
         name: String,
-    ): BuildData {
+    ): String {
         logger.info { "Requested build with name $name" }
         val build = service.findByName(name)
         if (build == null) {
@@ -75,7 +83,7 @@ class BuildController(
             throw NotFoundException()
         }
         logger.info { "Found build with name $name" }
-        return build
+        return json.encodeToString(build)
     }
 
     @PostMapping("save")
@@ -86,14 +94,14 @@ class BuildController(
         bearer: String,
         @RequestBody
         @Parameter(name = "Данные сборки ПК для сохранения в системе")
-        build: BuildData,
-    ): BuildData {
+        buildJson: String,
+    ) {
         val currentUser = userController.current(bearer)
+        val build = json.decodeFromString<BuildData>(buildJson)
 
         logger.info { "Attempting to save PC build $build" }
-        val buildData = service.save(build, currentUser)
+        service.save(build, currentUser)
         logger.info { "PC build $build was saved" }
-        return buildData
     }
 
     @PostMapping("delete")
@@ -101,8 +109,10 @@ class BuildController(
     suspend fun delete(
         @RequestBody
         @Parameter(name = "Данные сборки ПК для удаления из системы")
-        build: BuildData,
+        buildJson: String,
     ) {
+        val build = json.decodeFromString<BuildData>(buildJson)
+
         logger.info { "Attempting to delete PC build $build" }
         service.delete(build)
         logger.info { "PC build $build was deleted" }
