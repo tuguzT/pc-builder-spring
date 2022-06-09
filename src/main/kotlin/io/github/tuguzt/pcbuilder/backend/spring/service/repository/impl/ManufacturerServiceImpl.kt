@@ -22,7 +22,15 @@ class ManufacturerServiceImpl(private val repository: ManufacturerRepository) : 
         withContext(Dispatchers.IO) { repository.findAll(pageable) }.content.map(ManufacturerEntity::toData)
 
     override suspend fun save(item: ManufacturerData): ManufacturerData =
-        withContext(Dispatchers.IO) { repository.save(item.toEntity()) }.toData()
+        withContext(Dispatchers.IO) {
+            val prev = repository.findByName(item.name)
+            val toEntity = item.toEntity()
+            repository.save(ManufacturerEntity(
+                id = prev?.id ?: toEntity.id,
+                name = toEntity.name,
+                description = toEntity.description,
+            ))
+        }.toData()
 
     override suspend fun delete(item: ManufacturerData): Unit =
         withContext(Dispatchers.IO) { repository.delete(item.toEntity()) }

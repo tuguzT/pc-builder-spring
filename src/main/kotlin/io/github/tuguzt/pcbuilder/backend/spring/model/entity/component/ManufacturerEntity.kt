@@ -11,7 +11,7 @@ import javax.persistence.Table
 class ManufacturerEntity(
     @Id val id: String,
     @Column(unique = true) val name: String,
-    val description: String,
+    @Column(columnDefinition = "TEXT") val description: String,
 ) {
     override fun equals(other: Any?): Boolean {
         other ?: return false

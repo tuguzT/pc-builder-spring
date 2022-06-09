@@ -4,8 +4,10 @@ import io.github.tuguzt.pcbuilder.backend.spring.model.entity.toData
 import io.github.tuguzt.pcbuilder.backend.spring.model.toEntity
 import io.github.tuguzt.pcbuilder.backend.spring.repository.component.CaseRepository
 import io.github.tuguzt.pcbuilder.backend.spring.service.repository.CaseService
+import io.github.tuguzt.pcbuilder.backend.spring.service.repository.MotherboardFormFactorService
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.component.data.CaseData
+import io.github.tuguzt.pcbuilder.domain.model.component.motherboard.MotherboardFormFactor
 import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,9 +16,15 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
-class CaseServiceImpl(private val repository: CaseRepository) : CaseService {
+class CaseServiceImpl(
+    private val repository: CaseRepository,
+    private val motherboardFormFactorService: MotherboardFormFactorService,
+) : CaseService {
     override suspend fun save(item: CaseData, currentUser: UserData?): CaseData =
         withContext(Dispatchers.IO) {
+            item.motherboardFormFactors.map(MotherboardFormFactor::toEntity).forEach {
+                motherboardFormFactorService.save(it)
+            }
             val favorites = repository.findByIdOrNull(item.id.toString())?.favorites ?: setOf()
             repository.save(item.toEntity(favorites))
         }.toData(currentUser)
