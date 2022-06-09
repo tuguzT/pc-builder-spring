@@ -48,27 +48,27 @@ fun UserData.toEntity(favoriteComponents: Set<ComponentEntity>) = UserEntity(
 
 fun Manufacturer.toEntity() = ManufacturerEntity(id.toString(), name, description)
 
-fun PolymorphicComponent.toEntity(favorites: Set<UserEntity>) = when (this) {
-    is CaseData -> toEntity(favorites)
+fun PolymorphicComponent.toEntity(favorites: Set<UserEntity>, manufacturer: ManufacturerEntity? = null) = when (this) {
+    is CaseData -> toEntity(favorites, manufacturer)
     is CoolerData -> TODO()
     is CpuData -> TODO()
     is GpuData -> TODO()
     is MemoryData -> TODO()
     is MonitorData -> TODO()
-    is MotherboardData -> toEntity(favorites)
+    is MotherboardData -> toEntity(favorites, manufacturer)
     is PsuData -> TODO()
     is StorageData -> TODO()
 }
 
 fun MotherboardFormFactor.toEntity() = MotherboardFormFactorEntity(id = this)
 
-fun CaseData.toEntity(favorites: Set<UserEntity>) = CaseEntity(
+fun CaseData.toEntity(favorites: Set<UserEntity>, manufacturer: ManufacturerEntity? = null) = CaseEntity(
     id = id.toString(),
     name = name,
     description = description,
     weight = weight.toEmbeddable(),
     size = size.toEmbeddable(),
-    manufacturer = manufacturer.toEntity(),
+    manufacturer = manufacturer ?: this.manufacturer.toEntity(),
     imageUri = imageUri,
     favorites = favorites.toMutableSet(),
     type = caseType.toEmbeddable(),
@@ -80,13 +80,13 @@ fun CaseData.toEntity(favorites: Set<UserEntity>) = CaseEntity(
     expansionSlots = expansionSlots.toEmbeddable(),
 )
 
-fun MotherboardData.toEntity(favorites: Set<UserEntity>) = MotherboardEntity(
+fun MotherboardData.toEntity(favorites: Set<UserEntity>, manufacturer: ManufacturerEntity? = null) = MotherboardEntity(
     id = id.toString(),
     name = name,
     description = description,
     weight = weight.toEmbeddable(),
     size = size.toEmbeddable(),
-    manufacturer = manufacturer.toEntity(),
+    manufacturer = manufacturer ?: this.manufacturer.toEntity(),
     imageUri = imageUri,
     favorites = favorites.toMutableSet(),
     formFactorEntity = formFactor.toEntity(),

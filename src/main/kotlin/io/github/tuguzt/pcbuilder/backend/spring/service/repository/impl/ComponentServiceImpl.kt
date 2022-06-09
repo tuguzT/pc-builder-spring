@@ -4,8 +4,13 @@ import io.github.tuguzt.pcbuilder.backend.spring.model.entity.toData
 import io.github.tuguzt.pcbuilder.backend.spring.model.toEntity
 import io.github.tuguzt.pcbuilder.backend.spring.repository.component.ComponentRepository
 import io.github.tuguzt.pcbuilder.backend.spring.service.repository.ComponentService
+import io.github.tuguzt.pcbuilder.backend.spring.service.repository.ManufacturerService
+import io.github.tuguzt.pcbuilder.backend.spring.service.repository.MotherboardFormFactorService
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
+import io.github.tuguzt.pcbuilder.domain.model.component.data.CaseData
+import io.github.tuguzt.pcbuilder.domain.model.component.data.MotherboardData
 import io.github.tuguzt.pcbuilder.domain.model.component.data.PolymorphicComponent
+import io.github.tuguzt.pcbuilder.domain.model.component.motherboard.MotherboardFormFactor
 import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,11 +22,25 @@ import org.springframework.stereotype.Service
  * Implementation of the [ComponentService] interface.
  */
 @Service
-class ComponentServiceImpl(private val repository: ComponentRepository) : ComponentService {
+class ComponentServiceImpl(
+    private val repository: ComponentRepository,
+    private val manufacturerService: ManufacturerService,
+    private val motherboardFormFactorService: MotherboardFormFactorService,
+) : ComponentService {
+
     override suspend fun save(item: PolymorphicComponent, currentUser: UserData): PolymorphicComponent =
         withContext(Dispatchers.IO) {
+            val manufacturerEntity = manufacturerService.save(item.manufacturer)
+            when (item) {
+                is CaseData -> item.motherboardFormFactors.map(MotherboardFormFactor::toEntity).forEach {
+                    motherboardFormFactorService.save(it)
+                }
+                is MotherboardData -> motherboardFormFactorService.save(item.formFactor.toEntity())
+                else -> TODO()
+            }
             val favorites = repository.findByIdOrNull(item.id.toString())?.favorites ?: setOf()
-            repository.save(item.toEntity(favorites))
+            val toEntity = item.toEntity(favorites, manufacturerEntity.toEntity())
+            repository.save(toEntity)
         }.toData(currentUser)
 
     override suspend fun delete(item: PolymorphicComponent) =
