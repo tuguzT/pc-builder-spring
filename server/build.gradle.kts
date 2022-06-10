@@ -9,6 +9,7 @@ plugins {
     application
     kotlin("jvm")
     kotlin("plugin.serialization")
+    kotlin("kapt")
 }
 
 group = "io.github.tuguzt.pcbuilder.backend"
@@ -38,6 +39,7 @@ dependencies {
     implementation(Ktor.Server.Serialization.kotlinX)
     implementation(Ktor.Server.Security.auth)
     implementation(Ktor.Server.Security.authJwt)
+    implementation(Ktor.Server.StatusPages.dependency)
 
     implementation(Koin.core)
     implementation(Koin.Ktor.dependency)

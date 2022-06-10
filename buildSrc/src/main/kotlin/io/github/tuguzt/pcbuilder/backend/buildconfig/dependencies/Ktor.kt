@@ -19,5 +19,9 @@ object Ktor {
         object Serialization {
             const val kotlinX = "io.ktor:ktor-serialization-kotlinx-json-jvm:$version"
         }
+
+        object StatusPages {
+            const val dependency = "io.ktor:ktor-server-status-pages:$version"
+        }
     }
 }
