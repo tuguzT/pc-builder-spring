@@ -1,1 +1,1 @@
-rootProject.name = "pc-builder-backend-spring"
+rootProject.name = "pc-builder-backend"

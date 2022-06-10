@@ -1,3 +1,3 @@
-# PC Builder Spring Backend
+# PC Builder Backend
 
-Spring backend for Android application "PC Builder"
+Backend for Android application "PC Builder"
