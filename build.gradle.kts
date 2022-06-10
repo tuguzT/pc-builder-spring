@@ -21,6 +21,7 @@ application {
 repositories {
     mavenCentral()
     maven(url = "https://maven.pkg.jetbrains.space/public/p/ktor/eap")
+    maven(url = "https://jitpack.io")
 }
 
 configurations.all {
@@ -28,7 +29,12 @@ configurations.all {
 }
 
 dependencies {
+    implementation("com.github.tuguzT:pc-builder-domain:develop-SNAPSHOT") {
+        isChanging = true
+    }
+
     implementation(kotlin("stdlib"))
+
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
@@ -37,8 +43,13 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
 
-    testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
+    implementation("io.insert-koin:koin-core:3.2.0")
+    implementation("io.insert-koin:koin-ktor:3.2.0")
+    implementation("io.insert-koin:koin-logger-slf4j:3.2.0")
+
     testImplementation(kotlin("test"))
+    testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
+    testImplementation("io.insert-koin:koin-test:3.2.0")
 }
 
 tasks {
