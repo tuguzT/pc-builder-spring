@@ -1,4 +1,4 @@
-package io.github.tuguzt
+package io.github.tuguzt.pcbuilder.backend
 
 import io.github.tuguzt.pcbuilder.backend.plugins.configureRouting
 import io.ktor.client.request.*
