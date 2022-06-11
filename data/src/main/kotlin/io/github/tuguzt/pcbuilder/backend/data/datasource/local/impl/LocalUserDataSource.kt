@@ -32,11 +32,20 @@ internal class LocalUserDataSource(private val database: Database) : UserDataSou
 
     override suspend fun save(item: UserData): Result<UserData, Nothing?> = runCatching {
         val user = newSuspendedTransaction(Dispatchers.IO, database) {
-            User.new(id = "${item.id}") {
-                username = item.username
-                role = item.role
-                email = item.email
-                imageUri = item.imageUri
+            when (val user = User.findById(id = "${item.id}")) {
+                null -> User.new(id = "${item.id}") {
+                    username = item.username
+                    role = item.role
+                    email = item.email
+                    imageUri = item.imageUri
+                }
+                else -> {
+                    user.username = item.username
+                    user.role = item.role
+                    user.email = item.email
+                    user.imageUri = item.imageUri
+                    user
+                }
             }
         }
         user.toData()
