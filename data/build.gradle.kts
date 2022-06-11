@@ -1,7 +1,4 @@
-import io.github.tuguzt.pcbuilder.backend.buildconfig.dependencies.Domain
-import io.github.tuguzt.pcbuilder.backend.buildconfig.dependencies.Exposed
-import io.github.tuguzt.pcbuilder.backend.buildconfig.dependencies.HikariCP
-import io.github.tuguzt.pcbuilder.backend.buildconfig.dependencies.QualityAssurance
+import io.github.tuguzt.pcbuilder.backend.buildconfig.dependencies.*
 
 plugins {
     kotlin("jvm")
@@ -17,6 +14,8 @@ dependencies {
     implementation(Domain.dependency) { isChanging = true }
 
     implementation(kotlin("stdlib"))
+
+    implementation(Koin.core)
 
     implementation(Exposed.core)
     implementation(Exposed.dao)

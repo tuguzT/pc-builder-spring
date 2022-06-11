@@ -6,6 +6,9 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 
+/**
+ * Configures security options of the application.
+ */
 fun Application.configureSecurity() {
     authentication {
         jwt {

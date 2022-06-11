@@ -4,6 +4,9 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
+/**
+ * Configures routing of the application.
+ */
 fun Application.configureRouting() {
     routing {
         get("/") {

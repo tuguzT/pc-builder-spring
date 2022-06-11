@@ -38,7 +38,6 @@ dependencies {
     implementation(Koin.core)
     implementation(Koin.Ktor.dependency)
 
-    implementation(Exposed.core)
     implementation("com.h2database:h2:2.1.212")
 
     implementation(QualityAssurance.Log.Ktor.slf4jLogger)

@@ -8,14 +8,20 @@ import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 
-fun main() {
-    embeddedServer(Netty, port = 8080, module = Application::module).start(wait = true)
-}
-
+/**
+ * Main module of the application.
+ */
 fun Application.module() {
     configureKoin()
 
     configureSerialization()
     configureRouting()
     configureStatusPages()
+}
+
+/**
+ * Application entry point.
+ */
+fun main() {
+    embeddedServer(Netty, port = 8080, module = Application::module).start(wait = true)
 }

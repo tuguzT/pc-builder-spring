@@ -6,6 +6,9 @@ import io.ktor.server.application.*
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 
+/**
+ * Configures Koin dependency injection of the application.
+ */
 fun Application.configureKoin() {
     install(Koin) {
         slf4jLogger()

@@ -1,4 +1,4 @@
-package io.github.tuguzt.pcbuilder.backend.data
+package io.github.tuguzt.pcbuilder.backend.data.datasource.local
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -8,7 +8,10 @@ import org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import java.sql.Connection
 
-fun Database(
+/**
+ * Creates new instance of [Database].
+ */
+internal fun Database(
     url: String,
     driver: String,
     username: String = "",
@@ -30,8 +33,8 @@ private fun hikariDataSource(
     maxPoolSize: Int,
 ): HikariDataSource {
     val config = HikariConfig().apply {
-        driverClassName = driver
         jdbcUrl = url
+        driverClassName = driver
         this.username = username
         this.password = password
         maximumPoolSize = maxPoolSize
