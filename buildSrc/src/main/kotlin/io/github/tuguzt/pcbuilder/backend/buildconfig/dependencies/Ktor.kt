@@ -8,7 +8,7 @@ object Ktor {
         const val engineNetty = "io.ktor:ktor-server-netty-jvm:$version"
 
         object Http {
-            const val contentNegitiation = "io.ktor:ktor-server-content-negotiation-jvm:$version"
+            const val contentNegotiation = "io.ktor:ktor-server-content-negotiation-jvm:$version"
         }
 
         object Security {

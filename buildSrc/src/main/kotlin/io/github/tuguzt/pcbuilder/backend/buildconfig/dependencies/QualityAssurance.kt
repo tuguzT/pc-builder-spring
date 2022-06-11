@@ -25,5 +25,10 @@ object QualityAssurance {
             const val version = "1.2.11"
             const val dependency = "ch.qos.logback:logback-classic:$version"
         }
+
+        object KotlinLogging {
+            const val version = "2.1.21"
+            const val dependency = "io.github.microutils:kotlin-logging-jvm:$version"
+        }
     }
 }

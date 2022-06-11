@@ -1,9 +1,4 @@
-import io.github.tuguzt.pcbuilder.backend.buildconfig.dependencies.Domain
-import io.github.tuguzt.pcbuilder.backend.buildconfig.dependencies.Koin
-import io.github.tuguzt.pcbuilder.backend.buildconfig.dependencies.Ktor
-import io.github.tuguzt.pcbuilder.backend.buildconfig.dependencies.QualityAssurance
-
-val ktorVersion = "2.0.2"
+import io.github.tuguzt.pcbuilder.backend.buildconfig.dependencies.*
 
 plugins {
     application
@@ -27,15 +22,14 @@ configurations.all {
 }
 
 dependencies {
-    implementation(Domain.dependency) {
-        isChanging = true
-    }
+    implementation(Domain.dependency) { isChanging = true }
+    implementation(project(":data"))
 
     implementation(kotlin("stdlib"))
 
     implementation(Ktor.Server.core)
     implementation(Ktor.Server.engineNetty)
-    implementation(Ktor.Server.Http.contentNegitiation)
+    implementation(Ktor.Server.Http.contentNegotiation)
     implementation(Ktor.Server.Serialization.kotlinX)
     implementation(Ktor.Server.Security.auth)
     implementation(Ktor.Server.Security.authJwt)
@@ -44,8 +38,12 @@ dependencies {
     implementation(Koin.core)
     implementation(Koin.Ktor.dependency)
 
+    implementation(Exposed.core)
+    implementation("com.h2database:h2:2.1.212")
+
     implementation(QualityAssurance.Log.Ktor.slf4jLogger)
     implementation(QualityAssurance.Log.Logback.dependency)
+    implementation(QualityAssurance.Log.KotlinLogging.dependency)
 
     testImplementation(kotlin("test"))
     testImplementation(QualityAssurance.UnitTest.Ktor.Server.dependency)

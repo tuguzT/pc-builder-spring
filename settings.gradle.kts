@@ -19,4 +19,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "pc-builder-backend"
 
-include("server")
+include(":server")
+include(":data")
