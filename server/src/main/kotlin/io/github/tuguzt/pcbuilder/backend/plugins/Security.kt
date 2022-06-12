@@ -29,7 +29,7 @@ fun Application.configureSecurity() {
             validate { credential ->
                 val userRepository: UserRepository<Nothing?> by inject()
 
-                val id = credential.payload.getClaim("userId").asString().let(::NanoId)
+                val id = credential.payload.subject.let(::NanoId)
                 val user = when (val result = userRepository.readById(id)) {
                     is Result.Error -> throw checkNotNull(result.cause)
                     is Result.Success -> result.data
@@ -50,7 +50,7 @@ data class JwtConfig(
 )
 
 fun Application.jwtConfig(): JwtConfig = JwtConfig(
-    secret = environment.config.property("jwt.secret").getString(),
-    issuer = environment.config.property("jwt.issuer").getString(),
-    realm = environment.config.property("jwt.realm").getString(),
+    secret = environment.config.property(path = "jwt.secret").getString(),
+    issuer = environment.config.property(path = "jwt.issuer").getString(),
+    realm = environment.config.property(path = "jwt.realm").getString(),
 )

@@ -1,4 +1,4 @@
-package io.github.tuguzt.pcbuilder.backend.data.repository
+package io.github.tuguzt.pcbuilder.backend.data.repository.impl
 
 import io.github.tuguzt.pcbuilder.backend.data.datasource.UserDataSource
 import io.github.tuguzt.pcbuilder.domain.Result

@@ -72,5 +72,5 @@ internal class LocalUserDataSource(private val database: Database) : UserDataSou
         user?.toData()
     }.toResult()
 
-    private fun User.toData(): UserData = UserData(NanoId(id.value), role, username, email, imageUri)
+    private fun User.toData(): UserData = UserData(id.value.let(::NanoId), role, username, email, imageUri)
 }

@@ -22,6 +22,7 @@ dependencies {
     implementation(Exposed.jdbc)
 
     implementation(HikariCP.dependency)
+    implementation(Hashing.Argon2.dependency)
 
     implementation(QualityAssurance.Log.KotlinLogging.dependency)
 

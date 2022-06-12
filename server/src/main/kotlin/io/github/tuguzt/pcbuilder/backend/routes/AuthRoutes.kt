@@ -2,6 +2,10 @@ package io.github.tuguzt.pcbuilder.backend.routes
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import io.github.tuguzt.pcbuilder.backend.data.model.PasswordUserData
+import io.github.tuguzt.pcbuilder.backend.data.repository.PasswordHashRepository
+import io.github.tuguzt.pcbuilder.backend.data.repository.PasswordUserRepository
+import io.github.tuguzt.pcbuilder.backend.plugins.BadCredentialsException
 import io.github.tuguzt.pcbuilder.backend.plugins.JwtConfig
 import io.github.tuguzt.pcbuilder.backend.plugins.UserAlreadyExistsException
 import io.github.tuguzt.pcbuilder.backend.plugins.UserNotFoundException
@@ -9,9 +13,8 @@ import io.github.tuguzt.pcbuilder.domain.Result
 import io.github.tuguzt.pcbuilder.domain.model.user.User
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
 import io.github.tuguzt.pcbuilder.domain.model.user.data.UserCredentialsData
-import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData
 import io.github.tuguzt.pcbuilder.domain.model.user.data.UserTokenData
-import io.github.tuguzt.pcbuilder.domain.repository.user.UserRepository
+import io.github.tuguzt.pcbuilder.domain.randomNanoId
 import io.github.tuguzt.pcbuilder.domain.usecase.CheckPasswordUseCase
 import io.github.tuguzt.pcbuilder.domain.usecase.CheckUsernameUseCase
 import io.ktor.server.application.*
@@ -34,7 +37,8 @@ fun Application.authRoutes() {
 }
 
 fun Route.loginRoute() {
-    val userRepository: UserRepository<Nothing?> by inject()
+    val userRepository: PasswordUserRepository<Nothing?> by inject()
+    val passwordHasher: PasswordHashRepository by inject()
     val jwtConfig: JwtConfig by inject()
 
     post("/login") {
@@ -45,6 +49,12 @@ fun Route.loginRoute() {
             is Result.Success -> result.data
         }
         byUsername ?: throw UserNotFoundException("No user with username ${credentials.username}")
+        val passwordMatches = when (val result = passwordHasher.verify(byUsername.password, credentials.password)) {
+            is Result.Error -> throw checkNotNull(result.cause)
+            is Result.Success -> result.data
+        }
+        if (!passwordMatches)
+            throw BadCredentialsException("Wrong password for the user with username ${credentials.username}")
 
         val token = createToken(jwtConfig, byUsername)
         call.respond(message = UserTokenData(token))
@@ -52,7 +62,8 @@ fun Route.loginRoute() {
 }
 
 fun Route.registerRoute() {
-    val userRepository: UserRepository<Nothing?> by inject()
+    val userRepository: PasswordUserRepository<Nothing?> by inject()
+    val passwordHasher: PasswordHashRepository by inject()
     val jwtConfig: JwtConfig by inject()
 
     post("/register") {
@@ -67,11 +78,16 @@ fun Route.registerRoute() {
         }
 
         val newUser = run {
-            val data = UserData(
+            val data = PasswordUserData(
+                id = randomNanoId(),
                 role = UserRole.User,
                 username = credentials.username,
                 email = null,
                 imageUri = null,
+                password = when (val result = passwordHasher.hash(credentials.password)) {
+                    is Result.Error -> throw checkNotNull(result.cause)
+                    is Result.Success -> result.data
+                },
             )
             when (val result = userRepository.save(data)) {
                 is Result.Error -> throw checkNotNull(result.cause)
@@ -101,6 +117,6 @@ private suspend fun PipelineContext<*, ApplicationCall>.checkedCredentials(): Us
 private fun createToken(jwtConfig: JwtConfig, user: User): String =
     JWT.create()
         .withIssuer(jwtConfig.issuer)
-        .withClaim("userId", "${user.id}")
+        .withSubject("${user.id}")
         .withExpiresAt(Date(System.currentTimeMillis() + 1.days.inWholeMilliseconds))
         .sign(Algorithm.HMAC256(jwtConfig.secret))
