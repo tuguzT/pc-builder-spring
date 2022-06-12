@@ -1,11 +1,7 @@
 package io.github.tuguzt.pcbuilder.backend
 
-import io.github.tuguzt.pcbuilder.backend.plugins.configureKoin
-import io.github.tuguzt.pcbuilder.backend.plugins.configureRouting
-import io.github.tuguzt.pcbuilder.backend.plugins.configureSerialization
-import io.github.tuguzt.pcbuilder.backend.plugins.configureStatusPages
+import io.github.tuguzt.pcbuilder.backend.plugins.*
 import io.ktor.server.application.*
-import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 
 /**
@@ -15,6 +11,7 @@ fun Application.module() {
     configureKoin()
 
     configureSerialization()
+    configureSecurity()
     configureRouting()
     configureStatusPages()
 }
@@ -22,6 +19,4 @@ fun Application.module() {
 /**
  * Application entry point.
  */
-fun main() {
-    embeddedServer(Netty, port = 8080, module = Application::module).start(wait = true)
-}
+fun main(args: Array<String>) = EngineMain.main(args)

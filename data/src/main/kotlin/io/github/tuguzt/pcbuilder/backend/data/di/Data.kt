@@ -16,9 +16,9 @@ import org.koin.dsl.module
 /**
  * Koin [module][Module] for data of the application.
  */
-fun dataModule(url: String, driver: String, username: String = "", password: String = "") = module {
+fun dataModule(url: String, driver: String) = module {
     single {
-        val database = Database(url, driver, username, password)
+        val database = Database(url, driver)
         transaction(database) {
             SchemaUtils.create(Users)
         }

@@ -26,3 +26,7 @@ fun Application.configureStatusPages() {
         }
     }
 }
+
+class UserAlreadyExistsException(override val message: String) : Exception(message)
+
+class UserNotFoundException(override val message: String) : Exception(message)
