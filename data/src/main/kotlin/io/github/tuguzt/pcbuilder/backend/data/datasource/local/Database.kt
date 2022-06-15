@@ -7,23 +7,24 @@ import org.jetbrains.exposed.sql.DatabaseConfig
 import org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import java.sql.Connection
+import kotlin.reflect.KClass
 
 /**
  * Creates new instance of [Database].
  */
 internal fun Database(
     url: String,
-    driver: String,
+    driver: KClass<*>,
     maxPoolSize: Int = 10,
     setupConnection: (Connection) -> Unit = {},
     databaseConfig: DatabaseConfig? = null,
     manager: (Database) -> TransactionManager = { ThreadLocalTransactionManager(it) },
 ): Database {
-    val datasource = hikariDataSource(url, driver, maxPoolSize)
+    val datasource = HikariDataSource(url, requireNotNull(driver.qualifiedName), maxPoolSize)
     return Database.connect(datasource, setupConnection, databaseConfig, manager)
 }
 
-private fun hikariDataSource(
+private fun HikariDataSource(
     url: String,
     driver: String,
     maxPoolSize: Int,

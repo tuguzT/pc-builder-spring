@@ -9,6 +9,7 @@ import io.github.tuguzt.pcbuilder.backend.data.model.PasswordUserData
 import io.github.tuguzt.pcbuilder.domain.Result
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.toResult
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.deleteAll
@@ -17,30 +18,34 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 /**
  * [Password user data source][PasswordUserDataSource] implementation which uses local database.
  */
-internal class LocalPasswordUserDataSource(private val database: Database) : PasswordUserDataSource {
+internal class LocalPasswordUserDataSource(
+    private val database: Database,
+    private val context: CoroutineDispatcher = Dispatchers.IO,
+) : PasswordUserDataSource {
+
     override suspend fun readByUsername(username: String): Result<PasswordUserData?, Nothing?> = runCatching {
-        newSuspendedTransaction(Dispatchers.IO, database) {
+        newSuspendedTransaction(context, database) {
             val user = User.find { Users.username eq username }.limit(1).firstOrNull()
             user?.let { PasswordUser.findById(it.id.value) }?.toData()
         }
     }.toResult()
 
     override suspend fun readAll(): Result<List<PasswordUserData>, Nothing?> = runCatching {
-        newSuspendedTransaction(Dispatchers.IO, database) {
+        newSuspendedTransaction(context, database) {
             val users = PasswordUser.all().toList()
             users.map { it.toData() }
         }
     }.toResult()
 
     override suspend fun readById(id: NanoId): Result<PasswordUserData?, Nothing?> = runCatching {
-        newSuspendedTransaction(Dispatchers.IO, database) {
+        newSuspendedTransaction(context, database) {
             val user = PasswordUser.findById(id = "$id")
             user?.toData()
         }
     }.toResult()
 
     override suspend fun save(item: PasswordUserData): Result<PasswordUserData, Nothing?> = runCatching {
-        newSuspendedTransaction(Dispatchers.IO, database) {
+        newSuspendedTransaction(context, database) {
             val user = when (val userById = PasswordUser.findById(id = "${item.id}")) {
                 null -> {
                     val parent = User.new(id = "${item.id}") {
@@ -68,14 +73,14 @@ internal class LocalPasswordUserDataSource(private val database: Database) : Pas
     }.toResult()
 
     override suspend fun delete(item: PasswordUserData): Result<Unit, Nothing?> = runCatching {
-        newSuspendedTransaction(Dispatchers.IO, database) {
+        newSuspendedTransaction(context, database) {
             PasswordUser.findById(id = "${item.id}")?.delete()
         }
         Unit
     }.toResult()
 
     override suspend fun clear(): Result<Unit, Nothing?> = runCatching {
-        newSuspendedTransaction(Dispatchers.IO, database) {
+        newSuspendedTransaction(context, database) {
             PasswordUsers.deleteAll()
         }
         Unit

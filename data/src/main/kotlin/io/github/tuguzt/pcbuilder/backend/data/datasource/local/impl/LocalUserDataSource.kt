@@ -7,6 +7,7 @@ import io.github.tuguzt.pcbuilder.domain.Result
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData
 import io.github.tuguzt.pcbuilder.domain.toResult
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.deleteAll
@@ -15,23 +16,27 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 /**
  * [User data source][UserDataSource] implementation which uses local database.
  */
-internal class LocalUserDataSource(private val database: Database) : UserDataSource {
+internal class LocalUserDataSource(
+    private val database: Database,
+    private val context: CoroutineDispatcher = Dispatchers.IO,
+) : UserDataSource {
+
     override suspend fun readAll(): Result<List<UserData>, Nothing?> = runCatching {
-        val users = newSuspendedTransaction(Dispatchers.IO, database) {
+        val users = newSuspendedTransaction(context, database) {
             User.all().toList()
         }
         users.map { it.toData() }
     }.toResult()
 
     override suspend fun readById(id: NanoId): Result<UserData?, Nothing?> = runCatching {
-        val user = newSuspendedTransaction(Dispatchers.IO, database) {
+        val user = newSuspendedTransaction(context, database) {
             User.findById(id = "$id")
         }
         user?.toData()
     }.toResult()
 
     override suspend fun save(item: UserData): Result<UserData, Nothing?> = runCatching {
-        val user = newSuspendedTransaction(Dispatchers.IO, database) {
+        val user = newSuspendedTransaction(context, database) {
             when (val user = User.findById(id = "${item.id}")) {
                 null -> User.new(id = "${item.id}") {
                     username = item.username
@@ -52,21 +57,21 @@ internal class LocalUserDataSource(private val database: Database) : UserDataSou
     }.toResult()
 
     override suspend fun delete(item: UserData): Result<Unit, Nothing?> = runCatching {
-        newSuspendedTransaction(Dispatchers.IO, database) {
+        newSuspendedTransaction(context, database) {
             User.findById(id = "${item.id}")?.delete()
         }
         Unit
     }.toResult()
 
     override suspend fun clear(): Result<Unit, Nothing?> = runCatching {
-        newSuspendedTransaction(Dispatchers.IO, database) {
+        newSuspendedTransaction(context, database) {
             Users.deleteAll()
         }
         Unit
     }.toResult()
 
     override suspend fun readByUsername(username: String): Result<UserData?, Nothing?> = runCatching {
-        val user = newSuspendedTransaction(Dispatchers.IO, database) {
+        val user = newSuspendedTransaction(context, database) {
             User.find { Users.username eq username }.limit(1).firstOrNull()
         }
         user?.toData()

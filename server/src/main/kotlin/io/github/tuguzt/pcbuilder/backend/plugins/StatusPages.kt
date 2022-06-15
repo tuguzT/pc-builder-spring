@@ -4,14 +4,15 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
-import mu.KotlinLogging
-
-private val logger = KotlinLogging.logger {}
+import mu.KLogger
+import org.koin.ktor.ext.inject
 
 /**
  * Configures exception and status handling of the application.
  */
 fun Application.configureStatusPages() {
+    val logger: KLogger by inject()
+
     install(StatusPages) {
         status(HttpStatusCode.NotFound) { call, status ->
             logger.info { "404: Resource Not Found" }

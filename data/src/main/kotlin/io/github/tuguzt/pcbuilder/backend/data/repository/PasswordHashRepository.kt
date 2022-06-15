@@ -6,7 +6,7 @@ import io.github.tuguzt.pcbuilder.domain.Result
  * Repository for user password hashing.
  */
 interface PasswordHashRepository {
-    fun hash(password: String): Result<String, Nothing?>
+    suspend fun hash(password: String): Result<String, Nothing?>
 
-    fun verify(hash: String, password: String): Result<Boolean, Nothing?>
+    suspend fun verify(hash: String, password: String): Result<Boolean, Nothing?>
 }

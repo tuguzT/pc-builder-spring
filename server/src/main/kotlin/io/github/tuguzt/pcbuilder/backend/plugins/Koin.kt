@@ -3,7 +3,8 @@ package io.github.tuguzt.pcbuilder.backend.plugins
 import io.github.tuguzt.pcbuilder.backend.data.di.dataModule
 import io.ktor.server.application.*
 import kotlinx.serialization.json.Json
-import org.h2.Driver
+import mu.KLogger
+import mu.KotlinLogging
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import org.koin.ktor.plugin.Koin
@@ -22,14 +23,17 @@ fun Application.configureKoin() {
 
 val Application.appModule
     get() = module {
-        singleOf(::json)
+        singleOf(::kLogger)
         singleOf(::jwtConfig)
+        singleOf(::json)
     }
 
 val Application.dataModule
     get() = dataModule(
         url = environment.config.property(path = "db.url").getString(),
-        driver = requireNotNull(Driver::class.qualifiedName),
+        driver = org.h2.Driver::class,
     )
+
+private fun Application.kLogger(): KLogger = KotlinLogging.logger(log)
 
 private fun json(): Json = Json(domainJson) {}
