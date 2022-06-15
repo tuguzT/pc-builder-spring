@@ -1,9 +1,9 @@
 package io.github.tuguzt.pcbuilder.backend.data.datasource.local.impl
 
 import io.github.tuguzt.pcbuilder.backend.data.datasource.PasswordUserDataSource
-import io.github.tuguzt.pcbuilder.backend.data.datasource.local.model.user.PasswordUser
+import io.github.tuguzt.pcbuilder.backend.data.datasource.local.model.user.PasswordUserEntity
 import io.github.tuguzt.pcbuilder.backend.data.datasource.local.model.user.PasswordUsers
-import io.github.tuguzt.pcbuilder.backend.data.datasource.local.model.user.User
+import io.github.tuguzt.pcbuilder.backend.data.datasource.local.model.user.UserEntity
 import io.github.tuguzt.pcbuilder.backend.data.datasource.local.model.user.Users
 import io.github.tuguzt.pcbuilder.backend.data.model.PasswordUserData
 import io.github.tuguzt.pcbuilder.domain.Result
@@ -25,48 +25,30 @@ internal class LocalPasswordUserDataSource(
 
     override suspend fun readByUsername(username: String): Result<PasswordUserData?, Nothing?> = runCatching {
         newSuspendedTransaction(context, database) {
-            val user = User.find { Users.username eq username }.limit(1).firstOrNull()
-            user?.let { PasswordUser.findById(it.id.value) }?.toData()
+            val user = UserEntity.find { Users.username eq username }.limit(1).firstOrNull()
+            user?.let { PasswordUserEntity.findById(it.id.value) }?.toData()
         }
     }.toResult()
 
     override suspend fun readAll(): Result<List<PasswordUserData>, Nothing?> = runCatching {
         newSuspendedTransaction(context, database) {
-            val users = PasswordUser.all().toList()
+            val users = PasswordUserEntity.all().toList()
             users.map { it.toData() }
         }
     }.toResult()
 
     override suspend fun readById(id: NanoId): Result<PasswordUserData?, Nothing?> = runCatching {
         newSuspendedTransaction(context, database) {
-            val user = PasswordUser.findById(id = "$id")
+            val user = PasswordUserEntity.findById(id = "$id")
             user?.toData()
         }
     }.toResult()
 
     override suspend fun save(item: PasswordUserData): Result<PasswordUserData, Nothing?> = runCatching {
         newSuspendedTransaction(context, database) {
-            val user = when (val userById = PasswordUser.findById(id = "${item.id}")) {
-                null -> {
-                    val parent = User.new(id = "${item.id}") {
-                        username = item.username
-                        role = item.role
-                        email = item.email
-                        imageUri = item.imageUri
-                    }
-                    PasswordUser.new(id = "${item.id}") {
-                        user = parent
-                        passwordHash = item.password
-                    }
-                }
-                else -> {
-                    userById.user.username = item.username
-                    userById.user.role = item.role
-                    userById.user.email = item.email
-                    userById.user.imageUri = item.imageUri
-                    userById.passwordHash = item.password
-                    userById
-                }
+            val user = when (val user = PasswordUserEntity.findById(id = "${item.id}")) {
+                null -> item.newEntity()
+                else -> item.saveIntoEntity(user)
             }
             user.toData()
         }
@@ -74,7 +56,7 @@ internal class LocalPasswordUserDataSource(
 
     override suspend fun delete(item: PasswordUserData): Result<Unit, Nothing?> = runCatching {
         newSuspendedTransaction(context, database) {
-            PasswordUser.findById(id = "${item.id}")?.delete()
+            PasswordUserEntity.findById(id = "${item.id}")?.delete()
         }
         Unit
     }.toResult()
@@ -86,7 +68,7 @@ internal class LocalPasswordUserDataSource(
         Unit
     }.toResult()
 
-    private fun PasswordUser.toData(): PasswordUserData = PasswordUserData(
+    private fun PasswordUserEntity.toData(): PasswordUserData = PasswordUserData(
         id = user.id.value.let(::NanoId),
         role = user.role,
         username = user.username,

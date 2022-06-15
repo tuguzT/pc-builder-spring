@@ -6,11 +6,11 @@ import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
 /**
- * Data Access Object of the [password user][PasswordUserData].
+ * Database entity of the [password user][PasswordUserData].
  */
-internal class PasswordUser(id: EntityID<String>) : Entity<String>(id) {
-    companion object : EntityClass<String, PasswordUser>(PasswordUsers)
+internal class PasswordUserEntity(id: EntityID<String>) : Entity<String>(id) {
+    companion object : EntityClass<String, PasswordUserEntity>(PasswordUsers)
 
     var passwordHash by PasswordUsers.passwordHash
-    var user by User referencedOn PasswordUsers.id
+    var user by UserEntity referencedOn PasswordUsers.id
 }

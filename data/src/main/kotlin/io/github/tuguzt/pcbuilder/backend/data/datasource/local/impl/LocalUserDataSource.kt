@@ -1,7 +1,7 @@
 package io.github.tuguzt.pcbuilder.backend.data.datasource.local.impl
 
 import io.github.tuguzt.pcbuilder.backend.data.datasource.UserDataSource
-import io.github.tuguzt.pcbuilder.backend.data.datasource.local.model.user.User
+import io.github.tuguzt.pcbuilder.backend.data.datasource.local.model.user.UserEntity
 import io.github.tuguzt.pcbuilder.backend.data.datasource.local.model.user.Users
 import io.github.tuguzt.pcbuilder.domain.Result
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
@@ -23,34 +23,23 @@ internal class LocalUserDataSource(
 
     override suspend fun readAll(): Result<List<UserData>, Nothing?> = runCatching {
         val users = newSuspendedTransaction(context, database) {
-            User.all().toList()
+            UserEntity.all().toList()
         }
         users.map { it.toData() }
     }.toResult()
 
     override suspend fun readById(id: NanoId): Result<UserData?, Nothing?> = runCatching {
         val user = newSuspendedTransaction(context, database) {
-            User.findById(id = "$id")
+            UserEntity.findById(id = "$id")
         }
         user?.toData()
     }.toResult()
 
     override suspend fun save(item: UserData): Result<UserData, Nothing?> = runCatching {
         val user = newSuspendedTransaction(context, database) {
-            when (val user = User.findById(id = "${item.id}")) {
-                null -> User.new(id = "${item.id}") {
-                    username = item.username
-                    role = item.role
-                    email = item.email
-                    imageUri = item.imageUri
-                }
-                else -> {
-                    user.username = item.username
-                    user.role = item.role
-                    user.email = item.email
-                    user.imageUri = item.imageUri
-                    user
-                }
+            when (val user = UserEntity.findById(id = "${item.id}")) {
+                null -> item.newEntity()
+                else -> item.saveIntoEntity(user)
             }
         }
         user.toData()
@@ -58,7 +47,7 @@ internal class LocalUserDataSource(
 
     override suspend fun delete(item: UserData): Result<Unit, Nothing?> = runCatching {
         newSuspendedTransaction(context, database) {
-            User.findById(id = "${item.id}")?.delete()
+            UserEntity.findById(id = "${item.id}")?.delete()
         }
         Unit
     }.toResult()
@@ -72,10 +61,10 @@ internal class LocalUserDataSource(
 
     override suspend fun readByUsername(username: String): Result<UserData?, Nothing?> = runCatching {
         val user = newSuspendedTransaction(context, database) {
-            User.find { Users.username eq username }.limit(1).firstOrNull()
+            UserEntity.find { Users.username eq username }.limit(1).firstOrNull()
         }
         user?.toData()
     }.toResult()
 
-    private fun User.toData(): UserData = UserData(id.value.let(::NanoId), role, username, email, imageUri)
+    private fun UserEntity.toData(): UserData = UserData(id.value.let(::NanoId), role, username, email, imageUri)
 }

@@ -6,10 +6,10 @@ import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
 /**
- * Data Access Object of the [user][UserData].
+ * Database entity of the [user][UserData].
  */
-internal class User(id: EntityID<String>) : Entity<String>(id) {
-    companion object : EntityClass<String, User>(Users)
+internal class UserEntity(id: EntityID<String>) : Entity<String>(id) {
+    companion object : EntityClass<String, UserEntity>(Users)
 
     var username by Users.username
     var role by Users.role
