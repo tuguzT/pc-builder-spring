@@ -1,10 +1,12 @@
 package io.github.tuguzt.pcbuilder.backend.data.datasource.local.impl
 
+import io.github.tuguzt.pcbuilder.backend.data.datasource.local.model.component.ComponentEntity
 import io.github.tuguzt.pcbuilder.backend.data.datasource.local.model.component.ManufacturerEntity
 import io.github.tuguzt.pcbuilder.backend.data.datasource.local.model.user.PasswordUserEntity
 import io.github.tuguzt.pcbuilder.backend.data.datasource.local.model.user.UserEntity
 import io.github.tuguzt.pcbuilder.backend.data.model.PasswordUserData
 import io.github.tuguzt.pcbuilder.domain.model.component.data.ManufacturerData
+import io.github.tuguzt.pcbuilder.domain.model.component.data.PolymorphicComponent
 import io.github.tuguzt.pcbuilder.domain.model.user.User
 import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData
 
@@ -40,6 +42,10 @@ internal fun ManufacturerData.saveIntoEntity(entity: ManufacturerEntity): Manufa
         description = this@saveIntoEntity.description
     }
 }
+
+internal fun PolymorphicComponent.newEntity(): ComponentEntity = TODO()
+
+internal fun PolymorphicComponent.saveIntoEntity(entity: ComponentEntity): ComponentEntity = TODO()
 
 // --- IMPLEMENTATION FOR INTERFACES ---
 
