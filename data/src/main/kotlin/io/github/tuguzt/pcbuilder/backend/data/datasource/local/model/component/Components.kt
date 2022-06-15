@@ -1,5 +1,7 @@
 package io.github.tuguzt.pcbuilder.backend.data.datasource.local.model.component
 
+import io.github.tuguzt.pcbuilder.backend.data.datasource.local.model.nanoId
+import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.component.Component
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.ReferenceOption
@@ -7,8 +9,8 @@ import org.jetbrains.exposed.sql.ReferenceOption
 /**
  * Represents SQL table of [components][Component].
  */
-internal object Components : IdTable<String>() {
-    override val id = char(name = "id", length = 21).entityId()
+internal object Components : IdTable<NanoId>() {
+    override val id = nanoId().entityId()
     override val primaryKey = PrimaryKey(id)
 
     val name = varchar(name = "name", length = 256).uniqueIndex()

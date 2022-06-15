@@ -30,14 +30,14 @@ internal class LocalManufacturerDataSource(
 
     override suspend fun readById(id: NanoId): Result<ManufacturerData?, Nothing?> = runCatching {
         val manufacturer = newSuspendedTransaction(context, database) {
-            ManufacturerEntity.findById(id = "$id")
+            ManufacturerEntity.findById(id)
         }
         manufacturer?.toData()
     }.toResult()
 
     override suspend fun save(item: ManufacturerData): Result<ManufacturerData, Nothing?> = runCatching {
         val manufacturer = newSuspendedTransaction(context, database) {
-            when (val manufacturer = ManufacturerEntity.findById(id = "${item.id}")) {
+            when (val manufacturer = ManufacturerEntity.findById(item.id)) {
                 null -> item.newEntity()
                 else -> item.saveIntoEntity(manufacturer)
             }
@@ -47,7 +47,7 @@ internal class LocalManufacturerDataSource(
 
     override suspend fun delete(item: ManufacturerData): Result<Unit, Nothing?> = runCatching {
         newSuspendedTransaction(context, database) {
-            ManufacturerEntity.findById(id = "${item.id}")?.delete()
+            ManufacturerEntity.findById(item.id)?.delete()
         }
         Unit
     }.toResult()
@@ -66,6 +66,5 @@ internal class LocalManufacturerDataSource(
         manufacturer?.toData()
     }.toResult()
 
-    private fun ManufacturerEntity.toData(): ManufacturerData =
-        ManufacturerData(id.value.let(::NanoId), name, description)
+    private fun ManufacturerEntity.toData(): ManufacturerData = ManufacturerData(id.value, name, description)
 }

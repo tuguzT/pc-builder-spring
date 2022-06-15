@@ -39,14 +39,14 @@ internal class LocalPasswordUserDataSource(
 
     override suspend fun readById(id: NanoId): Result<PasswordUserData?, Nothing?> = runCatching {
         newSuspendedTransaction(context, database) {
-            val user = PasswordUserEntity.findById(id = "$id")
+            val user = PasswordUserEntity.findById(id)
             user?.toData()
         }
     }.toResult()
 
     override suspend fun save(item: PasswordUserData): Result<PasswordUserData, Nothing?> = runCatching {
         newSuspendedTransaction(context, database) {
-            val user = when (val user = PasswordUserEntity.findById(id = "${item.id}")) {
+            val user = when (val user = PasswordUserEntity.findById(item.id)) {
                 null -> item.newEntity()
                 else -> item.saveIntoEntity(user)
             }
@@ -56,7 +56,7 @@ internal class LocalPasswordUserDataSource(
 
     override suspend fun delete(item: PasswordUserData): Result<Unit, Nothing?> = runCatching {
         newSuspendedTransaction(context, database) {
-            PasswordUserEntity.findById(id = "${item.id}")?.delete()
+            PasswordUserEntity.findById(item.id)?.delete()
         }
         Unit
     }.toResult()
@@ -69,7 +69,7 @@ internal class LocalPasswordUserDataSource(
     }.toResult()
 
     private fun PasswordUserEntity.toData(): PasswordUserData = PasswordUserData(
-        id = user.id.value.let(::NanoId),
+        id = user.id.value,
         role = user.role,
         username = user.username,
         email = user.email,

@@ -30,14 +30,14 @@ internal class LocalUserDataSource(
 
     override suspend fun readById(id: NanoId): Result<UserData?, Nothing?> = runCatching {
         val user = newSuspendedTransaction(context, database) {
-            UserEntity.findById(id = "$id")
+            UserEntity.findById(id)
         }
         user?.toData()
     }.toResult()
 
     override suspend fun save(item: UserData): Result<UserData, Nothing?> = runCatching {
         val user = newSuspendedTransaction(context, database) {
-            when (val user = UserEntity.findById(id = "${item.id}")) {
+            when (val user = UserEntity.findById(item.id)) {
                 null -> item.newEntity()
                 else -> item.saveIntoEntity(user)
             }
@@ -47,7 +47,7 @@ internal class LocalUserDataSource(
 
     override suspend fun delete(item: UserData): Result<Unit, Nothing?> = runCatching {
         newSuspendedTransaction(context, database) {
-            UserEntity.findById(id = "${item.id}")?.delete()
+            UserEntity.findById(item.id)?.delete()
         }
         Unit
     }.toResult()
@@ -66,5 +66,5 @@ internal class LocalUserDataSource(
         user?.toData()
     }.toResult()
 
-    private fun UserEntity.toData(): UserData = UserData(id.value.let(::NanoId), role, username, email, imageUri)
+    private fun UserEntity.toData(): UserData = UserData(id.value, role, username, email, imageUri)
 }
