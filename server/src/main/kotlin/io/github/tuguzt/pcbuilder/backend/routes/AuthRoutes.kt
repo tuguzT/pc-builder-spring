@@ -49,6 +49,7 @@ fun Route.loginRoute() {
             is Result.Success -> result.data
         }
         byUsername ?: throw UserNotFoundException("No user with username ${credentials.username}")
+
         val passwordMatches = when (val result = passwordHasher.verify(byUsername.password, credentials.password)) {
             is Result.Error -> throw checkNotNull(result.cause)
             is Result.Success -> result.data
@@ -73,11 +74,10 @@ fun Route.registerRoute() {
             is Result.Error -> throw checkNotNull(result.cause)
             is Result.Success -> result.data
         }
-        if (byUsername != null) {
+        if (byUsername != null)
             throw UserAlreadyExistsException("User with username ${credentials.username} already exists")
-        }
 
-        val newUser = run {
+        val newUser = kotlin.run {
             val data = PasswordUserData(
                 id = randomNanoId(),
                 role = UserRole.User,
@@ -105,10 +105,12 @@ fun Route.registerRoute() {
  */
 private suspend fun PipelineContext<*, ApplicationCall>.checkedCredentials(): UserCredentialsData {
     val credentials = call.receive<UserCredentialsData>()
-    require(CheckUsernameUseCase().invoke(credentials.username)) { "Username is not valid" }
-    require(CheckPasswordUseCase().invoke(credentials.password)) { "Password is not valid" }
-
-    return credentials
+    return credentials.also {
+        val checkUsername: CheckUsernameUseCase by application.inject()
+        val checkPassword: CheckPasswordUseCase by application.inject()
+        if (!checkUsername(it.username)) throw BadCredentialsException("Username is not valid")
+        if (!checkPassword(it.password)) throw BadCredentialsException("Password is not valid")
+    }
 }
 
 /**

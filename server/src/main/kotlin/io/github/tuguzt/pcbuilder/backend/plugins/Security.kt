@@ -3,6 +3,7 @@ package io.github.tuguzt.pcbuilder.backend.plugins
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import io.github.tuguzt.pcbuilder.domain.Result
+import io.github.tuguzt.pcbuilder.domain.model.Error
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.repository.user.UserRepository
 import io.ktor.http.*
@@ -10,20 +11,24 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
+import kotlinx.datetime.Clock
+import mu.KLogger
 import org.koin.ktor.ext.inject
 
 /**
  * Configures security options of the application.
  */
 fun Application.configureSecurity() {
+    val logger: KLogger by inject()
+    val jwtConfig: JwtConfig by inject()
+
     authentication {
         jwt(name = "auth-jwt") {
-            val config = this@configureSecurity.jwtConfig()
-            realm = config.realm
+            realm = jwtConfig.realm
             verifier(
                 JWT
-                    .require(Algorithm.HMAC256(config.secret))
-                    .withIssuer(config.issuer)
+                    .require(Algorithm.HMAC256(jwtConfig.secret))
+                    .withIssuer(jwtConfig.issuer)
                     .build()
             )
             validate { credential ->
@@ -36,21 +41,11 @@ fun Application.configureSecurity() {
                 }
                 if (user != null) JWTPrincipal(credential.payload) else null
             }
-            challenge { _, _ ->
-                call.respond(HttpStatusCode.Unauthorized)
+            challenge { defaultScheme, _ ->
+                logger.error { "JWT authentication with default scheme $defaultScheme failed" }
+                val error = Error(message = "JWT authentication failed", at = Clock.System.now())
+                call.respond(HttpStatusCode.Unauthorized, error)
             }
         }
     }
 }
-
-data class JwtConfig(
-    val secret: String,
-    val issuer: String,
-    val realm: String,
-)
-
-fun Application.jwtConfig(): JwtConfig = JwtConfig(
-    secret = environment.config.property(path = "jwt.secret").getString(),
-    issuer = environment.config.property(path = "jwt.issuer").getString(),
-    realm = environment.config.property(path = "jwt.realm").getString(),
-)

@@ -1,6 +1,8 @@
 package io.github.tuguzt.pcbuilder.backend.plugins
 
 import io.github.tuguzt.pcbuilder.backend.data.di.dataModule
+import io.github.tuguzt.pcbuilder.domain.usecase.CheckPasswordUseCase
+import io.github.tuguzt.pcbuilder.domain.usecase.CheckUsernameUseCase
 import io.ktor.server.application.*
 import kotlinx.serialization.json.Json
 import mu.KLogger
@@ -26,6 +28,8 @@ val Application.appModule
         singleOf(::kLogger)
         singleOf(::jwtConfig)
         singleOf(::json)
+        singleOf(::CheckUsernameUseCase)
+        singleOf(::CheckPasswordUseCase)
     }
 
 val Application.dataModule
@@ -37,3 +41,15 @@ val Application.dataModule
 private fun Application.kLogger(): KLogger = KotlinLogging.logger(log)
 
 private fun json(): Json = Json(domainJson) {}
+
+data class JwtConfig(
+    val secret: String,
+    val issuer: String,
+    val realm: String,
+)
+
+private fun Application.jwtConfig(): JwtConfig = JwtConfig(
+    secret = environment.config.property(path = "jwt.secret").getString(),
+    issuer = environment.config.property(path = "jwt.issuer").getString(),
+    realm = environment.config.property(path = "jwt.realm").getString(),
+)
