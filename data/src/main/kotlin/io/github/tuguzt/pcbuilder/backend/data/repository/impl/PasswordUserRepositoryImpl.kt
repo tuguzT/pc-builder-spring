@@ -6,7 +6,7 @@ import io.github.tuguzt.pcbuilder.backend.data.repository.PasswordUserRepository
 import io.github.tuguzt.pcbuilder.domain.Result
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 
-class PasswordUserRepositoryImpl(private val dataSource: PasswordUserDataSource) : PasswordUserRepository<Nothing?> {
+internal class PasswordUserRepositoryImpl(private val dataSource: PasswordUserDataSource) : PasswordUserRepository<Nothing?> {
     override suspend fun clear(): Result<Unit, Nothing?> = dataSource.clear()
 
     override suspend fun delete(item: PasswordUserData): Result<Unit, Nothing?> = dataSource.delete(item)

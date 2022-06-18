@@ -3,10 +3,10 @@ package io.github.tuguzt.pcbuilder.backend.data.di
 import io.github.tuguzt.pcbuilder.backend.data.datasource.*
 import io.github.tuguzt.pcbuilder.backend.data.repository.PasswordHashRepository
 import io.github.tuguzt.pcbuilder.backend.data.repository.PasswordUserRepository
+import io.github.tuguzt.pcbuilder.backend.data.repository.UserRepository
 import io.github.tuguzt.pcbuilder.backend.data.repository.impl.*
 import io.github.tuguzt.pcbuilder.domain.repository.component.ComponentRepository
 import io.github.tuguzt.pcbuilder.domain.repository.component.ManufacturerRepository
-import io.github.tuguzt.pcbuilder.domain.repository.user.UserRepository
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 
@@ -18,7 +18,7 @@ internal fun Module.declareRepositories() {
     singleOf(::componentRepository)
 }
 
-private fun userRepository(dataSource: UserDataSource): UserRepository<Nothing?> =
+private fun userRepository(dataSource: UserDataSource): UserRepository =
     UserRepositoryImpl(dataSource)
 
 private fun passwordUserRepository(dataSource: PasswordUserDataSource): PasswordUserRepository<Nothing?> =

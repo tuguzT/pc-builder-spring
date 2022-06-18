@@ -2,11 +2,11 @@ package io.github.tuguzt.pcbuilder.backend.plugins
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import io.github.tuguzt.pcbuilder.backend.data.repository.UserRepository
 import io.github.tuguzt.pcbuilder.backend.plugins.koin.JwtConfig
 import io.github.tuguzt.pcbuilder.domain.Result
 import io.github.tuguzt.pcbuilder.domain.model.Error
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
-import io.github.tuguzt.pcbuilder.domain.repository.user.UserRepository
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -33,7 +33,7 @@ fun Application.configureSecurity() {
                     .build()
             )
             validate { credential ->
-                val userRepository: UserRepository<Nothing?> by inject()
+                val userRepository: UserRepository by inject()
 
                 val id = credential.payload.subject.let(::NanoId)
                 val user = when (val result = userRepository.readById(id)) {
@@ -42,8 +42,8 @@ fun Application.configureSecurity() {
                 }
                 if (user != null) JWTPrincipal(credential.payload) else null
             }
-            challenge { defaultScheme, _ ->
-                logger.error { "JWT authentication with default scheme $defaultScheme failed" }
+            challenge { _, _ ->
+                logger.error { "JWT authentication failed" }
                 val error = Error(message = "JWT authentication failed", at = Clock.System.now())
                 call.respond(HttpStatusCode.Unauthorized, error)
             }

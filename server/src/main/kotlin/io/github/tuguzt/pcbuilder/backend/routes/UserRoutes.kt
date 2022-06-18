@@ -1,10 +1,10 @@
 package io.github.tuguzt.pcbuilder.backend.routes
 
+import io.github.tuguzt.pcbuilder.backend.data.repository.UserRepository
 import io.github.tuguzt.pcbuilder.backend.exceptions.UserNotFoundException
 import io.github.tuguzt.pcbuilder.domain.Result
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.user.User
-import io.github.tuguzt.pcbuilder.domain.repository.user.UserRepository
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -25,7 +25,7 @@ fun Application.userRoutes() {
 }
 
 fun Route.readAllUsersRoute() {
-    val userRepository: UserRepository<Nothing?> by inject()
+    val userRepository: UserRepository by inject()
 
     get("/users/all") {
         val users = when (val result = userRepository.readAll()) {
@@ -37,7 +37,7 @@ fun Route.readAllUsersRoute() {
 }
 
 fun Route.readByIdUserRoute() {
-    val userRepository: UserRepository<Nothing?> by inject()
+    val userRepository: UserRepository by inject()
 
     get("/users/id/{id}") {
         val id = call.parameters["id"]?.let(::NanoId) ?: kotlin.run {

@@ -35,16 +35,6 @@ internal class LocalUserDataSource(
         user?.toData()
     }.toResult()
 
-    override suspend fun save(item: UserData): Result<UserData, Nothing?> = runCatching {
-        val user = newSuspendedTransaction(context, database) {
-            when (val user = UserEntity.findById(item.id)) {
-                null -> item.newEntity()
-                else -> item.saveIntoEntity(user)
-            }
-        }
-        user.toData()
-    }.toResult()
-
     override suspend fun delete(item: UserData): Result<Unit, Nothing?> = runCatching {
         newSuspendedTransaction(context, database) {
             UserEntity.findById(item.id)?.delete()

@@ -16,7 +16,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 /**
  * [Component data source][ComponentDataSource] implementation which uses local database.
  */
-class LocalComponentDataSource(
+internal class LocalComponentDataSource(
     private val database: Database,
     private val context: CoroutineDispatcher = Dispatchers.IO,
 ) : ComponentDataSource {

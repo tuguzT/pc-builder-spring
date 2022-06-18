@@ -8,11 +8,6 @@ import io.github.tuguzt.pcbuilder.backend.data.model.PasswordUserData
 import io.github.tuguzt.pcbuilder.domain.model.component.data.ManufacturerData
 import io.github.tuguzt.pcbuilder.domain.model.component.data.PolymorphicComponent
 import io.github.tuguzt.pcbuilder.domain.model.user.User
-import io.github.tuguzt.pcbuilder.domain.model.user.data.UserData
-
-internal fun UserData.newEntity(): UserEntity = newUserEntity()
-
-internal fun UserData.saveIntoEntity(entity: UserEntity): UserEntity = saveIntoUserEntity(entity)
 
 internal fun PasswordUserData.newEntity(): PasswordUserEntity {
     val parent = newUserEntity()
