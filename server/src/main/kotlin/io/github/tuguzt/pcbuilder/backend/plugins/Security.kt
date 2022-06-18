@@ -2,6 +2,7 @@ package io.github.tuguzt.pcbuilder.backend.plugins
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import io.github.tuguzt.pcbuilder.backend.plugins.koin.JwtConfig
 import io.github.tuguzt.pcbuilder.domain.Result
 import io.github.tuguzt.pcbuilder.domain.model.Error
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
@@ -16,7 +17,7 @@ import mu.KLogger
 import org.koin.ktor.ext.inject
 
 /**
- * Configures security options of the application.
+ * Configures security of the application.
  */
 fun Application.configureSecurity() {
     val logger: KLogger by inject()

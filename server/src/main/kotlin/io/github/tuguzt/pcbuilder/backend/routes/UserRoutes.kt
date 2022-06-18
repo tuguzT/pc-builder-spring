@@ -1,6 +1,6 @@
 package io.github.tuguzt.pcbuilder.backend.routes
 
-import io.github.tuguzt.pcbuilder.backend.plugins.UserNotFoundException
+import io.github.tuguzt.pcbuilder.backend.exceptions.UserNotFoundException
 import io.github.tuguzt.pcbuilder.domain.Result
 import io.github.tuguzt.pcbuilder.domain.model.NanoId
 import io.github.tuguzt.pcbuilder.domain.model.user.User
@@ -40,13 +40,16 @@ fun Route.readByIdUserRoute() {
     val userRepository: UserRepository<Nothing?> by inject()
 
     get("/users/id/{id}") {
-        val id = call.parameters["id"]?.let(::NanoId) ?: throw UserNotFoundException("No id was found")
+        val id = call.parameters["id"]?.let(::NanoId) ?: kotlin.run {
+            call.respond(HttpStatusCode.BadRequest)
+            return@get
+        }
         val user = when (val result = userRepository.readById(id)) {
             is Result.Error -> throw checkNotNull(result.cause)
             is Result.Success -> result.data
         }
         when (user) {
-            null -> call.respond(HttpStatusCode.NotFound)
+            null -> throw UserNotFoundException("No user with provided id $id")
             else -> call.respond(user)
         }
     }

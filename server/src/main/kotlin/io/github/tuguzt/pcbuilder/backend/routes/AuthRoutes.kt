@@ -5,10 +5,10 @@ import com.auth0.jwt.algorithms.Algorithm
 import io.github.tuguzt.pcbuilder.backend.data.model.PasswordUserData
 import io.github.tuguzt.pcbuilder.backend.data.repository.PasswordHashRepository
 import io.github.tuguzt.pcbuilder.backend.data.repository.PasswordUserRepository
-import io.github.tuguzt.pcbuilder.backend.plugins.BadCredentialsException
-import io.github.tuguzt.pcbuilder.backend.plugins.JwtConfig
-import io.github.tuguzt.pcbuilder.backend.plugins.UserAlreadyExistsException
-import io.github.tuguzt.pcbuilder.backend.plugins.UserNotFoundException
+import io.github.tuguzt.pcbuilder.backend.exceptions.BadCredentialsException
+import io.github.tuguzt.pcbuilder.backend.exceptions.UserAlreadyExistsException
+import io.github.tuguzt.pcbuilder.backend.exceptions.UserNotFoundException
+import io.github.tuguzt.pcbuilder.backend.plugins.koin.JwtConfig
 import io.github.tuguzt.pcbuilder.domain.Result
 import io.github.tuguzt.pcbuilder.domain.model.user.User
 import io.github.tuguzt.pcbuilder.domain.model.user.UserRole
